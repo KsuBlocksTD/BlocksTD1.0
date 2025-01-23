@@ -1,0 +1,4 @@
+name: BlocksTowerDefence1.0
+version: '${project.version}'
+main: ksucapproj.blockstowerdefence1.BlocksTowerDefence1
+api-version: '1.21'
