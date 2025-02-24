@@ -1,12 +1,15 @@
 package me.matthewTest.pluginTest;
 
 import io.papermc.paper.util.Tick;
+import me.matthewTest.pluginTest.commands.mtdCommand;
+import me.matthewTest.pluginTest.logic.exampleListener;
+import me.matthewTest.pluginTest.logic.multiCommandHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-
 import java.time.Duration;
 
 public final class PluginTest extends JavaPlugin {
+    // TO REBUILD THE ARTIFACT: F5
 
     @Override
     public void onEnable() {
@@ -27,18 +30,4 @@ public final class PluginTest extends JavaPlugin {
         getLogger().warning("Plugin uninjected");
 
     }
-
-    /*
-    private void registerCommands(String... commands) {
-        MultiCommandHandler handler = new MultiCommandHandler();
-        for (String command : commands) {
-            if (getCommand(command) != null) {
-                getCommand(command).setExecutor(handler);
-                getLogger().info("Registered command: /" + command);
-            } else {
-                getLogger().warning("Command not found in plugin.yml: /" + command);
-            }
-        }
-    }
-     */
 }
