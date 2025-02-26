@@ -12,11 +12,13 @@ public class exampleListener implements Listener{
 
     // TO REBUILD THE ARTIFACT: F5
 
+    /*
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event){
         if (event.getTo().getBlockX() == event.getFrom().getBlockX() && event.getTo().getBlockY() == event.getFrom().getBlockY() && event.getTo().getBlockZ() == event.getFrom().getBlockZ()) return;
         event.getPlayer().sendMessage("You have just moved.");
     }
+     */
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){

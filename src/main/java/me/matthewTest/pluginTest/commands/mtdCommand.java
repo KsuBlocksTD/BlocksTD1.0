@@ -36,6 +36,7 @@ public class mtdCommand implements CommandExecutor {
         MTDSubcommand subcommand = subcommands.get(args[0].toLowerCase());
         if (subcommand == null) {
             sender.sendMessage("Unknown subcommand: " + args[0]);
+            sender.sendMessage("Use /mtd for a list of subcommands.");
             return true;
         }
 
