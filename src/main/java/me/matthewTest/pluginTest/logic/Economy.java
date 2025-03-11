@@ -43,7 +43,7 @@ public class Economy {
             // does the action of giving each online, eligible player their reward amount
             playerMoney.put(onlinePlayer, playerMoney.get(onlinePlayer)+killReward);
             // reminds each player of their total
-            onlinePlayer.sendMessage("You now have " + playerMoney.get(onlinePlayer) + " coins!");
+            //onlinePlayer.sendMessage("You now have " + playerMoney.get(onlinePlayer) + " coins!");
         }
 
     }
@@ -84,6 +84,9 @@ public class Economy {
         }
     }
 
+    public static String getPlayerMoney(Player player) {
+        return playerMoney.get(player).toString();
+    }
 
     // this is for a compilation fix bug that occurs when the # of players in the lobby does not match # of player in playerMoney
     // this executes on startup by default. if the server starts empty, nothing happens

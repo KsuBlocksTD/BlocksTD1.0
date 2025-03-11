@@ -6,6 +6,7 @@ import me.matthewTest.pluginTest.commands.MtdCommand;
 import me.matthewTest.pluginTest.commands.TestCommand;
 import me.matthewTest.pluginTest.logic.Economy;
 import me.matthewTest.pluginTest.logic.EventListener;
+import me.matthewTest.pluginTest.placeholderAPI.PlaceholderAPIExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -22,6 +23,9 @@ public final class PluginTest extends JavaPlugin {
         // Plugin startup logic
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
         getServer().getPluginManager().registerEvents(new EventListener(), this);
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PlaceholderAPIExpansion(this).register();
+        }
 
         // needed for instantiating proper mob killing & economy function
         Economy econ = new Economy();
