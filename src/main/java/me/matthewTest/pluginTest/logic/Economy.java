@@ -1,14 +1,10 @@
 package me.matthewTest.pluginTest.logic;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class Economy {
     private static HashMap<Player, Integer> playerMoney = new HashMap<>();
