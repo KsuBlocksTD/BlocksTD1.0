@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="plugintest:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="3/10 additions of placeholderAPI support and scoreboard support">
+      <changelist_data name="Matthew Elledge" email="131494346+mthyuu@users.noreply.github.com" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/PluginTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/PluginTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/HubCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/HubCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/InvitePartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/InvitePartyCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/MtdCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/MtdCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/PartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/PartyCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/logic/EventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/logic/EventListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/PluginTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/PluginTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/InvitePartyCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/DatabaseManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/DatabaseManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/Economy.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/Economy.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/EventListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/EventListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/plugin.yml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <excluded-from-favorite>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="master" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </excluded-from-favorite>
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="matthew-code" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Matthew Elledge &lt;131494346+mthyuu@users.noreply.github.com&gt;" />
+      </list>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="local-matthew-code" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SIGN_OFF_COMMIT" value="true" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;mthyuu&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="f5eaf120-fec4-4446-b020-4aa89dec38f3" />
+        <option name="url" value="https://github.com/KsuBlocksTD/BlocksTD1.0.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2u9Fs6lMnMrPt2QQ9r8327O04qE" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "matthew-commit-branch",
+    "last_opened_file_path": "C:/Users/mtell/Desktop/MC Paper Server 1.21.4/plugins",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="BlocksTD1.0" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="BlocksTD1.0" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="" />
+      <created>1741653087032</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1741653087032</updated>
+    </task>
+    <task id="LOCAL-00001" summary="3/10 additions of placeholderAPI support and scoreboard support">
+      <option name="closed" value="true" />
+      <created>1741654009415</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1741654009415</updated>
+    </task>
+    <task id="LOCAL-00002" summary="3/10 additions of placeholderAPI support and scoreboard support">
+      <option name="closed" value="true" />
+      <created>1741654189042</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1741654189042</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="3/10 additions of placeholderAPI support and scoreboard support" />
+    <option name="LAST_COMMIT_MESSAGE" value="3/10 additions of placeholderAPI support and scoreboard support" />
+  </component>
+</project>

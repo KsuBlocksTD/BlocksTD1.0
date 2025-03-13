@@ -1,5 +1,7 @@
 package me.matthewTest.pluginTest.logic;
 
+import com.alessiodp.parties.api.events.bukkit.party.BukkitPartiesPartyPostCreateEvent;
+import com.alessiodp.parties.api.events.bukkit.party.BukkitPartiesPartyPreCreateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -42,5 +44,21 @@ public class EventListener implements Listener {
 
 
         Economy.earnMoney(killer, mobType);
+    }
+
+
+    @EventHandler
+    public void onPartyCreatePre(BukkitPartiesPartyPreCreateEvent event) {
+        System.out.println("[PartiesExample] This event is called when a party is being created");
+
+        if (false)
+            event.setCancelled(true); // You can cancel it
+    }
+
+    @EventHandler
+    public void onPartyCreatePost(BukkitPartiesPartyPostCreateEvent event) {
+        System.out.println("[PartiesExample] This event is called when a party has been created");
+
+        // You cannot cancel it
     }
 }

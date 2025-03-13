@@ -7,6 +7,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import me.matthewTest.pluginTest.commands.party.PartyCommand;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 

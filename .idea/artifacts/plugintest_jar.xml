@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="plugintest:jar">
+    <output-path>$USER_HOME$/Desktop/MC Paper Server 1.21.4/plugins</output-path>
+    <root id="archive" name="plugintest.jar">
+      <element id="module-output" name="plugintest" />
+    </root>
+  </artifact>
+</component>

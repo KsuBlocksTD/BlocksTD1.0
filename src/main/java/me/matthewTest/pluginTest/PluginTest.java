@@ -1,9 +1,12 @@
 package me.matthewTest.pluginTest;
 
+import com.alessiodp.parties.api.Parties;
+import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.util.Tick;
 import me.matthewTest.pluginTest.commands.MtdCommand;
 import me.matthewTest.pluginTest.commands.TestCommand;
+import me.matthewTest.pluginTest.commands.party.CreatePartyCommand;
 import me.matthewTest.pluginTest.logic.Economy;
 import me.matthewTest.pluginTest.logic.EventListener;
 import me.matthewTest.pluginTest.placeholderAPI.PlaceholderAPIExpansion;
@@ -26,6 +29,11 @@ public final class PluginTest extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new PlaceholderAPIExpansion(this).register();
         }
+
+        PartiesAPI api = Parties.getApi();
+        CreatePartyCommand.setApi(api);
+
+
 
         // needed for instantiating proper mob killing & economy function
         Economy econ = new Economy();

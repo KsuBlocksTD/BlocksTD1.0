@@ -1,5 +1,6 @@
 package me.matthewTest.pluginTest.commands;
 
+import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
