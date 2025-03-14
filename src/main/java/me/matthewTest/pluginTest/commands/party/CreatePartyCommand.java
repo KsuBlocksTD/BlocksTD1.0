@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class CreatePartyCommand {
 
-    private static PartiesAPI api;
+    private static final PartiesAPI api = PluginTest.getApi();
 
 
     public static LiteralCommandNode<CommandSourceStack> register() {
@@ -62,20 +62,14 @@ public class CreatePartyCommand {
         }
 
         // for debugging purposes
-        Bukkit.broadcastMessage("New party created: " + party.getName());
-        Bukkit.broadcastMessage("Player UUID: " + partyCreator.getPlayerUUID());
-        Bukkit.broadcastMessage("Party UUID: " + party.getId());
+//        Bukkit.broadcastMessage("New party created: " + party.getName());
+//        Bukkit.broadcastMessage("Player UUID: " + partyCreator.getPlayerUUID());
+//        Bukkit.broadcastMessage("Party UUID: " + party.getId());
 
 
-        party.delete(); // only here temporarily.
+        //party.delete(); // only here temporarily, for testing purposes
 
+        sender.sendMessage("New party created.");
         return Command.SINGLE_SUCCESS;
     }
-
-
-    public static void setApi(PartiesAPI apiInstance) {
-        api = apiInstance;
-    }
-
-
 }

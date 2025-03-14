@@ -1,7 +1,15 @@
 package me.matthewTest.pluginTest.logic;
 
 import com.alessiodp.parties.api.events.bukkit.party.BukkitPartiesPartyPostCreateEvent;
+import com.alessiodp.parties.api.events.bukkit.party.BukkitPartiesPartyPostDeleteEvent;
 import com.alessiodp.parties.api.events.bukkit.party.BukkitPartiesPartyPreCreateEvent;
+import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPostInviteEvent;
+import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPreInviteEvent;
+import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import com.alessiodp.parties.api.interfaces.Party;
+import com.alessiodp.parties.api.interfaces.PartyInvite;
+import com.alessiodp.parties.api.interfaces.PartyPlayer;
+import me.matthewTest.pluginTest.PluginTest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -14,10 +22,17 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class EventListener implements Listener {
     // TO REBUILD THE ARTIFACT: F5
 
+    private static final PartiesAPI api = PluginTest.getApi();
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         // activates the player join event for economy
-        Economy.playerJoin(event.getPlayer());
+        Player player = event.getPlayer();
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+        Bukkit.broadcastMessage(String.valueOf((partyPlayer.isInParty())));
+
+        Economy.playerJoin(player);
+
 
         int playerCount = Bukkit.getOnlinePlayers().size();
 
@@ -29,9 +44,24 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
-        // activates the player leave event for economy
-        Economy.playerLeave(event.getPlayer());
 
+        Player player = event.getPlayer();
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+
+        if (partyPlayer.isInParty()){
+            Party party = api.getParty(partyPlayer.getPartyId());
+            if (party.getLeader() == partyPlayer.getPlayerUUID()){
+                party.delete();
+            }
+            else {
+                party.removeMember(partyPlayer);
+            }
+        }
+
+
+
+        // activates the player leave event for economy
+        Economy.playerLeave(player);
         int playerCount = (Bukkit.getOnlinePlayers().size() - 1);
         Bukkit.broadcastMessage("The player count is now " + playerCount);
     }
@@ -60,5 +90,28 @@ public class EventListener implements Listener {
         System.out.println("[PartiesExample] This event is called when a party has been created");
 
         // You cannot cancel it
+    }
+
+    @EventHandler
+    public void onPartyDeletePost(BukkitPartiesPartyPostDeleteEvent event) {
+        Party party = event.getParty();
+        party.broadcastMessage("The party leader has chosen to delete the party.", null);
+    }
+
+
+    @EventHandler
+    public void onPlayerInvitePre(BukkitPartiesPlayerPreInviteEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        System.out.println("[PartiesExample] This event is called when a player is getting invited");
+    }
+
+    @EventHandler
+    public void onPlayerInvitePost(BukkitPartiesPlayerPostInviteEvent event) {
+
+
+        System.out.println("[PartiesExample] This event is called when a player has been invited");
     }
 }

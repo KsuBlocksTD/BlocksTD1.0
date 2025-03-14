@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class PartyCommand {
-    private static final List<String> subcommands = List.of("invite", "create", "join", "leave", "kick");
+    private static final List<String> subcommands = List.of("invite", "create", "join", "leave", "kick", "delete");
 
     public static LiteralCommandNode<CommandSourceStack> register() {
         return Commands.literal("party")
@@ -22,6 +22,7 @@ public class PartyCommand {
                 //register subcommands here
                 .then(InvitePartyCommand.register())
                 .then(CreatePartyCommand.register())
+                .then(DeletePartyCommand.register())
 
 
 

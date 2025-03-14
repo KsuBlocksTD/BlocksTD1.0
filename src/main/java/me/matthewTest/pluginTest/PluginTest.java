@@ -2,11 +2,11 @@ package me.matthewTest.pluginTest;
 
 import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import com.alessiodp.parties.api.interfaces.Party;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.util.Tick;
 import me.matthewTest.pluginTest.commands.MtdCommand;
 import me.matthewTest.pluginTest.commands.TestCommand;
-import me.matthewTest.pluginTest.commands.party.CreatePartyCommand;
 import me.matthewTest.pluginTest.logic.Economy;
 import me.matthewTest.pluginTest.logic.EventListener;
 import me.matthewTest.pluginTest.placeholderAPI.PlaceholderAPIExpansion;
@@ -21,26 +21,27 @@ import java.time.Duration;
 public final class PluginTest extends JavaPlugin {
     // TO REBUILD THE ARTIFACT: F5
 
+    private static PartiesAPI api;
+
     @Override
     public void onEnable() {
         // Plugin startup logic
+
+        api = Parties.getApi(); // For static api getter
+        Economy econ = new Economy(); // Creating economy object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
+
         getServer().getPluginManager().registerEvents(new EventListener(), this);
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new PlaceholderAPIExpansion(this).register();
         }
 
-        PartiesAPI api = Parties.getApi();
-        CreatePartyCommand.setApi(api);
-
 
 
         // needed for instantiating proper mob killing & economy function
-        Economy econ = new Economy();
         // this is solely for recompiling the server and keeping a working economy while players are still online
         Economy.playerCountFix();
 
-        getLogger().warning("Plugin injected");
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             // register main commands here
             commands.registrar().register(TestCommand.flightCommand());
@@ -59,11 +60,25 @@ public final class PluginTest extends JavaPlugin {
             world.setTime(1000);
             getLogger().info("Weather and daylight cycle auto-disabled.");
         }
+        getLogger().warning("Plugin injected");
     }
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+
+        for (Party party : api.getOnlineParties()){
+            party.delete(); // deletes all remaining parties on server close
+        }
+
+        Bukkit.getScheduler().cancelTasks(this);
         getLogger().warning("Plugin uninjected");
 
     }
+
+
+    public static PartiesAPI getApi() {
+        return api;
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package me.matthewTest.pluginTest.commands.party;
 
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import com.alessiodp.parties.api.interfaces.PartyInvite;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -10,6 +11,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import me.matthewTest.pluginTest.PluginTest;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
@@ -19,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class InvitePartyCommand {
 
-    private static PartiesAPI api;
+    private static final PartiesAPI api = PluginTest.getApi();
 
     public static LiteralCommandNode<CommandSourceStack> register() {
         return Commands.literal("invite")
@@ -66,6 +68,7 @@ public class InvitePartyCommand {
 
         //if the two checks pass, the invite will go through
         else {
+            PartyPlayer invitingPlayer = api.getPartyPlayer(sender.getUniqueId());
             PartyPlayer playerToInvite = api.getPartyPlayer(onlinePlayer.getUniqueId());
 
             if (playerToInvite.isInParty()){
@@ -73,11 +76,16 @@ public class InvitePartyCommand {
                 return Command.SINGLE_SUCCESS;
             }
 
+            if (!(invitingPlayer.isInParty())){
+                sender.sendMessage("You must be in a party before inviting another player.");
+                return Command.SINGLE_SUCCESS;
+            }
 
-            api.getParty(sender.getUniqueId()).invitePlayer(playerToInvite);
 
-            //if ()
-
+            // at the moment this functionality does not work
+            //////////////////////////////////////////////NEEDS HELP /////////////////////////////////////////////////////////
+            PartyInvite invite = api.getParty(invitingPlayer.getPartyId()).invitePlayer(playerToInvite, invitingPlayer);
+            playerToInvite.getPendingInvites().add(invite);
 
 
 
