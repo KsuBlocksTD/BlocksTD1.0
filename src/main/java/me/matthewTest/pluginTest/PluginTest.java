@@ -22,12 +22,14 @@ public final class PluginTest extends JavaPlugin {
     // TO REBUILD THE ARTIFACT: F5
 
     private static PartiesAPI api;
+    private static PluginTest instance;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
 
         api = Parties.getApi(); // For static api getter
+        instance = this;
         Economy econ = new Economy(); // Creating economy object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
@@ -46,6 +48,7 @@ public final class PluginTest extends JavaPlugin {
             // register main commands here
             commands.registrar().register(TestCommand.flightCommand());
             commands.registrar().register(TestCommand.constructGiveItemCommand());
+            commands.registrar().register(TestCommand.addCoinsCommand());
             commands.registrar().register(MtdCommand.register());
 
         });
@@ -80,5 +83,7 @@ public final class PluginTest extends JavaPlugin {
         return api;
     }
 
-
+    public static PluginTest getInstance() {
+        return instance;
+    }
 }

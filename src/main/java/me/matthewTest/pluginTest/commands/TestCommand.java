@@ -3,6 +3,7 @@ package me.matthewTest.pluginTest.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
@@ -11,9 +12,11 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.MessageComponentSerializer;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import me.matthewTest.pluginTest.logic.Economy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
@@ -64,7 +67,7 @@ public class TestCommand {
 
 
 
-
+    @NullMarked
     public static LiteralCommandNode<CommandSourceStack> constructGiveItemCommand() {
         // Create new command: /giveitem
         return Commands.literal("giveitem")
@@ -122,6 +125,69 @@ public class TestCommand {
                 Placeholder.component("amount", Component.text(amount)),
                 Placeholder.component("item", Component.translatable(item).hoverEvent(item))
         );
+        return Command.SINGLE_SUCCESS;
+    }
+
+
+
+    // /addcoins <target> <coinamt>
+    @NullMarked
+    public static LiteralCommandNode<CommandSourceStack> addCoinsCommand() {
+        return Commands.literal("addcoins")
+                .requires(ctx -> ctx.getExecutor() instanceof Player)
+
+                .then(Commands.argument("target", StringArgumentType.word())
+                        .suggests(TestCommand::getOnlinePlayersSuggestions)
+                        .then(Commands.argument("coinamt", IntegerArgumentType.integer(1, 10000))
+                                .executes(TestCommand::executeAddCoinsLogic)
+                        )
+                )
+                .build();
+    }
+
+    // Suggests online players for the target argument
+    private static CompletableFuture<Suggestions> getOnlinePlayersSuggestions(final CommandContext<CommandSourceStack> ctx, final SuggestionsBuilder builder) {
+        Bukkit.getOnlinePlayers().stream()
+                .map(Player::getName)
+                .forEach(builder::suggest);
+        return builder.buildFuture();
+    }
+
+    // Command logic for /addcoins <target> <cointamt>
+    private static int executeAddCoinsLogic(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player sender)) {
+            return Command.SINGLE_SUCCESS;
+        }
+
+        // Get the arguments
+        final String targetName = StringArgumentType.getString(ctx, "target");
+        final int coinAmount = IntegerArgumentType.getInteger(ctx, "coinamt");
+
+        // Get the target player
+        Player targetPlayer = Bukkit.getPlayer(targetName);
+
+        // Check if the player exists
+        if (targetPlayer == null) {
+            sender.sendRichMessage("<player> is not currently online!",
+                    Placeholder.component("player", Component.text(targetName))
+            );
+            return Command.SINGLE_SUCCESS;
+        }
+
+
+        Economy.addPlayerMoney(targetPlayer, coinAmount);  // Replace with your actual economy system
+
+        // Send confirmation messages
+        sender.sendRichMessage("<player> has received <amount> coins!",
+                Placeholder.component("player", Component.text(targetName)),
+                Placeholder.component("amount", Component.text(coinAmount))
+        );
+
+        targetPlayer.sendRichMessage("You have received <amount> coins from <player>!",
+                Placeholder.component("amount", Component.text(coinAmount)),
+                Placeholder.component("player", Component.text(sender.getName()))
+        );
+
         return Command.SINGLE_SUCCESS;
     }
 }

@@ -18,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class InvitePartyCommand {
 
@@ -84,9 +85,17 @@ public class InvitePartyCommand {
 
             // at the moment this functionality does not work
             //////////////////////////////////////////////NEEDS HELP /////////////////////////////////////////////////////////
-            PartyInvite invite = api.getParty(invitingPlayer.getPartyId()).invitePlayer(playerToInvite, invitingPlayer);
-            playerToInvite.getPendingInvites().add(invite);
 
+            Bukkit.getScheduler().runTaskAsynchronously(PluginTest.getInstance(), () -> {
+                System.out.println("Async task: Sending invite to " + playerToInvite.getName());
+
+                PartyInvite invite = api.getParty(invitingPlayer.getPartyId()).invitePlayer(playerToInvite, invitingPlayer);
+
+                Bukkit.getScheduler().runTask(PluginTest.getInstance(), () -> {
+                    System.out.println("Main thread: Adding invite to pending list");
+                    playerToInvite.getPendingInvites().add(invite);
+                });
+            });
 
 
 //            sender.sendMessage("You invited " + onlinePlayer.getName() + " to your party.");
