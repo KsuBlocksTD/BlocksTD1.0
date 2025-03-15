@@ -9,7 +9,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="3/14 8:50PM EST update" />
+    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="Merge remote-tracking branch 'KSUMC/master' into local-matthew-code&#10;&#10;# Conflicts:&#10;#&#9;pom.xml&#10;#&#9;src/main/resources/plugin.yml">
+      <change afterPath="$PROJECT_DIR$/BlocksTowerDefence1.0.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,7 +61,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="local-matthew-code" />
+        <entry key="$PROJECT_DIR$" value="matthew-commit-branch" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -85,17 +90,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;matthew-commit-branch&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/mtell/Desktop/MC Paper Server 1.21.4/plugins&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "local-matthew-code",
+    "last_opened_file_path": "C:/Users/mtell/Desktop/MC Paper Server 1.21.4/plugins",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="BlocksTD1.0" />
@@ -160,7 +166,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741999204370</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Merge remote-tracking branch 'KSUMC/master' into local-matthew-code&#10;&#10;# Conflicts:&#10;#&#9;pom.xml&#10;#&#9;src/main/resources/plugin.yml">
+      <option name="closed" value="true" />
+      <created>1742076416297</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1742076416297</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -180,6 +194,7 @@
     <MESSAGE value="3/14 additions of &#10;CreatePartyCommand&#10;DeletePartyCommand&#10;partial addition of InvitePartyCommand" />
     <MESSAGE value="3/14 3:27PM EST update" />
     <MESSAGE value="3/14 8:50PM EST update" />
-    <option name="LAST_COMMIT_MESSAGE" value="3/14 8:50PM EST update" />
+    <MESSAGE value="Merge remote-tracking branch 'KSUMC/master' into local-matthew-code&#10;&#10;# Conflicts:&#10;#&#9;pom.xml&#10;#&#9;src/main/resources/plugin.yml" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'KSUMC/master' into local-matthew-code&#10;&#10;# Conflicts:&#10;#&#9;pom.xml&#10;#&#9;src/main/resources/plugin.yml" />
   </component>
 </project>

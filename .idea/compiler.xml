@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="plugintest" />
+        <module name="BlocksTowerDefence1.0" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="plugintest" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>
