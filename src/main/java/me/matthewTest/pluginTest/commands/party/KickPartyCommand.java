@@ -15,21 +15,21 @@ import org.bukkit.entity.Player;
 
 import java.util.concurrent.CompletableFuture;
 
-public class InvitePartyCommand {
+public class KickPartyCommand {
 
     private static final PartiesAPI api = PluginTest.getApi();
 
     public static LiteralCommandNode<CommandSourceStack> register() {
-        return Commands.literal("invite")
+        return Commands.literal("kick")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
 
                 .then(Commands.argument("username", StringArgumentType.word())
-                        .suggests(InvitePartyCommand::getNameSuggestions)
-                        .executes(InvitePartyCommand::inviteCommandLogic)
+                        .suggests(KickPartyCommand::getNameSuggestions)
+                        .executes(KickPartyCommand::kickCommandLogic)
                 )
-
                 .build();
     }
+
 
     private static CompletableFuture<Suggestions> getNameSuggestions(final CommandContext<CommandSourceStack> ctx, final SuggestionsBuilder builder){
 
@@ -40,7 +40,7 @@ public class InvitePartyCommand {
         return builder.buildFuture();
     }
 
-    private static int inviteCommandLogic (final CommandContext<CommandSourceStack> ctx){
+    private static int kickCommandLogic (final CommandContext<CommandSourceStack> ctx){
         if (!(ctx.getSource().getExecutor() instanceof Player sender)){
             return Command.SINGLE_SUCCESS;
         }
@@ -52,7 +52,7 @@ public class InvitePartyCommand {
 
         final String targetUsername = StringArgumentType.getString(ctx, "username");
 
-        Bukkit.getScheduler().runTask(PluginTest.getInstance(), () -> sender.performCommand("party invite " + targetUsername));
+        Bukkit.getScheduler().runTask(PluginTest.getInstance(), () -> sender.performCommand("party kick " + targetUsername));
 
 
 

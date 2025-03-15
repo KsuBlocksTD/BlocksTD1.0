@@ -1,8 +1,6 @@
 package me.matthewTest.pluginTest.commands.party;
 
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -11,9 +9,6 @@ import io.papermc.paper.command.brigadier.Commands;
 import me.matthewTest.pluginTest.PluginTest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.UUID;
 
 public class CreatePartyCommand {
 
@@ -38,38 +33,11 @@ public class CreatePartyCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        PartyPlayer partyCreator = api.getPartyPlayer(sender.getUniqueId());
+        String creatorName = sender.getName();
 
-        if (partyCreator == null) {
-            sender.sendMessage("Error: Could not retrieve party player.");
-            return Command.SINGLE_SUCCESS;
-        }
-
-        if (partyCreator.isInParty()) {
-            sender.sendMessage("You're already in a party, cannot create.");
-            return Command.SINGLE_SUCCESS;
-        }
-
-        api.createParty(null, partyCreator);
-        partyCreator.setPartyId(partyCreator.getPartyId());
-
-        Party party = api.getParty(partyCreator.getPartyId());
+        Bukkit.getScheduler().runTask(PluginTest.getInstance(), () -> sender.performCommand("party create " + creatorName));
 
 
-        if (party == null) {
-            sender.sendMessage("Error: Party creation failed.");
-            return Command.SINGLE_SUCCESS;
-        }
-
-        // for debugging purposes
-//        Bukkit.broadcastMessage("New party created: " + party.getName());
-//        Bukkit.broadcastMessage("Player UUID: " + partyCreator.getPlayerUUID());
-//        Bukkit.broadcastMessage("Party UUID: " + party.getId());
-
-
-        //party.delete(); // only here temporarily, for testing purposes
-
-        sender.sendMessage("New party created.");
         return Command.SINGLE_SUCCESS;
     }
 }

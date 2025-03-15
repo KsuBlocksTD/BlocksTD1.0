@@ -7,7 +7,6 @@ import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPostInv
 import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPreInviteEvent;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyInvite;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import me.matthewTest.pluginTest.PluginTest;
 import org.bukkit.Bukkit;
@@ -29,7 +28,7 @@ public class EventListener implements Listener {
         // activates the player join event for economy
         Player player = event.getPlayer();
         PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-        Bukkit.broadcastMessage(String.valueOf((partyPlayer.isInParty())));
+//        Bukkit.broadcastMessage(String.valueOf((partyPlayer.isInParty())));
 
         Economy.playerJoin(player);
 

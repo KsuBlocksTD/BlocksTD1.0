@@ -10,21 +10,21 @@ import me.matthewTest.pluginTest.PluginTest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class DeletePartyCommand {
+public class LeavePartyCommand {
 
     private static final PartiesAPI api = PluginTest.getApi();
 
-
     public static LiteralCommandNode<CommandSourceStack> register() {
-        return Commands.literal("delete")
+        return Commands.literal("leave")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
-                .executes(DeletePartyCommand::deleteCommandLogic)
+                .executes(LeavePartyCommand::leaveCommandLogic)
                 .build();
     }
 
 
-    private static int deleteCommandLogic (final CommandContext<CommandSourceStack> ctx) {
-        if (!(ctx.getSource().getExecutor() instanceof Player sender)) {
+    //still requires implementation of command logic
+    private static int leaveCommandLogic (final CommandContext<CommandSourceStack> ctx){
+        if (!(ctx.getSource().getExecutor() instanceof Player sender)){
             return Command.SINGLE_SUCCESS;
         }
 
@@ -33,7 +33,7 @@ public class DeletePartyCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        Bukkit.getScheduler().runTask(PluginTest.getInstance(), () -> sender.performCommand("party delete " + sender.getName()));
+        Bukkit.getScheduler().runTask(PluginTest.getInstance(), () -> sender.performCommand("party leave"));
 
 
         return Command.SINGLE_SUCCESS;
