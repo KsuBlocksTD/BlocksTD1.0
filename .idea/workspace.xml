@@ -9,27 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="3/14 3:27PM EST update">
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/KickPartyCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/LeavePartyCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/ViewPartyCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/HubCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/HubCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/CreatePartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/CreatePartyCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/DeletePartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/DeletePartyCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/InvitePartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/InvitePartyCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/PartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/PartyCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/logic/EventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/logic/EventListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/PluginTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/PluginTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/HubCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/HubCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/TestCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/TestCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/CreatePartyCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/CreatePartyCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/DeletePartyCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/DeletePartyCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/InvitePartyCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/InvitePartyCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/PartyCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/PartyCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/Economy.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/Economy.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/EventListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/EventListener.class" afterDir="false" />
-    </list>
+    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="3/14 8:50PM EST update" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -172,7 +152,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741980467701</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="3/14 8:50PM EST update">
+      <option name="closed" value="true" />
+      <created>1741999204370</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1741999204370</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -191,6 +179,7 @@
     <MESSAGE value="3/12 Create party cmd implementation and InvitePC progress via PartiesAPI" />
     <MESSAGE value="3/14 additions of &#10;CreatePartyCommand&#10;DeletePartyCommand&#10;partial addition of InvitePartyCommand" />
     <MESSAGE value="3/14 3:27PM EST update" />
-    <option name="LAST_COMMIT_MESSAGE" value="3/14 3:27PM EST update" />
+    <MESSAGE value="3/14 8:50PM EST update" />
+    <option name="LAST_COMMIT_MESSAGE" value="3/14 8:50PM EST update" />
   </component>
 </project>
