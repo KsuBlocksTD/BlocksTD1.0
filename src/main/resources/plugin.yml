@@ -1,6 +1,6 @@
-name: BlocksTowerDefence1.0
+name: BlocksTowerDefense1.0
 version: '${project.version}'
-main: ksucapproj.blockstowerdefence1.BlocksTowerDefence1
+main: ksucapproj.blockstowerdefense1.BlocksTowerDefense1
 api-version: '1.21'
 authors:
   - mthyuu
@@ -31,3 +31,7 @@ commands:
   readyup:
     description: start the next round
     usage: /readyup
+
+depend:
+  - PlaceholderAPI
+  - Parties

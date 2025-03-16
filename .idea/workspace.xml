@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="plugintest:jar" />
+      <artifact name="BlocksTowerDefense1.0:jar" />
     </artifacts-to-build>
   </component>
   <component name="AutoImportSettings">
@@ -10,10 +10,72 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="Merge remote-tracking branch 'KSUMC/master' into local-matthew-code&#10;&#10;# Conflicts:&#10;#&#9;pom.xml&#10;#&#9;src/main/resources/plugin.yml">
-      <change afterPath="$PROJECT_DIR$/BlocksTowerDefence1.0.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/BlocksTowerDefense1_0_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/plugintest_jar.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BlocksTowerDefence1.0.iml" beforeDir="false" afterPath="$PROJECT_DIR$/BlocksTowerDefense1.0.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugintest.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/AsyncTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/BlocksTowerDefence1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/MobHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/SummonTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/SummonTower.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/SummonTowerCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/SummonTowerCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/commands/HubCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/HubCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/commands/InvitePartyCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/commands/MtdCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/MtdCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/commands/PartyCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/commands/TestCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/TestCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/AsyncTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/AsyncTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/PluginTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/HubCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/MtdCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/TestCommand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/CreatePartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/party/CreatePartyCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/DeletePartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/party/DeletePartyCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/InvitePartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/party/InvitePartyCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/KickPartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/party/KickPartyCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/LeavePartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/party/LeavePartyCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/PartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/party/PartyCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/commands/party/ViewPartyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/party/ViewPartyCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/logic/DatabaseManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/logic/Economy.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/logic/EventListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/logic/MultiCommandHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/logic/TeleportationLogic.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/matthewTest/pluginTest/placeholderAPI/PlaceholderAPIExpansion.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/logic/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/DatabaseManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/logic/Economy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/Economy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/logic/EventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/EventListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/logic/MultiCommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/MultiCommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/logic/StartGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/logic/TeleportationLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/TeleportationLogic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/maps/MapData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/maps/MapData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/placeholderAPI/PlaceholderAPIExpansion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/placeholderAPI/PlaceholderAPIExpansion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/AsyncTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/PluginTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/HubCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/MtdCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/TestCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/CreatePartyCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/DeletePartyCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/InvitePartyCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/KickPartyCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/LeavePartyCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/PartyCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/commands/party/ViewPartyCommand.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/DatabaseManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/Economy.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/EventListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/MultiCommandHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/logic/TeleportationLogic.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/me/matthewTest/pluginTest/placeholderAPI/PlaceholderAPIExpansion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/original-plugintest-1.0-SNAPSHOT.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/plugintest-1.0-SNAPSHOT.jar" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +86,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="AnnotationType" />
       </list>
     </option>
   </component>
@@ -98,10 +161,15 @@
     "git-widget-placeholder": "local-matthew-code",
     "last_opened_file_path": "C:/Users/mtell/Desktop/MC Paper Server 1.21.4/plugins",
     "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+    "project.structure.proportion": "0.15527344",
+    "project.structure.side.proportion": "0.2"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="ksucapproj.blockstowerdefence1.commands" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="BlocksTD1.0" />
@@ -174,7 +242,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742076416297</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Merge remote-tracking branch 'KSUMC/master' into local-matthew-code&#10;&#10;# Conflicts:&#10;#&#9;pom.xml&#10;#&#9;src/main/resources/plugin.yml">
+      <option name="closed" value="true" />
+      <created>1742076535015</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1742076535015</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

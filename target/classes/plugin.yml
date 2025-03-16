@@ -1,6 +1,6 @@
-name: pluginTest
+name: BlocksTowerDefense1.0
 version: '1.0-SNAPSHOT'
-main: me.matthewTest.pluginTest.PluginTest
+main: ksucapproj.blockstowerdefense1.BlocksTowerDefense1
 api-version: '1.21'
 authors:
   - mthyuu
@@ -10,15 +10,27 @@ authors:
   - AnnaGrace_2
 
 commands:
+  summontower:
+    description: Summon a tower at your location
+    usage: /summontower
+    permission: summontower.use
+  startgame:
+    description: Start the tower defense game
+    usage: /startgame
+  upgradetower:
+    description: Upgrade a tower
+    usage: /upgradetower
+  spawnzombie:
+    description: Spawns a zombie with a health bar.
+    usage: /spawnzombie
+    permission: spawnzombie.use
+    permission-message: You do not have permission to use this command.
   mtd:
     description: MTD command with corresponding subcommands
     usage: /mtd <subcommand>
-  test:
-    description: Test command
-    usage: /test
-  hello:
-    description: Command that says hello
-    usage: /hello
+  readyup:
+    description: start the next round
+    usage: /readyup
 
 depend:
   - PlaceholderAPI
