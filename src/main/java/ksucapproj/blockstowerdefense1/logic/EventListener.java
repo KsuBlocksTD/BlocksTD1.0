@@ -27,7 +27,8 @@ public class EventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event){
         // activates the player join event for economy
         Player player = event.getPlayer();
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+
+//        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 //        Bukkit.broadcastMessage(String.valueOf((partyPlayer.isInParty())));
 
         Economy.playerJoin(player);
@@ -36,7 +37,7 @@ public class EventListener implements Listener {
         int playerCount = Bukkit.getOnlinePlayers().size();
 
         event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
-        Bukkit.broadcastMessage("The player count is now " + playerCount);
+        //Bukkit.broadcastMessage("The player count is now " + playerCount);
 
     }
 

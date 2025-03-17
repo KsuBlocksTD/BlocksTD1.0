@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MapData {
     public static Location getStartLocation(World world) {
-        return new Location(world, 69.5, 63, -585.5); // Map1 coordinates
+        return new Location(world, 69.5, 64, -585.5); // Map1 coordinates
     }
 
     public static List<Location> getWaypoints(World world) {

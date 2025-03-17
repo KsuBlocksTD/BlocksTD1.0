@@ -1,5 +1,7 @@
 package ksucapproj.blockstowerdefense1.placeholderAPI;
 
+import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.Economy;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
@@ -10,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     private final JavaPlugin plugin;
+    private static final PartiesAPI api = BlocksTowerDefense1.getApi();
 
     public PlaceholderAPIExpansion(JavaPlugin plugin) {
         this.plugin = plugin;
