@@ -33,6 +33,9 @@ public class EventListener implements Listener {
 
         Economy.playerJoin(player);
 
+        // needs a way to hide command of applying server to player on join
+        Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> player.performCommand("sb force blocksTowerDefense"));
+
 
         int playerCount = Bukkit.getOnlinePlayers().size();
 

@@ -13,12 +13,12 @@ public class MapData {
     public static List<Location> getWaypoints(World world) {
         Location start = getStartLocation(world);
         return List.of(
-                start.clone().add(0, 0, 22),  // +23 Z
-                start.clone().add(8, 0, 22),   // +8 X
-                start.clone().add(8, 0, 13),   // -9 Z
-                start.clone().add(-8, 0, 13),  // -16 X
-                start.clone().add(-8, 0, 7),   // -6 Z
-                start.clone().add(-14, 0, 7)   // -6 X
+                start.clone().add(0, 0, 23),  // +23 Z
+                start.clone().add(8, 0, 23),   // +8 X
+                start.clone().add(8, 0, 14),   // -9 Z
+                start.clone().add(-8, 0, 14),  // -16 X
+                start.clone().add(-8, 0, 8),   // -6 Z
+                start.clone().add(-14, 0, 8)   // -6 X
         );
     }
 
