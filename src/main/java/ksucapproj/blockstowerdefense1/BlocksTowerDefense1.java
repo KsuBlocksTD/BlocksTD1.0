@@ -44,7 +44,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         api = Parties.getApi(); // For static api getter
         instance = this;
         Economy econ = new Economy(); // Creating economy object
-        HubCommand hub = new HubCommand(); // Creating hub object
+//        HubCommand hub = new HubCommand(); // Creating hub object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
         getServer().getPluginManager().registerEvents(new EventListener(), this);
