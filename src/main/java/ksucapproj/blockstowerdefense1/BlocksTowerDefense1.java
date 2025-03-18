@@ -4,7 +4,9 @@ import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.util.Tick;
+import ksucapproj.blockstowerdefense1.commands.HubCommand;
 import ksucapproj.blockstowerdefense1.commands.MtdCommand;
+import ksucapproj.blockstowerdefense1.commands.SpawnCommand;
 import ksucapproj.blockstowerdefense1.commands.TestCommand;
 import ksucapproj.blockstowerdefense1.logic.AsyncTest;
 import ksucapproj.blockstowerdefense1.logic.Economy;
@@ -42,6 +44,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         api = Parties.getApi(); // For static api getter
         instance = this;
         Economy econ = new Economy(); // Creating economy object
+        HubCommand hub = new HubCommand(); // Creating hub object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
         getServer().getPluginManager().registerEvents(new EventListener(), this);
@@ -61,6 +64,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             commands.registrar().register(TestCommand.constructGiveItemCommand());
             commands.registrar().register(TestCommand.addCoinsCommand());
             commands.registrar().register(MtdCommand.register());
+            commands.registrar().register(SpawnCommand.register());
 
         });
 
@@ -74,6 +78,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             world.setTime(1000);
             getLogger().info("Weather and daylight cycle auto-disabled.");
         }
+        saveConfig();
         getLogger().warning("Plugin injected");
     }
 

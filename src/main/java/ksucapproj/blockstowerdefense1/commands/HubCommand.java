@@ -12,18 +12,28 @@ import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.TeleportationLogic;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class HubCommand {
     private static TeleportationLogic tpManager;
-    private static JavaPlugin plugin;
+    private static final BlocksTowerDefense1 instance = BlocksTowerDefense1.getInstance();
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
+    private static final FileConfiguration config = instance.getConfig();
+    private static Location hubSpawn = null;
+
+    public HubCommand(){
+    }
+
+
 
     public static LiteralCommandNode<CommandSourceStack> register() {
         if (tpManager == null) {
-            tpManager = new TeleportationLogic(plugin);
+            tpManager = new TeleportationLogic(instance);
         }
+
         return Commands.literal("hub")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
                 .executes(HubCommand::executeCommandLogic)
@@ -35,7 +45,7 @@ public class HubCommand {
         if (!(ctx.getSource().getExecutor() instanceof Player player)){
             return Command.SINGLE_SUCCESS;
         }
-        Location targetLocation = new Location(player.getWorld(), player.getX(), player.getY()+2, player.getZ());
+//        Location targetLocation = new Location(player.getWorld(), player.getX(), player.getY()+2, player.getZ());
         //sends player confirmation msg
         player.sendMessage("Teleporting to the hub...");
 
@@ -48,7 +58,7 @@ public class HubCommand {
 //            player.sendMessage("gets into party is null statement"); // for testing
 
             // passes the target location to the tpManager that employs the function with the teleport logic
-            tpManager.teleportWithRetry(player, targetLocation, 3 );
+            tpManager.teleportWithRetry(player, hubSpawn, 3 );
             return Command.SINGLE_SUCCESS;
         }
 
@@ -60,12 +70,39 @@ public class HubCommand {
 
 
                 //teleports all players in the executor's party to their location
-                tpManager.teleportWithRetry(playerInParty, targetLocation, 3 );
+                tpManager.teleportWithRetry(playerInParty, hubSpawn, 3 );
 
             }
         }
 
 //        player.sendMessage("cuts to the end of the command"); // for testing
         return Command.SINGLE_SUCCESS;
+    }
+
+
+
+
+    public Location getHubFromConfig(){
+
+        String worldName = config.getString("spawn.world");
+        if (worldName == null){
+            instance.getLogger().warning("Cannot get world name from config.yml");
+            return null;
+        }
+
+        World world = instance.getServer().getWorld(worldName);
+
+        if (world == null){
+            instance.getLogger().warning("Cannot resolve world: " + worldName);
+        }
+
+        int x = config.getInt("spawn.x");
+        int y = config.getInt("spawn.y");
+        int z = config.getInt("spawn.z");
+        float yaw = (float) config.getDouble("spawn.yaw");
+        float pitch = (float) config.getDouble("spawn.pitch");
+
+
+        return hubSpawn = new Location(world, x, y, z, yaw, pitch);
     }
 }
