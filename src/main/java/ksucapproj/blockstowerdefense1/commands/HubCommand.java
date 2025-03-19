@@ -21,10 +21,7 @@ public class HubCommand {
     private static TeleportationLogic tpManager;
     private static final BlocksTowerDefense1 instance = BlocksTowerDefense1.getInstance();
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
-
-//    public HubCommand(){
-//    }
-
+    private static Location hubSpawn = getHubFromConfig();
 
 
     public static LiteralCommandNode<CommandSourceStack> register() {
@@ -43,7 +40,8 @@ public class HubCommand {
         if (!(ctx.getSource().getExecutor() instanceof Player player)){
             return Command.SINGLE_SUCCESS;
         }
-//        Location targetLocation = new Location(player.getWorld(), player.getX(), player.getY()+2, player.getZ());
+
+
         //sends player confirmation msg
         player.sendMessage("Teleporting to the hub...");
 
@@ -56,7 +54,7 @@ public class HubCommand {
 //            player.sendMessage("gets into party is null statement"); // for testing
 
             // passes the target location to the tpManager that employs the function with the teleport logic
-            tpManager.teleportWithRetry(player, getHubFromConfig(), 3 );
+            tpManager.teleportWithRetry(player, hubSpawn, 3 );
             return Command.SINGLE_SUCCESS;
         }
 
@@ -68,7 +66,7 @@ public class HubCommand {
 
 
                 //teleports all players in the executor's party to their location
-                tpManager.teleportWithRetry(playerInParty, getHubFromConfig(), 3 );
+                tpManager.teleportWithRetry(playerInParty, hubSpawn, 3 );
 
             }
         }
@@ -80,6 +78,7 @@ public class HubCommand {
 
 
 
+    // method that pulls config spawn and initializes hubSpawn as it
     public static Location getHubFromConfig(){
         FileConfiguration config = BlocksTowerDefense1.getInstance().getConfig();
 
@@ -101,7 +100,6 @@ public class HubCommand {
         float yaw = (float) config.getDouble("spawn.yaw");
         float pitch = (float) config.getDouble("spawn.pitch");
 
-
-        return new Location(world, x, y, z, yaw, pitch);
+        return hubSpawn = new Location(world, x, y, z, yaw, pitch);
     }
 }
