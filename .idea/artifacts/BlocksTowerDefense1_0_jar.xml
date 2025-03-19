@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="BlocksTowerDefense1.0:jar">
-    <output-path>$USER_HOME$/OneDrive/Desktop/1.21.4 PaperMC Server/plugins</output-path>
+    <output-path>$USER_HOME$/Desktop/MC Paper Server 1.21.4/plugins</output-path>
     <root id="archive" name="BlocksTowerDefense1.0.jar">
       <element id="module-output" name="BlocksTowerDefense1.0" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar" path-in-jar="/" />

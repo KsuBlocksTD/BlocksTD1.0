@@ -21,7 +21,7 @@ public class HubCommand {
     private static TeleportationLogic tpManager;
     private static final BlocksTowerDefense1 instance = BlocksTowerDefense1.getInstance();
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
-    private static Location hubSpawn = getHubFromConfig();
+    private static Location hubSpawn = null;
 
 
     public static LiteralCommandNode<CommandSourceStack> register() {
@@ -41,6 +41,7 @@ public class HubCommand {
             return Command.SINGLE_SUCCESS;
         }
 
+        hubSpawn = getHubFromConfig();
 
         //sends player confirmation msg
         player.sendMessage("Teleporting to the hub...");
