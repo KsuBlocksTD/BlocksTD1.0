@@ -1,17 +1,12 @@
 package ksucapproj.blockstowerdefense1.commands;
 
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
-import com.alessiodp.parties.api.interfaces.Party;
-import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
-import ksucapproj.blockstowerdefense1.commands.party.PartyCommand;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -53,7 +48,7 @@ public class SpawnCommand {
         instance.saveConfig();
 
         player.sendMessage("New spawn point set for the hub!");
-        player.sendMessage("Yaw set: " + config.getDouble("spawn.pitch"));
+//        player.sendMessage("Yaw set: " + config.getDouble("spawn.pitch"));
 //        player.sendMessage("cuts to the end of the command"); // for testing
         return Command.SINGLE_SUCCESS;
     }

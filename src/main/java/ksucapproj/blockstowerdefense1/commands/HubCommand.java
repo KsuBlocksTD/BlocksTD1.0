@@ -9,13 +9,13 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.commands.party.PartyCommand;
 import ksucapproj.blockstowerdefense1.logic.TeleportationLogic;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class HubCommand {
     private static TeleportationLogic tpManager;
@@ -47,11 +47,8 @@ public class HubCommand {
         player.sendMessage("Teleporting to the hub...");
 
 
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-        Party party = api.getParty(partyPlayer.getPartyId());
-
         // if the player is not in a party or is not the party leader
-        if (party == null || !(party.getLeader().equals(partyPlayer.getPlayerUUID()))){
+        if (!(PartyCommand.checkPartyLeaderStatus(player))){
 //            player.sendMessage("gets into party is null statement"); // for testing
 
             // passes the target location to the tpManager that employs the function with the teleport logic
@@ -59,17 +56,19 @@ public class HubCommand {
             return Command.SINGLE_SUCCESS;
         }
 
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+        Party party = api.getParty(partyPlayer.getPartyId());
+
         // if the player is in party AND is the party leader
-        if (party.getLeader().equals(partyPlayer.getPlayerUUID())){
-//            player.sendMessage("gets into if statement"); // for testing
-            for (PartyPlayer partyMember : party.getOnlineMembers()){
-                Player playerInParty = Bukkit.getPlayer(partyMember.getPlayerUUID());
+        // player.sendMessage("gets into if statement"); // for testing
+
+        for (PartyPlayer partyMember : party.getOnlineMembers()){
+            Player playerInParty = Bukkit.getPlayer(partyMember.getPlayerUUID());
 
 
-                //teleports all players in the executor's party to their location
-                tpManager.teleportWithRetry(playerInParty, hubSpawn, 3 );
+            //teleports all players in the executor's party to their location
+            tpManager.teleportWithRetry(playerInParty, hubSpawn, 3 );
 
-            }
         }
 
 //        player.sendMessage("cuts to the end of the command"); // for testing

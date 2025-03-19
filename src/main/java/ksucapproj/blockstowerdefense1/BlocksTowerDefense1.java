@@ -11,8 +11,8 @@ import ksucapproj.blockstowerdefense1.commands.TestCommand;
 import ksucapproj.blockstowerdefense1.logic.AsyncTest;
 import ksucapproj.blockstowerdefense1.logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.EventListener;
-import ksucapproj.blockstowerdefense1.logic.game_logic.StartGame;
 import ksucapproj.blockstowerdefense1.logic.game_logic.MobHandler;
+import ksucapproj.blockstowerdefense1.logic.game_logic.StartGame;
 import ksucapproj.blockstowerdefense1.logic.game_logic.SummonTowerCommand;
 import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
 import org.bukkit.Bukkit;
@@ -43,8 +43,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         api = Parties.getApi(); // For static api getter
         instance = this;
-        Economy econ = new Economy(); // Creating economy object
-//        HubCommand hub = new HubCommand(); // Creating hub object
+        new Economy(); // Creating economy object
+        new HubCommand(); // Creating hub object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
         getServer().getPluginManager().registerEvents(new EventListener(), this);

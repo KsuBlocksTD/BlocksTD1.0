@@ -1,6 +1,8 @@
 package ksucapproj.blockstowerdefense1.commands.party;
 
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import com.alessiodp.parties.api.interfaces.Party;
+import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -110,5 +112,15 @@ public class PartyCommand {
         Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> sender.performCommand("party info "));
 
         return Command.SINGLE_SUCCESS;
+    }
+
+
+    // if the player is not in a party or is not the party leader return false, else return true
+    public static boolean checkPartyLeaderStatus (Player player){
+
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+        Party party = api.getParty(partyPlayer.getPartyId());
+
+        return party != null && party.getLeader().equals(partyPlayer.getPlayerUUID());
     }
 }
