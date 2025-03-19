@@ -2,6 +2,7 @@ package ksucapproj.blockstowerdefense1;
 
 import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import com.alessiodp.parties.api.interfaces.Party;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.util.Tick;
 import ksucapproj.blockstowerdefense1.commands.HubCommand;
@@ -86,6 +87,11 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     @Override
     public void onDisable() {
         getLogger().info("BlocksTowerDefence1 has been disabled!");
+
+
+        for (Party party : api.getOnlineParties()){
+            party.delete();
+        }
     }
 
 
