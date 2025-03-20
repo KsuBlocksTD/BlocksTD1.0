@@ -5,6 +5,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.util.Tick;
+import ksucapproj.blockstowerdefense1.commands.MapCommand;
 import ksucapproj.blockstowerdefense1.commands.MtdCommand;
 import ksucapproj.blockstowerdefense1.commands.SpawnCommand;
 import ksucapproj.blockstowerdefense1.commands.TestCommand;
@@ -40,8 +41,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         getCommand("startgame").setExecutor(gameManager);
         getCommand("readyup").setExecutor(gameManager);
         getCommand("summontower").setExecutor(new SummonTowerCommand(this));
-        getCommand("tdmap").setExecutor(new MapData.MapCommand());
-        getCommand("tdmap").setTabCompleter(new MapData.MapCommand());
+        getCommand("tdmap").setExecutor(new MapCommand());
+        getCommand("tdmap").setTabCompleter(new MapCommand());
 
 
         // Use the same gameManager instance for PlayerEventHandler
@@ -49,7 +50,6 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         new SummonTower(this);
         new PlayerEventHandler(this, gameManager);
 
-        MapData.saveDefaultConfig(this);
         MapData.loadMaps(this);
 
         getServer().getPluginManager().registerEvents(new MobHandler(this), this);
