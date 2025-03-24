@@ -21,7 +21,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class EventListener implements Listener {
     // TO REBUILD THE ARTIFACT: F5
 
-    private static final PartiesAPI api = BlocksTowerDefense1.getApi();
+    public static final PartiesAPI api = BlocksTowerDefense1.getApi();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
@@ -33,14 +33,14 @@ public class EventListener implements Listener {
 
         Economy.playerJoin(player);
 
-        // needs a way to hide command of applying server to player on join
-//        Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> player.performCommand("sb force blocksTowerDefense"));
-
 
         int playerCount = Bukkit.getOnlinePlayers().size();
 
         event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
         //Bukkit.broadcastMessage("The player count is now " + playerCount);
+
+        // this checks if a player is in the db already, if not, adds them to it
+        DatabaseManager.checkPlayerInDB(player);
 
     }
 
@@ -78,6 +78,9 @@ public class EventListener implements Listener {
 
         if(killer != null){
             Economy.earnMoney(killer, mobType);
+        }
+        else{
+
         }
     }
 

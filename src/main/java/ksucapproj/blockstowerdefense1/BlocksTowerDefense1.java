@@ -5,16 +5,14 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.util.Tick;
-import ksucapproj.blockstowerdefense1.commands.HubCommand;
 import ksucapproj.blockstowerdefense1.commands.MtdCommand;
 import ksucapproj.blockstowerdefense1.commands.SpawnCommand;
 import ksucapproj.blockstowerdefense1.commands.TestCommand;
 import ksucapproj.blockstowerdefense1.logic.AsyncTest;
 import ksucapproj.blockstowerdefense1.logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.EventListener;
-import ksucapproj.blockstowerdefense1.logic.game_logic.MobHandler;
-import ksucapproj.blockstowerdefense1.logic.game_logic.StartGame;
-import ksucapproj.blockstowerdefense1.logic.game_logic.SummonTowerCommand;
+import ksucapproj.blockstowerdefense1.logic.game_logic.*;
+import ksucapproj.blockstowerdefense1.maps.MapData;
 import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -29,23 +27,38 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     private static PartiesAPI api;
     private static BlocksTowerDefense1 instance;
+    private StartGame gameManager;
 
     @Override
     public void onEnable() {
-        StartGame startGame = new StartGame(this);
         getLogger().info("BlocksTowerDefence1 has been enabled!");
 
-        // Register command and event listeners
+
+        gameManager = new StartGame(this);
+
+        // Register commands with the same instance
+        getCommand("startgame").setExecutor(gameManager);
+        getCommand("readyup").setExecutor(gameManager);
         getCommand("summontower").setExecutor(new SummonTowerCommand(this));
-        getCommand("startgame").setExecutor(startGame);
-        getCommand("readyup").setExecutor(startGame);
+        getCommand("tdmap").setExecutor(new MapData.MapCommand());
+        getCommand("tdmap").setTabCompleter(new MapData.MapCommand());
+
+
+        // Use the same gameManager instance for PlayerEventHandler
+        new MobHandler(this);
+        new SummonTower(this);
+        new PlayerEventHandler(this, gameManager);
+
+        MapData.saveDefaultConfig(this);
+        MapData.loadMaps(this);
+
+        getServer().getPluginManager().registerEvents(new MobHandler(this), this);
 
         getServer().getPluginManager().registerEvents(new MobHandler(this), this);
 
         api = Parties.getApi(); // For static api getter
         instance = this;
-        new Economy(); // Creating economy object
-        new HubCommand(); // Creating hub object
+        Economy econ = new Economy(); // Creating economy object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
         getServer().getPluginManager().registerEvents(new EventListener(), this);
@@ -79,13 +92,21 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             world.setTime(1000);
             getLogger().info("Weather and daylight cycle auto-disabled.");
         }
-        saveConfig();
         getLogger().warning("Plugin injected");
     }
 
 
     @Override
     public void onDisable() {
+        MapData.saveMaps();
+
+        MobHandler.cleanupAll();
+        SummonTower.removeAllTowers();
+
+        for (Party party : api.getOnlineParties()){
+            party.delete();
+        }
+
         getLogger().info("BlocksTowerDefence1 has been disabled!");
 
 
@@ -97,6 +118,10 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     public static PartiesAPI getApi() {
         return api;
+    }
+
+    public StartGame getGameManager() {
+        return gameManager;
     }
 
     public static BlocksTowerDefense1 getInstance() {

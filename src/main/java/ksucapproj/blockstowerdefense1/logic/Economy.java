@@ -1,10 +1,12 @@
 package ksucapproj.blockstowerdefense1.logic;
 
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+
 
 public class Economy {
     private static HashMap<Player, Integer> playerMoney = new HashMap<>();
@@ -23,6 +25,7 @@ public class Economy {
             killer.sendMessage("Killing of this mob will not reward coins.");
             return;
         }
+
 
         // divides the reward among the players in the lobby like in normal bloons tower defense
         final int killReward = mobKillRewards.get(mobKilled) / playerMoney.size();
@@ -55,6 +58,8 @@ public class Economy {
     public static void playerJoin(Player player){
         playerMoney.put(player, 0);
     }
+
+
 
 
 
@@ -105,5 +110,9 @@ public class Economy {
 
 
         }
+    }
+
+    public static void setPlayerMoney(Player player, int number) {
+        playerMoney.put(player, number);
     }
 }

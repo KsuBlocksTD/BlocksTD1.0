@@ -28,7 +28,7 @@ public class SummonTowerCommand implements CommandExecutor {
         }
 
         // Spawn the tower at the player's location
-        summonTower.spawnTower(player.getLocation());
+        //summonTower.spawnTower(player.getLocation());
         player.sendMessage("§aTower spawned at your location!");
 
         return true;
