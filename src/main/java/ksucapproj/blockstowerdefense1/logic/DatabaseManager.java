@@ -1,5 +1,8 @@
 package ksucapproj.blockstowerdefense1.logic;
 
+import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -7,7 +10,8 @@ import java.sql.*;
 
 public class DatabaseManager {
 
-    private static final String URL = "jdbc:sqlite:F:\\IntelliJ Projects\\BlocksTD1.0\\src\\main\\resources\\test_db.db"; // Change the path accordingly
+    private static final String URL = BlocksTowerDefense1.getInstance().getConfig().getString("database.url"); // Change the path accordingly
+
 
 
 
@@ -62,8 +66,10 @@ public class DatabaseManager {
             if (conn != null) { // if database connection works
                 System.out.println("Connected to SQLite database.");
 
-                if (!(DatabaseManager.userExists(conn, uuidString))){ // if player does not exist, add them to db
-
+                if ((DatabaseManager.userExists(conn, uuidString))){
+                    Bukkit.getLogger().info("Player exists in db, no add necessary"); // confirmation msg
+                }
+                else{ // if player does not exist, add them to db
                     DatabaseManager.insertPlayer(conn, uuidString, player.getName() ); // adds their uuid and username
                 }
             }
