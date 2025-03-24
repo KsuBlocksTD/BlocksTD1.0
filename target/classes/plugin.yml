@@ -31,7 +31,16 @@ commands:
   readyup:
     description: start the next round
     usage: /readyup
+  tdmap:
+    description: Manage tower defense maps
+    usage: /tdmap <subcommand>
+    permission: towerdefense.map
+    aliases: [ tdm ]
 
+  permissions:
+    towerdefense.map:
+      description: Allows using the tower defense map management commands
+      default: op
 depend:
   - PlaceholderAPI
   - Parties

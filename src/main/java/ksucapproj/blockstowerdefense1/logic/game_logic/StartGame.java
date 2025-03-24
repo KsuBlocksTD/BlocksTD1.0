@@ -1,5 +1,6 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
+import ksucapproj.blockstowerdefense1.commands.party.PartyCommand;
 import ksucapproj.blockstowerdefense1.logic.Economy;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
@@ -120,6 +121,14 @@ public class StartGame implements CommandExecutor, Listener {
         if (playerSessions.containsKey(player.getUniqueId())) {
             handlePlayerQuit(player);
         }
+
+        // does not work for solo player not in a party
+        if (!(PartyCommand.checkPartyLeaderStatus(player))){
+            player.sendMessage("You are not the party leader, cannot start game.");
+            return;
+        }
+
+
 
         // Initialize game session
         GameSession session = new GameSession(mapId);

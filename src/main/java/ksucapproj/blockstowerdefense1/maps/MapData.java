@@ -236,27 +236,27 @@ public class MapData {
             // Add waypoints using offsets for clarity
             config.set("maps.map1.waypoints.wp1.offsetX", 0);
             config.set("maps.map1.waypoints.wp1.offsetY", 0);
-            config.set("maps.map1.waypoints.wp1.offsetZ", 22);
+            config.set("maps.map1.waypoints.wp1.offsetZ", 23);
 
             config.set("maps.map1.waypoints.wp2.offsetX", 8);
             config.set("maps.map1.waypoints.wp2.offsetY", 0);
-            config.set("maps.map1.waypoints.wp2.offsetZ", 22);
+            config.set("maps.map1.waypoints.wp2.offsetZ", 23);
 
             config.set("maps.map1.waypoints.wp3.offsetX", 8);
             config.set("maps.map1.waypoints.wp3.offsetY", 0);
-            config.set("maps.map1.waypoints.wp3.offsetZ", 13);
+            config.set("maps.map1.waypoints.wp3.offsetZ", 14);
 
             config.set("maps.map1.waypoints.wp4.offsetX", -8);
             config.set("maps.map1.waypoints.wp4.offsetY", 0);
-            config.set("maps.map1.waypoints.wp4.offsetZ", 13);
+            config.set("maps.map1.waypoints.wp4.offsetZ", 14);
 
             config.set("maps.map1.waypoints.wp5.offsetX", -8);
             config.set("maps.map1.waypoints.wp5.offsetY", 0);
-            config.set("maps.map1.waypoints.wp5.offsetZ", 7);
+            config.set("maps.map1.waypoints.wp5.offsetZ", 8);
 
             config.set("maps.map1.waypoints.wp6.offsetX", -14);
             config.set("maps.map1.waypoints.wp6.offsetY", 0);
-            config.set("maps.map1.waypoints.wp6.offsetZ", 7);
+            config.set("maps.map1.waypoints.wp6.offsetZ", 8);
 
             try {
                 config.save(configFile);

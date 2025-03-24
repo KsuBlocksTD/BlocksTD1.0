@@ -39,6 +39,9 @@ public class EventListener implements Listener {
         event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
         //Bukkit.broadcastMessage("The player count is now " + playerCount);
 
+        // this checks if a player is in the db already, if not, adds them to it
+        DatabaseManager.checkPlayerInDB(player);
+
     }
 
 
