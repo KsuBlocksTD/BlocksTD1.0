@@ -64,7 +64,7 @@ public class DatabaseManager {
 
         try (Connection conn = DatabaseManager.connect()) { // creates connection to the db
             if (conn != null) { // if database connection works
-                System.out.println("Connected to SQLite database.");
+                Bukkit.getLogger().info("Connected to SQLite database.");
 
                 if ((DatabaseManager.userExists(conn, uuidString))){
                     Bukkit.getLogger().info("Player exists in db, no add necessary"); // confirmation msg

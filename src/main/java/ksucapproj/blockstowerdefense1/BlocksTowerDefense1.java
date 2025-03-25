@@ -5,6 +5,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.util.Tick;
+import ksucapproj.blockstowerdefense1.commands.ApplyUpgradeCommand;
 import ksucapproj.blockstowerdefense1.commands.MtdCommand;
 import ksucapproj.blockstowerdefense1.commands.SpawnCommand;
 import ksucapproj.blockstowerdefense1.commands.TestCommand;
@@ -17,8 +18,10 @@ import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 
@@ -28,6 +31,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     private static PartiesAPI api;
     private static BlocksTowerDefense1 instance;
     private StartGame gameManager;
+
 
     @Override
     public void onEnable() {
@@ -58,7 +62,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         api = Parties.getApi(); // For static api getter
         instance = this;
-        Economy econ = new Economy(); // Creating economy object
+        new Economy(); // Creating economy object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
         getServer().getPluginManager().registerEvents(new EventListener(), this);
@@ -77,8 +81,10 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             commands.registrar().register(TestCommand.flightCommand());
             commands.registrar().register(TestCommand.constructGiveItemCommand());
             commands.registrar().register(TestCommand.addCoinsCommand());
+            commands.registrar().register(TestCommand.giveCoinsCommand());
             commands.registrar().register(MtdCommand.register());
             commands.registrar().register(SpawnCommand.register());
+            commands.registrar().register(ApplyUpgradeCommand.register());
 
         });
 
@@ -92,6 +98,9 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             world.setTime(1000);
             getLogger().info("Weather and daylight cycle auto-disabled.");
         }
+
+        new ConfigOptions(this);
+
         getLogger().warning("Plugin injected");
     }
 
@@ -127,4 +136,5 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     public static BlocksTowerDefense1 getInstance() {
         return instance;
     }
+
 }

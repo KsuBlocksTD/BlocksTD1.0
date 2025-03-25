@@ -8,3 +8,30 @@ spawn:
 
 database:
   url:
+
+
+upgrades:
+
+  #
+  #    //////////////////////// For Upgrades Related to Potion Effects /////////////////////////////
+  #    * If the maximum desired tier of an effect is n, use n as the default
+  #        - ex: if speed 5 is the desired maximum, choose 5 as the max default
+  #
+
+    universal:
+      max-level:
+
+    player:
+      speed:
+        max-level:
+
+      strength:
+        max-level:
+
+      slowness:
+        max-level:
+        duration:
+          increase-duration-on-upgrade:
+
+      sweeping-edge:
+        max-level:
