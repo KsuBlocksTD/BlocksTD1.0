@@ -1,5 +1,8 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
+import com.alessiodp.parties.api.interfaces.Party;
+import com.alessiodp.parties.api.interfaces.PartyPlayer;
+import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.Economy;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
@@ -22,6 +25,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,7 +38,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static ksucapproj.blockstowerdefense1.commands.party.PartyCommand.checkPartyLeaderStatus;
+
+
 public class StartGame implements CommandExecutor, Listener {
+
+    private static final PartiesAPI api = BlocksTowerDefense1.getApi();
 
     private final JavaPlugin plugin;
     private final Map<UUID, GameSession> playerSessions = new ConcurrentHashMap<>();
@@ -116,27 +126,14 @@ public class StartGame implements CommandExecutor, Listener {
     }
 
     private void handleStartGameCommand(Player player, String mapId) {
+        // init playerparty variables for logic
+        Party playerparty = api.getParty(player.getUniqueId());
+
+
         // Clean up any existing game session first
         if (playerSessions.containsKey(player.getUniqueId())) {
             handlePlayerQuit(player);
         }
-
-        // Initialize game session
-        GameSession session = new GameSession(mapId);
-        playerSessions.put(player.getUniqueId(), session);
-
-        // Add player to economy system
-        Economy.playerJoin(player);
-
-        // Get the world
-        World world = player.getWorld();
-
-        // Get the start location for the specified map
-        Location startLocation = MapData.getStartLocation(world, mapId);
-        player.teleport(startLocation);
-
-        // Clear player's inventory first
-        player.getInventory().clear();
 
         // Give player an unbreakable wooden sword
         ItemStack sword = new ItemStack(Material.WOODEN_SWORD);
@@ -156,33 +153,65 @@ public class StartGame implements CommandExecutor, Listener {
 
             sword.setItemMeta(swordMeta);
         }
-        player.getInventory().addItem(sword);
 
-        // Give player tower items
         // Basic Tower
         ItemStack basicTowerEgg = createTowerEgg("Basic Tower", ChatColor.AQUA,
                 "A simple tower with moderate damage and range");
-        player.getInventory().addItem(basicTowerEgg);
 
         // Future tower placeholders
         ItemStack fastTowerEgg = createTowerEgg("Fast Tower", ChatColor.GREEN,
                 "Rapid-fire tower with low damage but high attack speed");
-        player.getInventory().addItem(fastTowerEgg);
 
         ItemStack sniperTowerEgg = createTowerEgg("Sniper Tower", ChatColor.RED,
                 "Long-range tower with high damage but slow attack speed");
-        player.getInventory().addItem(sniperTowerEgg);
 
         ItemStack splashTowerEgg = createTowerEgg("Splash Tower", ChatColor.YELLOW,
                 "Area-of-effect tower that damages multiple enemies");
-        player.getInventory().addItem(splashTowerEgg);
 
         ItemStack slowTowerEgg = createTowerEgg("Slow Tower", ChatColor.BLUE,
                 "Tower that slows down enemies in its range");
-        player.getInventory().addItem(slowTowerEgg);
 
-        player.sendMessage(ChatColor.GREEN + "Game started on map: " + ChatColor.YELLOW + mapId);
-        player.sendMessage(ChatColor.GREEN + "Type /readyup to start the first round!");
+        // Initialize game session
+        GameSession session = new GameSession(mapId);
+        playerSessions.put(player.getUniqueId(), session);
+
+        // Get the world
+        World world = player.getWorld();
+
+        // Get the start location for the specified map
+        Location startLocation = MapData.getStartLocation(world, mapId);
+
+
+        assert playerparty != null;
+        // Logic that will handle everything for both party members
+        for (PartyPlayer partyPlayer:playerparty.getOnlineMembers()) {
+            UUID playerUUID = partyPlayer.getPlayerUUID();
+            Player currentPlayer = Bukkit.getPlayer(playerUUID);
+
+
+            // Add player to economy system
+            Economy.playerJoin(currentPlayer);
+
+            // Clear player's inventory first
+            currentPlayer.getInventory().clear();
+
+            // Add items for gameplay
+            currentPlayer.getInventory().addItem(sword);
+
+            currentPlayer.teleport(startLocation);
+
+            // Give player tower items
+            currentPlayer.getInventory().addItem(basicTowerEgg);
+            currentPlayer.getInventory().addItem(fastTowerEgg);
+            currentPlayer.getInventory().addItem(sniperTowerEgg);
+            currentPlayer.getInventory().addItem(splashTowerEgg);
+            currentPlayer.getInventory().addItem(slowTowerEgg);
+
+            currentPlayer.sendMessage(ChatColor.GREEN + "Game started on map: " + ChatColor.YELLOW + mapId);
+            currentPlayer.sendMessage(ChatColor.GREEN + "Type /readyup to start the first round!");
+
+        }
+
     }
 
     /**
