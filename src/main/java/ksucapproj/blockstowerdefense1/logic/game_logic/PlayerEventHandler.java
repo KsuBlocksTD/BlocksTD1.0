@@ -1,6 +1,7 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
 
+import ksucapproj.blockstowerdefense1.logic.game_logic.Towers.Tower;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -59,7 +60,7 @@ public class PlayerEventHandler implements Listener {
         MobHandler.cancelTasksForPlayer(playerUUID);
 
         // Cancel tower attack tasks if you have them
-        SummonTower.cancelTasksForPlayer(playerUUID);
+        Tower.cancelTasksForPlayer(playerUUID);
     }
 
     private void removeGameEntities(World world, UUID playerUUID) {

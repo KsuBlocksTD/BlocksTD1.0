@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import static ksucapproj.blockstowerdefense1.maps.MapData.*;
 
 public class MapCommand implements CommandExecutor, TabCompleter {
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -119,15 +120,13 @@ public class MapCommand implements CommandExecutor, TabCompleter {
         player.sendMessage("§e/tdmap info <map_id> §7- Show map information");
     }
 
+
+
     // List all available maps
     private void listMaps(Player player) {
         List<String> mapIds = getAvailableMaps();
         player.sendMessage("§6Available maps (" + mapIds.size() + "):");
 
-        for (String mapId : mapIds) {
-            String isDefault = mapId.equals(defaultMap) ? " §a(default)" : "";
-            player.sendMessage("§e- " + mapId + isDefault + " §7(" + getWaypointCount(mapId) + " waypoints)");
-        }
     }
 
     // Create a new map
@@ -150,13 +149,11 @@ public class MapCommand implements CommandExecutor, TabCompleter {
     private void deleteMap(Player player, String mapId) {
         if (MapData.deleteMap(mapId)) {
             player.sendMessage("§aDeleted map §e" + mapId + "§a.");
-        } else {
-            if (mapId.equals(defaultMap)) {
-                player.sendMessage("§cCannot delete the default map. Set another map as default first.");
-            } else {
+        }
+        else {
                 player.sendMessage("§cMap §e" + mapId + " §cdoes not exist.");
             }
-        }
+
     }
 
     // Set default map
@@ -187,6 +184,8 @@ public class MapCommand implements CommandExecutor, TabCompleter {
         }
     }
 
+
+
     // Show map info
     private void showMapInfo(Player player, String mapId) {
         MapData.MapDetails map = MapData.getMap(mapId);
@@ -195,11 +194,12 @@ public class MapCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        Location start = map.startLocation();
-        List<Location> waypoints = map.waypoints();
+
+
+        Location start = map.getStartLocation();
+        List<Location> waypoints = map.getWaypoints();
 
         player.sendMessage("§6==== Map: " + mapId + " ====");
-        player.sendMessage("§eDefault: " + (mapId.equals(defaultMap) ? "§aYes" : "§cNo"));
         player.sendMessage("§eStart: §7X: " + formatCoordinate(start.getX()) +
                 ", Y: " + formatCoordinate(start.getY()) +
                 ", Z: " + formatCoordinate(start.getZ()));

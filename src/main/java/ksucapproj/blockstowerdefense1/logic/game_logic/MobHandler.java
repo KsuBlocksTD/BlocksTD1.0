@@ -2,6 +2,7 @@ package ksucapproj.blockstowerdefense1.logic.game_logic;
 
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.Economy;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -204,7 +205,7 @@ public class MobHandler implements Listener {
         Economy.setPlayerMoney(player, 0);
 
         // Remove all towers for this player's session
-        SummonTower.removeTowersForPlayer(player, mapId);
+        Tower.removeTowersForPlayer(player, mapId);
 
         // Cancel any active tasks for this player's game
         cancelTasksForPlayer(player.getUniqueId());

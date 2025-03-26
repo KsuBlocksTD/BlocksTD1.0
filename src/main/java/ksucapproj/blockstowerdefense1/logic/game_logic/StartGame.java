@@ -128,7 +128,7 @@ public class StartGame implements CommandExecutor, Listener {
 
     private void handleStartGameCommand(Player player, String mapId) {
         // init playerparty variables for logic
-        Party playerparty = api.getParty(player.getUniqueId());
+
 
 
         // Clean up any existing game session first
@@ -184,11 +184,17 @@ public class StartGame implements CommandExecutor, Listener {
         Location startLocation = MapData.getStartLocation(world, mapId);
 
 
-        assert playerparty != null;
-        // Logic that will handle everything for both party members
-        for (PartyPlayer partyPlayer:playerparty.getOnlineMembers()) {
-            UUID playerUUID = partyPlayer.getPlayerUUID();
-            Player currentPlayer = Bukkit.getPlayer(playerUUID);
+
+
+
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+        Party party = api.getParty(partyPlayer.getPartyId());
+
+        // if the player is in party AND is the party leader
+        // player.sendMessage("gets into if statement"); // for testing
+
+        for (PartyPlayer partyMember : party.getOnlineMembers()){
+            Player currentPlayer = Bukkit.getPlayer(partyMember.getPlayerUUID());
 
 
             // Add player to economy system

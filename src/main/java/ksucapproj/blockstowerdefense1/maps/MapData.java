@@ -21,6 +21,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MapData {
+    public MapData(Location startLocation, List<Location> waypoints) {
+        this.startLocation = startLocation;
+        this.waypoints = waypoints;
+    }
+
     public static boolean mapExists(String mapId) {
         return maps.containsKey(mapId);
     }
@@ -31,57 +36,49 @@ public class MapData {
     private static JavaPlugin plugin;
 
     // Map details class to store start location and waypoints
-    public static class MapDetails {
+
         private final Location startLocation;
         private final List<Location> waypoints;
 
-        public MapDetails(Location startLocation, List<Location> waypoints) {
-            this.startLocation = startLocation;
-            this.waypoints = waypoints;
-        }
+        public static class MapDetails {
+            private final Location startLocation;
+            private final List<Location> waypoints;
 
-        public Location getStartLocation() {
-            return startLocation.clone();
-        }
-
-        public List<Location> getWaypoints() {
-            // Return a deep copy of waypoints to prevent modifications
-            List<Location> waypointsCopy = new ArrayList<>();
-            for (Location waypoint : waypoints) {
-                waypointsCopy.add(waypoint.clone());
+            public MapDetails(Location startLocation, List<Location> waypoints) {
+                this.startLocation = startLocation;
+                this.waypoints = waypoints;
             }
-            return waypointsCopy;
-        }
 
-        public Location getEndLocation() {
-            if (waypoints.isEmpty()) {
+            public Location getStartLocation() {
                 return startLocation.clone();
             }
-            return waypoints.get(waypoints.size() - 1).clone();
+
+            public List<Location> getWaypoints() {
+                // Return a deep copy of waypoints to prevent modifications
+                List<Location> waypointsCopy = new ArrayList<>();
+                for (Location waypoint : waypoints) {
+                    waypointsCopy.add(waypoint.clone());
+                }
+                return waypointsCopy;
+            }
+
+            public Location getEndLocation() {
+                if (waypoints.isEmpty()) {
+                    return startLocation.clone();
+                }
+                return waypoints.get(waypoints.size() - 1).clone();
+            }
+
+            // Add a waypoint to this map
+            public void addWaypoint(Location waypoint) {
+                waypoints.add(waypoint.clone());
+            }
+
+            // Clear all waypoints
+            public void clearWaypoints() {
+                waypoints.clear();
+            }
         }
-
-        // Add a waypoint to this map
-        public void addWaypoint(Location waypoint) {
-            waypoints.add(waypoint.clone());
-        }
-
-        // Clear all waypoints
-        public void clearWaypoints() {
-            waypoints.clear();
-        }
-    }
-
-    // Initialize maps with default values
-    static {
-        // This will be called when the class is loaded
-        initDefaultMaps();
-    }
-
-    // Initialize maps with some default values
-    private static void initDefaultMaps() {
-        // We'll add a default implementation that matches your original code
-        // This will be used as a fallback if no config file exists
-    }
 
     // Load maps from configuration file
     public static void loadMaps(JavaPlugin pluginInstance) {
@@ -157,10 +154,6 @@ public class MapData {
             }
         }
 
-        // If no maps were loaded, initialize with defaults
-        if (maps.isEmpty()) {
-            initDefaultMapsWithWorld(plugin.getServer().getWorlds().get(0));
-        }
     }
 
     // Save maps to configuration file
@@ -212,74 +205,6 @@ public class MapData {
         }
     }
 
-    // Generate default configuration file
-    public static void saveDefaultConfig(JavaPlugin plugin) {
-        File configFile = new File(plugin.getDataFolder(), "maps.yml");
-        if (!configFile.exists()) {
-            // Create the parent directories if they don't exist
-            if (!configFile.getParentFile().exists()) {
-                configFile.getParentFile().mkdirs();
-            }
-
-            // Create default configuration
-            FileConfiguration config = new YamlConfiguration();
-
-            // Set default map
-            config.set("default-map", "map1");
-
-            // Add map1 (based on your original hardcoded values)
-            config.set("maps.map1.world", "world");
-            config.set("maps.map1.start.x", 69.5);
-            config.set("maps.map1.start.y", 64);
-            config.set("maps.map1.start.z", -585.5);
-
-            // Add waypoints using offsets for clarity
-            config.set("maps.map1.waypoints.wp1.offsetX", 0);
-            config.set("maps.map1.waypoints.wp1.offsetY", 0);
-            config.set("maps.map1.waypoints.wp1.offsetZ", 22);
-
-            config.set("maps.map1.waypoints.wp2.offsetX", 8);
-            config.set("maps.map1.waypoints.wp2.offsetY", 0);
-            config.set("maps.map1.waypoints.wp2.offsetZ", 22);
-
-            config.set("maps.map1.waypoints.wp3.offsetX", 8);
-            config.set("maps.map1.waypoints.wp3.offsetY", 0);
-            config.set("maps.map1.waypoints.wp3.offsetZ", 13);
-
-            config.set("maps.map1.waypoints.wp4.offsetX", -8);
-            config.set("maps.map1.waypoints.wp4.offsetY", 0);
-            config.set("maps.map1.waypoints.wp4.offsetZ", 13);
-
-            config.set("maps.map1.waypoints.wp5.offsetX", -8);
-            config.set("maps.map1.waypoints.wp5.offsetY", 0);
-            config.set("maps.map1.waypoints.wp5.offsetZ", 7);
-
-            config.set("maps.map1.waypoints.wp6.offsetX", -14);
-            config.set("maps.map1.waypoints.wp6.offsetY", 0);
-            config.set("maps.map1.waypoints.wp6.offsetZ", 7);
-
-            try {
-                config.save(configFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // Initialize with hard-coded defaults for a specific world (fallback)
-    private static void initDefaultMapsWithWorld(World world) {
-        // Map 1 - same as your original
-        Location map1Start = new Location(world, 69.5, 64, -585.5);
-        List<Location> map1Waypoints = new ArrayList<>();
-        map1Waypoints.add(map1Start.clone().add(0, 0, 22));
-        map1Waypoints.add(map1Start.clone().add(8, 0, 22));
-        map1Waypoints.add(map1Start.clone().add(8, 0, 13));
-        map1Waypoints.add(map1Start.clone().add(-8, 0, 13));
-        map1Waypoints.add(map1Start.clone().add(-8, 0, 7));
-        map1Waypoints.add(map1Start.clone().add(-14, 0, 7));
-
-        maps.put("map1", new MapDetails(map1Start, map1Waypoints));
-    }
 
     // Create a new map with the given ID and start location
     public static boolean createMap(String mapId, Location startLocation) {

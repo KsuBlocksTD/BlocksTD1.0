@@ -81,26 +81,80 @@ public abstract class Tower {
         towerEntity.setRotation(yaw, 0);
     }
 
-    public static void setPlugin(JavaPlugin pluginInstance) {
-        plugin = pluginInstance;
-    }
-
+    /**
+     * Cancel all tower tasks for a specific player
+     */
     public static void cancelTasksForPlayer(UUID playerUUID) {
-        towerOwners.entrySet().removeIf(entry -> {
+        // Find all towers owned by this player
+        Set<UUID> towersToRemove = new HashSet<>();
+
+        for (Map.Entry<UUID, UUID> entry : towerOwners.entrySet()) {
             if (entry.getValue().equals(playerUUID)) {
                 UUID towerUUID = entry.getKey();
-                BukkitTask task = towerTasks.remove(towerUUID);
-                if (task != null) task.cancel();
-                return true;
+                towersToRemove.add(towerUUID);
+
+                // Cancel the task
+                BukkitTask task = towerTasks.get(towerUUID);
+                if (task != null && !task.isCancelled()) {
+                    task.cancel();
+                }
             }
-            return false;
-        });
+        }
+
+        // Clean up maps
+        for (UUID towerUUID : towersToRemove) {
+            towerTasks.remove(towerUUID);
+            towerOwners.remove(towerUUID);
+        }
     }
 
-    public static void removeAllTowers() {
-        for (BukkitTask task : towerTasks.values()) {
-            if (task != null) task.cancel();
+    /**
+     * Remove all towers for a specific player and map
+     */
+    public static void removeTowersForPlayer(Player player, String mapId) {
+        // Get player UUID for comparison
+        UUID playerUUID = player.getUniqueId();
+
+        // Remove all towers in the world that belong to this player and map
+        for (Entity entity : player.getWorld().getEntities()) {
+            if (entity instanceof Villager &&
+                    entity.hasMetadata("tower") &&
+                    entity.hasMetadata("owner") &&
+                    entity.hasMetadata("mapId")) {
+
+                String owner = entity.getMetadata("owner").get(0).asString();
+                String map = entity.getMetadata("mapId").get(0).asString();
+
+                if (owner.equals(playerUUID.toString()) && map.equals(mapId)) {
+                    // Cancel the task first
+                    UUID entityUUID = entity.getUniqueId();
+                    BukkitTask task = towerTasks.get(entityUUID);
+                    if (task != null && !task.isCancelled()) {
+                        task.cancel();
+                    }
+
+                    // Remove from tracking
+                    towerTasks.remove(entityUUID);
+                    towerOwners.remove(entityUUID);
+
+                    // Remove the entity
+                    entity.remove();
+                }
+            }
         }
+    }
+
+    /**
+     * Remove all towers from the game
+     */
+    public static void removeAllTowers() {
+        // Cancel all tasks
+        for (BukkitTask task : towerTasks.values()) {
+            if (task != null && !task.isCancelled()) {
+                task.cancel();
+            }
+        }
+
         towerTasks.clear();
         towerOwners.clear();
     }
