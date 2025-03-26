@@ -14,7 +14,9 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -115,12 +117,24 @@ public class PartyCommand {
     }
 
 
-    // if the player is not in a party or is not the party leader return false, else return true
-    public static boolean checkPartyLeaderStatus (Player player){
+    // if the player is the leader of the party, return true, else return false
+    public static Boolean checkPartyLeaderStatus (Player player){
 
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-        Party party = api.getParty(partyPlayer.getPartyId());
+        Party party = api.getPartyOfPlayer(player.getUniqueId());
 
-        return party != null && party.getLeader().equals(partyPlayer.getPlayerUUID());
+        if (party == null || party.getLeader() == null){
+            return null;
+        }
+
+        return party.getLeader().equals(player.getUniqueId());
+    }
+
+    // if the party DNE or has only one player in it, return true, else return false
+    public static boolean isGameCoop (Player player){
+
+        Party party = api.getPartyOfPlayer(player.getUniqueId());
+
+        return party != null && (party.getOnlineMembers().size() != 1);
+
     }
 }

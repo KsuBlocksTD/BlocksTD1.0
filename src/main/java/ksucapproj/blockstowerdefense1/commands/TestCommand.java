@@ -1,5 +1,8 @@
 package ksucapproj.blockstowerdefense1.commands;
 
+import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import com.alessiodp.parties.api.interfaces.Party;
+import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -12,6 +15,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.MessageComponentSerializer;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.Economy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -21,8 +25,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 public class TestCommand {
+
+    public static final PartiesAPI api = BlocksTowerDefense1.getApi();
+
     @NullMarked
     public static LiteralCommandNode<CommandSourceStack> flightCommand() {
         return Commands.literal("allowflight")
@@ -74,12 +82,29 @@ public class TestCommand {
 
                 .then(Commands.argument("target", StringArgumentType.word())
                         .suggests(TestCommand::getOnlinePlayersSuggestions)
-                        .then(Commands.argument("coinamt", IntegerArgumentType.integer(1, 10000))
+                        .then(Commands.argument("coinamt", IntegerArgumentType.integer(1, 100000))
                                 .executes(TestCommand::executeAddCoinsLogic)
                         )
                 )
                 .build();
     }
+
+
+    // /givecoins <coinamt>
+    @NullMarked
+    public static LiteralCommandNode<CommandSourceStack> giveCoinsCommand() {
+        return Commands.literal("addcoins")
+                .requires(ctx -> ctx.getExecutor() instanceof Player)
+
+                .then(Commands.argument("coinamt", IntegerArgumentType.integer())
+                        .executes(TestCommand::executeGiveCoinsLogic)
+                )
+
+                .build();
+    }
+
+
+
 
     // Suggests online players for the target argument
     private static CompletableFuture<Suggestions> getOnlinePlayersSuggestions(final CommandContext<CommandSourceStack> ctx, final SuggestionsBuilder builder) {
@@ -89,7 +114,7 @@ public class TestCommand {
         return builder.buildFuture();
     }
 
-    // Command logic for /addcoins <target> <cointamt>
+    // Command logic for /addcoins <target> <cointamt> (admin only command)
     private static int executeAddCoinsLogic(final CommandContext<CommandSourceStack> ctx) {
         if (!(ctx.getSource().getExecutor() instanceof Player sender)) {
             return Command.SINGLE_SUCCESS;
@@ -127,6 +152,41 @@ public class TestCommand {
 
         return Command.SINGLE_SUCCESS;
     }
+
+
+    // Command logic for /givecoins <cointamt> (in-game player command)
+    private static int executeGiveCoinsLogic(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player sender)) {
+            return Command.SINGLE_SUCCESS;
+        }
+
+        // Get the argument
+        final int coinAmount = IntegerArgumentType.getInteger(ctx, "coinamt");
+        final PartyPlayer senderPP = api.getPartyPlayer(sender.getUniqueId());
+
+        // Get the target player
+        if (senderPP.isInParty()) {
+
+            Party party = api.getPartyOfPlayer(senderPP.getPlayerUUID());
+
+            if (party.getOnlineMembers().size() == 1) {
+                sender.sendMessage("Invalid party size, no teammate acquired!");
+                return Command.SINGLE_SUCCESS;
+            }
+
+            for (UUID teammate : party.getMembers()) {
+
+                if (teammate != sender.getUniqueId()) {
+                    Economy.shareMoneyWithTeammate(sender, Bukkit.getPlayer(teammate), coinAmount);
+                }
+            }
+        }
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+
+
 
     public static LiteralCommandNode<CommandSourceStack> constructGiveItemCommand() {
         // Create new command: /giveitem

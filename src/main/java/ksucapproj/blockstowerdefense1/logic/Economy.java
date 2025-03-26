@@ -1,6 +1,8 @@
 package ksucapproj.blockstowerdefense1.logic;
 
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -50,6 +52,32 @@ public class Economy {
     public static void addPlayerMoney(Player player, int amt){ // this is for manual admin command
         int currMoney = Integer.parseInt(getPlayerMoney(player));
         playerMoney.put(player, currMoney + amt);
+    }
+
+
+    public static void shareMoneyWithTeammate(Player sender, Player receiver, int amt){
+        int currSenderMoney = playerMoney.get(sender); // sets value for sender's current coin total
+
+        // if the amt to send is more than currSenderMoney, it sends all of sender's money
+        if (amt > currSenderMoney){
+            amt = currSenderMoney;
+        }
+
+        setPlayerMoney(sender, currSenderMoney - amt);
+
+        // send confirmation message for send coins transaction
+        sender.sendRichMessage("You sent <player> <amount> coins!",
+                Placeholder.component("player", Component.text(receiver.getName())),
+                Placeholder.component("amount", Component.text(amt))
+        );
+
+        setPlayerMoney(receiver, (playerMoney.get(receiver) + amt));
+
+        // send confirmation message for receive coins transaction
+        receiver.sendRichMessage("<player> sent you <amount> coins!",
+                Placeholder.component("amount", Component.text(amt)),
+                Placeholder.component("player", Component.text(sender.getName()))
+        );
     }
 
 

@@ -5,10 +5,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.util.Tick;
-import ksucapproj.blockstowerdefense1.commands.MapCommand;
-import ksucapproj.blockstowerdefense1.commands.MtdCommand;
-import ksucapproj.blockstowerdefense1.commands.SpawnCommand;
-import ksucapproj.blockstowerdefense1.commands.TestCommand;
+import ksucapproj.blockstowerdefense1.commands.*;
 import ksucapproj.blockstowerdefense1.logic.AsyncTest;
 import ksucapproj.blockstowerdefense1.logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.EventListener;
@@ -19,10 +16,15 @@ import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.jetbrains.annotations.NotNull;
+
 
 import java.time.Duration;
+
+
 
 
 public class BlocksTowerDefense1 extends JavaPlugin {
@@ -30,6 +32,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     private static PartiesAPI api;
     private static BlocksTowerDefense1 instance;
     private StartGame gameManager;
+    private ConfigOptions config;
 
     @Override
     public void onEnable() {
@@ -93,6 +96,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             world.setTime(1000);
             getLogger().info("Weather and daylight cycle auto-disabled.");
         }
+
+        config = new ConfigOptions(this);
         getLogger().warning("Plugin injected");
     }
 
@@ -122,5 +127,9 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     public static BlocksTowerDefense1 getInstance() {
         return instance;
+    }
+
+    public ConfigOptions getBTDConfig() {
+        return config;
     }
 }

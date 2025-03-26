@@ -54,6 +54,11 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             return Economy.getPlayerMoney(player); // Retrieve coins
         }
 
+        if (identifier.equalsIgnoreCase("db_url")) {
+            // Fetch the URL from the config
+            return plugin.getConfig().getString("database.url");
+        }
+
         return null; // Placeholder not found
     }
 }
