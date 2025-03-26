@@ -4,6 +4,7 @@ import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.Economy;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Towers.BasicTower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -170,6 +171,7 @@ public class StartGame implements CommandExecutor, Listener {
 
         ItemStack slowTowerEgg = createTowerEgg("Slow Tower", ChatColor.BLUE,
                 "Tower that slows down enemies in its range");
+
 
         // Initialize game session
         GameSession session = new GameSession(mapId);
@@ -357,7 +359,7 @@ public class StartGame implements CommandExecutor, Listener {
                         item.setAmount(item.getAmount() - 1);
 
                         // Spawn tower with player and map association
-                        SummonTower.spawnTower(placementLocation, player, mapId);
+                        new BasicTower(placementLocation, player, mapId);
                         player.sendMessage(ChatColor.GREEN + "Tower placed successfully!");
                     } else {
                         player.sendMessage(ChatColor.RED + "You need at least 500 coins to place a tower.");

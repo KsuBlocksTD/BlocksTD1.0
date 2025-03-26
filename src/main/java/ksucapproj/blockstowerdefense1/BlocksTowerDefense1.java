@@ -13,6 +13,7 @@ import ksucapproj.blockstowerdefense1.logic.AsyncTest;
 import ksucapproj.blockstowerdefense1.logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.EventListener;
 import ksucapproj.blockstowerdefense1.logic.game_logic.*;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
 import org.bukkit.Bukkit;
@@ -40,14 +41,12 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         // Register commands with the same instance
         getCommand("startgame").setExecutor(gameManager);
         getCommand("readyup").setExecutor(gameManager);
-        getCommand("summontower").setExecutor(new SummonTowerCommand(this));
         getCommand("tdmap").setExecutor(new MapCommand());
         getCommand("tdmap").setTabCompleter(new MapCommand());
 
 
         // Use the same gameManager instance for PlayerEventHandler
         new MobHandler(this);
-        new SummonTower(this);
         new PlayerEventHandler(this, gameManager);
 
         MapData.loadMaps(this);
@@ -101,7 +100,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         MapData.saveMaps();
 
         MobHandler.cleanupAll();
-        SummonTower.removeAllTowers();
+        Tower.removeAllTowers();
 
         for (Party party : api.getOnlineParties()){
             party.delete();
