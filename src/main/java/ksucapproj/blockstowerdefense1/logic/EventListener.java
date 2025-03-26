@@ -9,14 +9,20 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerSword;
+import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class EventListener implements Listener {
     // TO REBUILD THE ARTIFACT: F5
@@ -68,6 +74,27 @@ public class EventListener implements Listener {
         int playerCount = (Bukkit.getOnlinePlayers().size() - 1);
         Bukkit.broadcastMessage("The player count is now " + playerCount);
     }
+
+
+
+    @EventHandler
+    public void onInvClick(InventoryClickEvent event) {
+
+        //event.setCancelled(true);
+    }
+
+
+    @EventHandler
+    public void onPlayerHit(EntityDamageByEntityEvent event){
+
+        PlayerUpgrades player = new PlayerUpgrades((Player) event.getDamager());
+
+        if (player.getSword().getSlownessLevel() > 0){
+            player.getSword().applySlownessEffect((LivingEntity) event.getEntity());
+        }
+    }
+
+
 
     @EventHandler
     public void onMobKill(EntityDeathEvent event){

@@ -28,10 +28,14 @@ upgrades:
       strength:
         max-level:
 
-      slowness:
-        max-level:
-        duration:
-          increase-duration-on-upgrade:
+      sword:
+        material:
+          max-level:
 
-      sweeping-edge:
-        max-level:
+        slowness:
+          max-level:
+          duration:
+            increase-duration-on-upgrade:
+
+        sweeping-edge:
+          max-level:

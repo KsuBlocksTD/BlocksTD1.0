@@ -20,11 +20,19 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 
+
+/*
+    --This is an admin command--
+
+        Usage: /apply-upgrade <upgrade-type> <tier>
+
+ */
+
 public class ApplyUpgradeCommand {
 
-    private static final List<String> upgradeTypes = List.of("SWIFTNESS", "STRENGTH", "SLOWNESS", "SWEEPING-EDGE");
+    private static final List<String> upgradeTypes = List.of("SWIFTNESS", "STRENGTH", "MATERIAL", "SLOWNESS", "SWEEPING-EDGE");
 
-    private static PlayerUpgrades playerUpgrades;
+    private static PlayerUpgrades playerUpgrades = null;
 
     @NullMarked
     public static LiteralCommandNode<CommandSourceStack> register() {
@@ -57,14 +65,23 @@ public class ApplyUpgradeCommand {
 
         final String upgradeType = StringArgumentType.getString(ctx, "upgrade-type");
         final int tier = IntegerArgumentType.getInteger(ctx, "tier");
-        playerUpgrades = new PlayerUpgrades(player);
+
+
+        if (playerUpgrades == null){ // is only working for first player that executes command (MIGHT BE FIXED; UNTESTED)
+            playerUpgrades = new PlayerUpgrades(player);
+        }
+
+        if (playerUpgrades.getPlayer() != player){
+            playerUpgrades = new PlayerUpgrades(player);
+        }
 
 
         switch (upgradeType) {
             case "SWIFTNESS" -> playerUpgrades.setSwiftnessLevel(tier);
             case "STRENGTH" -> playerUpgrades.setStrengthLevel(tier);
-            case "SLOWNESS" -> playerUpgrades.setSlownessLevel(tier);
-            case "SWEEPING-EDGE" -> playerUpgrades.setSweepingEdgeLevel(tier);
+            case "MATERIAL" -> playerUpgrades.getSword().setSwordLevel(tier);
+            case "SLOWNESS" -> playerUpgrades.getSword().setSlownessLevel(tier);
+            case "SWEEPING-EDGE" -> playerUpgrades.getSword().setSweepingEdgeLevel(tier);
             default -> player.sendMessage("Upgrade type not found.");
         }
 

@@ -31,6 +31,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     private static PartiesAPI api;
     private static BlocksTowerDefense1 instance;
     private StartGame gameManager;
+    private ConfigOptions config;
 
 
     @Override
@@ -99,7 +100,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             getLogger().info("Weather and daylight cycle auto-disabled.");
         }
 
-        new ConfigOptions(this);
+        config = new ConfigOptions(this);
 
         getLogger().warning("Plugin injected");
     }
@@ -137,4 +138,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         return instance;
     }
 
+    public ConfigOptions getBTDConfig() {
+        return config;
+    }
 }

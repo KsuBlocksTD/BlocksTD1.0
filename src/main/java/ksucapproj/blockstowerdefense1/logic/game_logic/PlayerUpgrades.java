@@ -20,10 +20,11 @@ import org.bukkit.potion.PotionEffectType;
 public class PlayerUpgrades{
 
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
-    private static final ConfigOptions config = new ConfigOptions(BlocksTowerDefense1.getInstance());
+    private static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
 
-    private int swiftnessLevel, strengthLevel, slownessLevel, sweepingEdgeLevel;
+    private int swiftnessLevel, strengthLevel;
     private Player player;
+    private PlayerSword sword;
 
 
     // all levels are initialized to 0, which is representative of their swiftness tier (0-5)
@@ -33,8 +34,8 @@ public class PlayerUpgrades{
         this.player = player;
         this.swiftnessLevel = 0;
         this.strengthLevel = 0;
-        this.slownessLevel = 0;
-        this.sweepingEdgeLevel = 0;
+
+        this.sword = new PlayerSword(player);
     }
 
     // if upgradeLevel is less than the maximum specified in the config
@@ -60,43 +61,6 @@ public class PlayerUpgrades{
             upgrades.setStrengthLevel(upgrades.strengthLevel++);
         }
     }
-
-    public static void applySlownessUpgrade(PlayerUpgrades upgrades, LivingEntity target) {
-
-        // Apply slowness to the mob (target)
-        if (upgrades.slownessLevel < config.getSlownessMaxLevel()){
-
-            upgrades.slownessLevel++; // increase the level
-
-            if (config.getSlownessDurationIncreaseOnUpgrade()){ // enables longer duration on
-                // applies slowness, 10 ticks + 2 per slownessLevel (0.5s), amplifier of player's slownessLevel
-                target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, (config.getSlownessDuration() + (upgrades.slownessLevel * 2) + 2), upgrades.slownessLevel, false, true));
-                return;
-            }
-
-            // applies slowness, 10 ticks (0.5s), amplifier of player's slownessLevel
-            target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, config.getSlownessDuration(), upgrades.slownessLevel, false, true));
-        }
-
-    }
-
-    public static void applySweepingEdgeUpgrade(PlayerUpgrades upgrades){
-
-        if (upgrades.sweepingEdgeLevel < config.getSweepingEdgeMaxLevel()){
-
-            upgrades.sweepingEdgeLevel++; // increase the level
-
-            Player player = upgrades.player;
-
-
-
-            player.getInventory().addItem();
-
-
-        }
-    }
-
-
 
 
 
@@ -127,23 +91,11 @@ public class PlayerUpgrades{
         player.sendMessage("Swiftness upgrade tier set to " + strengthLevel);
     }
 
-    public void setSlownessLevel(int slownessLevel) {
-        this.slownessLevel = slownessLevel;
-
-//        if (slownessLevel > 0){
-//
-//        }
-
-        player.sendMessage("Slowness upgrade tier set to " + slownessLevel);
+    public PlayerSword getSword() {
+        return sword;
     }
 
-    public void setSweepingEdgeLevel(int sweepingEdgeLevel) {
-        this.sweepingEdgeLevel = sweepingEdgeLevel;
-
-//        if (sweepingEdgeLevel > 0){
-//
-//        }
-
-        player.sendMessage("Swiftness upgrade tier set to " + sweepingEdgeLevel);
+    public Player getPlayer() {
+        return player;
     }
 }

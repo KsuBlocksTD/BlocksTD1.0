@@ -9,14 +9,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="3/25 2:08 AM, Implements PlayerUpgrades of:&#10;Swiftness, Strength (both fully functional), Slowness on-hit, Sweeping-Edge on-hit (both WIP)&#10;&#10;Additions to config.yml also">
-      <change afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.java" afterDir="false" />
+    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="3/25 12:07 AM Creation of PlayerSword&#10;&#10;- Pre Player Attribute test -">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/ConfigOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/ConfigOptions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/ApplyUpgradeCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/ApplyUpgradeCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/EventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/EventListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/test_db.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/test_db.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/ConfigOptions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/ConfigOptions.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/ApplyUpgradeCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/ApplyUpgradeCommand.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/test_db.db" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/test_db.db" afterDir="false" />
     </list>

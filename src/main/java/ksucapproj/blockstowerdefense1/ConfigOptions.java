@@ -46,11 +46,11 @@ public class ConfigOptions {
 
     // Getter for Slowness level max upgrade
     public int getSlownessMaxLevel() {
-        return config.getInt("upgrades.player.slowness.max-level", 5);  // Default value is 5 if not set
+        return config.getInt("upgrades.player.sword.slowness.max-level", 5);  // Default value is 5 if not set
     }
 
     public int getSlownessDuration() {
-        return config.getInt("upgrades.player.slowness.duration", 10); // Default value is 10 (ticks) if not set
+        return config.getInt("upgrades.player.sword.slowness.duration", 10); // Default value is 10 (ticks) if not set
     }
 
     public boolean getSlownessDurationIncreaseOnUpgrade() {
@@ -66,11 +66,12 @@ public class ConfigOptions {
 
     // Getter for Sweeping-Edge level max upgrade
     public int getSweepingEdgeMaxLevel() {
-        return config.getInt("upgrades.player.sweeping-edge.max-level", 5);  // Default value is 5 if not set
+        return config.getInt("upgrades.player.sword.sweeping-edge.max-level", 5);  // Default value is 5 if not set
     }
 
-    public int getSwordMaxLevel() {
-        return config.getInt("upgrades.player.sword.max-level", 5);  // Default value is 5 if not set
+    public int getSwordMaterialMaxLevel() {
+        // 1: wood, 2: stone, 3: iron, 4: diamond, 5: netherite
+        return config.getInt("upgrades.player.sword.material.max-level", 5);  // Default value is 5 if not set
     }
 
 
