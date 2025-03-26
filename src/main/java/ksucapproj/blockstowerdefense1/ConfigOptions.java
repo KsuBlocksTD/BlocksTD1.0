@@ -69,6 +69,10 @@ public class ConfigOptions {
         return config.getInt("upgrades.player.sweeping-edge.max-level", 5);  // Default value is 5 if not set
     }
 
+    public int getSwordMaxLevel() {
+        return config.getInt("upgrades.player.sword.max-level", 5);  // Default value is 5 if not set
+    }
+
 
 
 }

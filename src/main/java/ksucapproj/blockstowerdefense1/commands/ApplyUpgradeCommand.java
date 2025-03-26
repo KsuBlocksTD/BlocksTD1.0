@@ -61,21 +61,11 @@ public class ApplyUpgradeCommand {
 
 
         switch (upgradeType) {
-            case "SWIFTNESS":
-                playerUpgrades.setSwiftnessLevel(tier);
-                break;
-            case "STRENGTH":
-                playerUpgrades.setStrengthLevel(tier);
-                break;
-            case "SLOWNESS":
-                playerUpgrades.setSlownessLevel(tier);
-                break;
-            case "SWEEPING-EDGE":
-                playerUpgrades.setSweepingEdgeLevel(tier);
-                break;
-            default:
-                player.sendMessage("Upgrade type not found.");
-                break;
+            case "SWIFTNESS" -> playerUpgrades.setSwiftnessLevel(tier);
+            case "STRENGTH" -> playerUpgrades.setStrengthLevel(tier);
+            case "SLOWNESS" -> playerUpgrades.setSlownessLevel(tier);
+            case "SWEEPING-EDGE" -> playerUpgrades.setSweepingEdgeLevel(tier);
+            default -> player.sendMessage("Upgrade type not found.");
         }
 
 

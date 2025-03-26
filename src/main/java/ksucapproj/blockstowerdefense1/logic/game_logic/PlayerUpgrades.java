@@ -3,9 +3,17 @@ package ksucapproj.blockstowerdefense1.logic.game_logic;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -16,6 +24,7 @@ public class PlayerUpgrades{
 
     private int swiftnessLevel, strengthLevel, slownessLevel, sweepingEdgeLevel;
     private Player player;
+
 
     // all levels are initialized to 0, which is representative of their swiftness tier (0-5)
     // i.e. swiftness level 0 = no swiftness, swiftness level 1 = swiftness 1, etc.
@@ -46,7 +55,6 @@ public class PlayerUpgrades{
         if (upgrades.strengthLevel < config.getStrengthMaxLevel()){
 
             Player player = upgrades.player;
-            upgrades.strengthLevel++; // increase the level
 
             // changes the current strength effect applied and applies the new level on top
             upgrades.setStrengthLevel(upgrades.strengthLevel++);
@@ -74,7 +82,23 @@ public class PlayerUpgrades{
 
     public static void applySweepingEdgeUpgrade(PlayerUpgrades upgrades){
 
+        if (upgrades.sweepingEdgeLevel < config.getSweepingEdgeMaxLevel()){
+
+            upgrades.sweepingEdgeLevel++; // increase the level
+
+            Player player = upgrades.player;
+
+
+
+            player.getInventory().addItem();
+
+
+        }
     }
+
+
+
+
 
 
     public void setSwiftnessLevel(int swiftnessLevel) {
