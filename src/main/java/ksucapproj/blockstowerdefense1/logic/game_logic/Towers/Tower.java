@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class Tower {
-    protected static JavaPlugin plugin;
+    protected final JavaPlugin plugin;  // Now an instance variable, not static
     protected static final Map<UUID, BukkitTask> towerTasks = new ConcurrentHashMap<>();
     protected static final Map<UUID, UUID> towerOwners = new ConcurrentHashMap<>();
 
@@ -24,9 +24,8 @@ public abstract class Tower {
     protected int scanRadius;
     protected long attackInterval;
 
-    public Tower(Location location, Player owner, String mapId, int scanRadius, long attackInterval) {
-        if (plugin == null) throw new IllegalStateException("Plugin not initialized");
-
+    public Tower(Location location, Player owner, String mapId, int scanRadius, long attackInterval, JavaPlugin plugin) {
+        this.plugin = plugin;  // No longer modifying a static variable
         this.location = location;
         this.owner = owner;
         this.mapId = mapId;
@@ -85,7 +84,6 @@ public abstract class Tower {
      * Cancel all tower tasks for a specific player
      */
     public static void cancelTasksForPlayer(UUID playerUUID) {
-        // Find all towers owned by this player
         Set<UUID> towersToRemove = new HashSet<>();
 
         for (Map.Entry<UUID, UUID> entry : towerOwners.entrySet()) {
@@ -93,7 +91,6 @@ public abstract class Tower {
                 UUID towerUUID = entry.getKey();
                 towersToRemove.add(towerUUID);
 
-                // Cancel the task
                 BukkitTask task = towerTasks.get(towerUUID);
                 if (task != null && !task.isCancelled()) {
                     task.cancel();
@@ -101,7 +98,6 @@ public abstract class Tower {
             }
         }
 
-        // Clean up maps
         for (UUID towerUUID : towersToRemove) {
             towerTasks.remove(towerUUID);
             towerOwners.remove(towerUUID);
@@ -112,10 +108,8 @@ public abstract class Tower {
      * Remove all towers for a specific player and map
      */
     public static void removeTowersForPlayer(Player player, String mapId) {
-        // Get player UUID for comparison
         UUID playerUUID = player.getUniqueId();
 
-        // Remove all towers in the world that belong to this player and map
         for (Entity entity : player.getWorld().getEntities()) {
             if (entity instanceof Villager &&
                     entity.hasMetadata("tower") &&
@@ -126,18 +120,15 @@ public abstract class Tower {
                 String map = entity.getMetadata("mapId").get(0).asString();
 
                 if (owner.equals(playerUUID.toString()) && map.equals(mapId)) {
-                    // Cancel the task first
                     UUID entityUUID = entity.getUniqueId();
                     BukkitTask task = towerTasks.get(entityUUID);
                     if (task != null && !task.isCancelled()) {
                         task.cancel();
                     }
 
-                    // Remove from tracking
                     towerTasks.remove(entityUUID);
                     towerOwners.remove(entityUUID);
 
-                    // Remove the entity
                     entity.remove();
                 }
             }
@@ -148,7 +139,6 @@ public abstract class Tower {
      * Remove all towers from the game
      */
     public static void removeAllTowers() {
-        // Cancel all tasks
         for (BukkitTask task : towerTasks.values()) {
             if (task != null && !task.isCancelled()) {
                 task.cancel();

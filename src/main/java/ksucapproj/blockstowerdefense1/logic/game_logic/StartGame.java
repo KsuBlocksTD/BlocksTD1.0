@@ -1,5 +1,6 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
+
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
@@ -7,6 +8,7 @@ import ksucapproj.blockstowerdefense1.logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.game_logic.Towers.BasicTower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,7 +46,9 @@ import static ksucapproj.blockstowerdefense1.commands.party.PartyCommand.checkPa
 
 public class StartGame implements CommandExecutor, Listener {
 
-    private static final PartiesAPI api = BlocksTowerDefense1.getApi();
+
+    private static PartiesAPI api;
+
 
     private final JavaPlugin plugin;
     private final Map<UUID, GameSession> playerSessions = new ConcurrentHashMap<>();
@@ -62,15 +66,16 @@ public class StartGame implements CommandExecutor, Listener {
         String currentMapId = null;
         BukkitTask spawnTask = null;
         boolean roundInProgress = false;  // Flag to track if a round is currently active
-        Set<UUID> activeZombies = new HashSet<>();  // Track zombie UUIDs that belong to this session
+        Set<UUID> activeZombies = new HashSet<>();// Track zombie UUIDs that belong to this session
 
         GameSession(String mapId) {
             this.currentMapId = mapId;
         }
     }
 
-    public StartGame(JavaPlugin plugin) {
+    public StartGame(JavaPlugin plugin, PartiesAPI api) {
         this.plugin = plugin;
+        StartGame.api = api;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -82,6 +87,8 @@ public class StartGame implements CommandExecutor, Listener {
         }
 
         Player player = (Player) sender;
+
+
 
         if (command.getName().equalsIgnoreCase("startgame")) {
             // Handle map lookup asynchronously but game setup on main thread
@@ -127,8 +134,8 @@ public class StartGame implements CommandExecutor, Listener {
     }
 
     private void handleStartGameCommand(Player player, String mapId) {
-        // init playerparty variables for logic
-
+        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
+        Party party = api.getParty(partyPlayer.getPartyId());
 
 
         // Clean up any existing game session first
@@ -175,7 +182,7 @@ public class StartGame implements CommandExecutor, Listener {
 
         // Initialize game session
         GameSession session = new GameSession(mapId);
-        playerSessions.put(player.getUniqueId(), session);
+
 
         // Get the world
         World world = player.getWorld();
@@ -183,18 +190,12 @@ public class StartGame implements CommandExecutor, Listener {
         // Get the start location for the specified map
         Location startLocation = MapData.getStartLocation(world, mapId);
 
-
-
-
-
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-        Party party = api.getParty(partyPlayer.getPartyId());
-
-        // if the player is in party AND is the party leader
-        // player.sendMessage("gets into if statement"); // for testing
-
+        player.sendMessage(party.getOnlineMembers().toString());
         for (PartyPlayer partyMember : party.getOnlineMembers()){
+            player.sendMessage("gets into for loop");
             Player currentPlayer = Bukkit.getPlayer(partyMember.getPlayerUUID());
+
+            playerSessions.put(currentPlayer.getUniqueId(), session);
 
 
             // Add player to economy system
@@ -365,7 +366,7 @@ public class StartGame implements CommandExecutor, Listener {
                         item.setAmount(item.getAmount() - 1);
 
                         // Spawn tower with player and map association
-                        new BasicTower(placementLocation, player, mapId);
+                        new BasicTower(placementLocation, player, mapId, plugin);
                         player.sendMessage(ChatColor.GREEN + "Tower placed successfully!");
                     } else {
                         player.sendMessage(ChatColor.RED + "You need at least 500 coins to place a tower.");

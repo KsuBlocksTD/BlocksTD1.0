@@ -47,7 +47,7 @@ public class HubCommand {
         player.sendMessage("Teleporting to the hub...");
 
 
-        // if the player is not in a party or is not the party leader
+        // if the player is not at a party or is not the party leader
         if (!(PartyCommand.checkPartyLeaderStatus(player))){
 //            player.sendMessage("gets into party is null statement"); // for testing
 

@@ -33,10 +33,12 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        api = Parties.getApi();
+        instance = this;
         getLogger().info("BlocksTowerDefence1 has been enabled!");
 
 
-        gameManager = new StartGame(this);
+        gameManager = new StartGame(this, api);
 
         // Register commands with the same instance
         getCommand("startgame").setExecutor(gameManager);
@@ -55,8 +57,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new MobHandler(this), this);
 
-        api = Parties.getApi(); // For static api getter
-        instance = this;
+        // For static api getter
+
         Economy econ = new Economy(); // Creating economy object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 

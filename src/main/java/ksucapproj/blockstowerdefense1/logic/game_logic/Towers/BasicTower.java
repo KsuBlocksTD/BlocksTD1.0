@@ -2,15 +2,15 @@ package ksucapproj.blockstowerdefense1.logic.game_logic.Towers;
 
 import org.bukkit.Location;
 import org.bukkit.entity.*;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-
 public class BasicTower extends Tower {
-    public BasicTower(Location location, Player owner, String mapId) {
-        super(location, owner, mapId, 5, 20L); // Scan radius 5, attacks once per second
+    public BasicTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
+        super(location, owner, mapId, 5, 20L, plugin); // Pass the plugin instance correctly
     }
 
     @Override
