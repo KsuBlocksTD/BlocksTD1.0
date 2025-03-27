@@ -1,7 +1,6 @@
 package ksucapproj.blockstowerdefense1.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -10,15 +9,12 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Bukkit;
+import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 
 
 /*

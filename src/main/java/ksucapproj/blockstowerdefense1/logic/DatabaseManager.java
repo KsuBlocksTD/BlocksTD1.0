@@ -2,8 +2,6 @@ package ksucapproj.blockstowerdefense1.logic;
 
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
-import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
