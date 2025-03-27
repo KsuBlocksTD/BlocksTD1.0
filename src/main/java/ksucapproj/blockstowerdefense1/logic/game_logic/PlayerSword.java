@@ -58,6 +58,7 @@ public class PlayerSword {
         if (upgrades.swordLevel < config.getSwordMaterialMaxLevel()){
 
             upgrades.setSwordLevel(++upgrades.swordLevel);
+            upgrades.swordUpgradesBought += 1;
         }
     }
 
@@ -68,7 +69,7 @@ public class PlayerSword {
         if (upgrades.slownessLevel < config.getSlownessMaxLevel()){
 
             ++upgrades.slownessLevel; // increase the level
-
+            upgrades.swordUpgradesBought += 1;
         }
 
     }
@@ -91,6 +92,7 @@ public class PlayerSword {
         if (upgrades.sweepingEdgeLevel < config.getSweepingEdgeMaxLevel()){
 
             upgrades.setSweepingEdgeLevel(++upgrades.sweepingEdgeLevel); // increase the level
+            upgrades.swordUpgradesBought += 1;
         }
     }
 

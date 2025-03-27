@@ -36,6 +36,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     public void onEnable() {
         getLogger().info("BlocksTowerDefence1 has been enabled!");
 
+        config = new ConfigOptions(this);
+        config.loadConfig();
 
         gameManager = new StartGame(this);
 
@@ -97,14 +99,13 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             getLogger().info("Weather and daylight cycle auto-disabled.");
         }
 
-        config = new ConfigOptions(this);
-
         getLogger().warning("Plugin injected");
     }
 
 
     @Override
     public void onDisable() {
+        saveConfig();
         MapData.saveMaps();
 
         MobHandler.cleanupAll();

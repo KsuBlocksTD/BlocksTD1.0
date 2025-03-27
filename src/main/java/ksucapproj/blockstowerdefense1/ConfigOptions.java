@@ -27,6 +27,9 @@ public class ConfigOptions {
         plugin.saveDefaultConfig();  // Ensures the config.yml is created if not already present
     }
 
+    public void getConfig(){
+        plugin.getConfig();
+    }
 
     /*
 
@@ -41,39 +44,39 @@ public class ConfigOptions {
 
     // Getter for Speed level max upgrade
     public int getSpeedMaxLevel() {
-        return config.getInt("upgrades.player.speed.max-level", 5);  // Default value is 5 if not set
+        return config.getInt("server.upgrades.player.speed.max-level", 5);  // Default value is 5 if not set
     }
 
 
     // Getter for Slowness level max upgrade
     public int getSlownessMaxLevel() {
-        return config.getInt("upgrades.player.sword.slowness.max-level", 5);  // Default value is 5 if not set
+        return config.getInt("server.upgrades.player.sword.slowness.max-level", 5);  // Default value is 5 if not set
     }
 
     public int getSlownessDuration() {
-        return config.getInt("upgrades.player.sword.slowness.duration", 10); // Default value is 10 (ticks) if not set
+        return config.getInt("server.upgrades.player.sword.slowness.duration", 10); // Default value is 10 (ticks) if not set
     }
 
     public boolean getSlownessDurationIncreaseOnUpgrade() {
-        return config.getBoolean("upgrades.player.sword.slowness.duration.increase-duration-on-upgrade", false); // Default value is false if not set
+        return config.getBoolean("server.upgrades.player.sword.slowness.duration.increase-duration-on-upgrade", false); // Default value is false if not set
     }
 
 
     // Getter for Strength level max upgrade
     public int getStrengthMaxLevel() {
-        return config.getInt("upgrades.player.strength.max-level", 5);  // Default value is 5 if not set
+        return config.getInt("server.upgrades.player.strength.max-level", 5);  // Default value is 5 if not set
     }
 
 
     // Getter for Sweeping-Edge level max upgrade
     public int getSweepingEdgeMaxLevel() {
-        return config.getInt("upgrades.player.sword.sweeping-edge.max-level", 5);  // Default value is 5 if not set
+        return config.getInt("server.upgrades.player.sword.sweeping-edge.max-level", 5);  // Default value is 5 if not set
     }
 
 
     public int getSwordMaterialMaxLevel() {
         // 1: wood, 2: stone, 3: iron, 4: diamond, 5: netherite
-        return config.getInt("upgrades.player.sword.material.max-level", 5);  // Default value is 5 if not set
+        return config.getInt("server.upgrades.player.sword.material.max-level", 5);  // Default value is 5 if not set
     }
 
 
