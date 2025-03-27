@@ -163,8 +163,8 @@ public class Economy {
         }
     }
 
-    public String getPlayerMoney() {
-        return String.valueOf(currTotal);
+    public static String getPlayerMoney(Player player) {
+        return String.valueOf(playerEconomies.get(player).currTotal);
     }
 
     // this is for a compilation fix bug that occurs when the # of players in the lobby does not match # of player in playerMoney
