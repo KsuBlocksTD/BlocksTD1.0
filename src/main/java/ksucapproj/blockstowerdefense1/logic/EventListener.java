@@ -117,9 +117,10 @@ public class EventListener implements Listener {
         EntityType mobType = event.getEntityType();
         Player killer = event.getEntity().getKiller();
 
-        if(killer != null){
+        if (killer != null){
             Economy.earnMoney(killer, mobType);
         }
+
         else{
 
         }
