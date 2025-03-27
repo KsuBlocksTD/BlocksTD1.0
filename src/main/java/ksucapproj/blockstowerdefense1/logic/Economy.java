@@ -11,8 +11,28 @@ import java.util.HashMap;
 
 
 public class Economy {
-    private static HashMap<Player, Integer> playerMoney = new HashMap<>();
+    private int totalCoinsGained;
+    private int totalCoinsSpent;
+
+    private static final HashMap<Player, Integer> playerMoney = new HashMap<>();
     private static final HashMap<EntityType, Integer> mobKillRewards = new HashMap<>();
+
+
+        /*
+            These values will only be affected ONLY by:
+                * the amt of coins the player earns from mob kills
+                * the amount of coins they spend on towers/upgrades
+
+            -- Notable exclusions:
+                * sending/receiving money to/from a teammate
+                * adding/removing coins manually via admin command
+                * manually upgrading player/sword stats via admin command
+         */
+
+    public Economy(Player player){
+        this.totalCoinsGained = 0;
+        this.totalCoinsSpent = 0;
+    }
 
     public Economy(){
         // add new mobs here, along with their coin reward amt
@@ -20,7 +40,8 @@ public class Economy {
         mobKillRewards.put(EntityType.SKELETON, 15);
     }
 
-    public static void earnMoney(Player killer, EntityType mobKilled) {
+
+    public static void earnMoney(Player killer, EntityType mobKilled, Economy playerMoneyTotal) {
 
         // if the mob killed is not in the economy constructor
         if (!(mobKillRewards.containsKey(mobKilled))){
@@ -42,14 +63,31 @@ public class Economy {
         for (Player onlinePlayer : playerMoney.keySet()){
 
             // does the action of giving each online, eligible player their reward amount
-            playerMoney.put(onlinePlayer, playerMoney.get(onlinePlayer)+killReward);
+            playerMoney.put(onlinePlayer, (playerMoney.get(onlinePlayer) + killReward));
+            playerMoneyTotal.totalCoinsGained += killReward;
+
             // reminds each player of their total
             //onlinePlayer.sendMessage("You now have " + playerMoney.get(onlinePlayer) + " coins!");
         }
 
     }
 
-    public static void addPlayerMoney(Player player, int amt){ // this is for manual admin command
+    public static boolean spendMoney(Player spender, int cost, Economy playerTotalMoney){
+
+        if (playerMoney.get(spender) >= cost){
+            playerMoney.put(spender, (playerMoney.get(spender) - cost));
+            playerTotalMoney.totalCoinsSpent += cost;
+            return true;
+        }
+
+        return false;
+    }
+
+
+
+
+    // this is for manual admin command
+    public static void addPlayerMoney(Player player, int amt){
         int currMoney = Integer.parseInt(getPlayerMoney(player));
         playerMoney.put(player, currMoney + amt);
     }
@@ -132,6 +170,7 @@ public class Economy {
 
                 if (!(playerMoney.containsKey(player))){
                     playerMoney.put(player, 0);
+                    new Economy(player);
                 }
 
             }
@@ -142,5 +181,13 @@ public class Economy {
 
     public static void setPlayerMoney(Player player, int number) {
         playerMoney.put(player, number);
+    }
+
+    public int getTotalCoinsGained() {
+        return totalCoinsGained;
+    }
+
+    public int getTotalCoinsSpent() {
+        return totalCoinsSpent;
     }
 }

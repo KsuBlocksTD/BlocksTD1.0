@@ -2,6 +2,7 @@ package ksucapproj.blockstowerdefense1.placeholderAPI;
 
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.Economy;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     private final JavaPlugin plugin;
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
+    private static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
 
     public PlaceholderAPIExpansion(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -54,10 +56,46 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             return Economy.getPlayerMoney(player); // Retrieve coins
         }
 
-        if (identifier.equalsIgnoreCase("db_url")) {
+        if (identifier.equalsIgnoreCase("db_Url")) {
             // Fetch the URL from the config
             return plugin.getConfig().getString("database.url");
         }
+
+        if (identifier.equalsIgnoreCase("speedMaxLevel")) {
+            // Fetch the URL from the config
+            return String.valueOf(config.getSpeedMaxLevel());
+        }
+
+        if (identifier.equalsIgnoreCase("slownessMaxLevel")) {
+            // Fetch the URL from the config
+            return String.valueOf(config.getSlownessMaxLevel());
+        }
+
+        if (identifier.equalsIgnoreCase("slownessDuration")) {
+            // Fetch the URL from the config
+            return String.valueOf(config.getSlownessDuration());
+        }
+
+        if (identifier.equalsIgnoreCase("slownessDurationIncreaseOnUpgrade")) {
+            // Fetch the URL from the config
+            return String.valueOf(config.getSlownessDurationIncreaseOnUpgrade());
+        }
+
+        if (identifier.equalsIgnoreCase("strengthMaxLevel")) {
+            // Fetch the URL from the config
+            return String.valueOf(config.getStrengthMaxLevel());
+        }
+
+        if (identifier.equalsIgnoreCase("sweepingEdgeMaxLevel")) {
+            // Fetch the URL from the config
+            return String.valueOf(config.getSweepingEdgeMaxLevel());
+        }
+
+        if (identifier.equalsIgnoreCase("swordMaterialMaxLevel")) {
+            // Fetch the URL from the config
+            return String.valueOf(config.getSwordMaterialMaxLevel());
+        }
+
 
         return null; // Placeholder not found
     }

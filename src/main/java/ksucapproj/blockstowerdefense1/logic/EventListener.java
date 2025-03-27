@@ -11,7 +11,9 @@ import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerSword;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,9 +22,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 public class EventListener implements Listener {
     // TO REBUILD THE ARTIFACT: F5
@@ -37,6 +41,7 @@ public class EventListener implements Listener {
 //        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 //        Bukkit.broadcastMessage(String.valueOf((partyPlayer.isInParty())));
 
+        // This needs to be eventually called when the player is put into a game state instead of when joining the lobby
         Economy.playerJoin(player);
 
 
@@ -78,9 +83,18 @@ public class EventListener implements Listener {
 
 
     @EventHandler
-    public void onInvClick(InventoryClickEvent event) {
+    public void onInvClick(PlayerDropItemEvent event) {
 
-        //event.setCancelled(true);
+        // check if a player is in a game first, or only work if a game has been created
+        // this is just so players cannot drop their swords
+
+        NamespacedKey notDroppableKey = new NamespacedKey(BlocksTowerDefense1.getInstance(), "not_droppable");
+
+        // checks to see if the item has key that disables the ability to drop it
+        if (event.getItemDrop().getItemStack().getItemMeta()
+                .getPersistentDataContainer().has(notDroppableKey, PersistentDataType.BOOLEAN)){
+            event.setCancelled(true); // if true, disable drop ability
+        }
     }
 
 
@@ -122,7 +136,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPartyCreatePost(BukkitPartiesPartyPostCreateEvent event) {
-        System.out.println("[PartiesExample] This event is called when a party has been created");
+        Bukkit.getLogger().info("[PartiesExample] This event is called when a party has been created");
 
         // You cannot cancel it
     }
@@ -140,13 +154,13 @@ public class EventListener implements Listener {
             return;
         }
 
-        System.out.println("[PartiesExample] This event is called when a player is getting invited");
+        Bukkit.getLogger().info("[PartiesExample] This event is called when a player is getting invited");
     }
 
     @EventHandler
     public void onPlayerInvitePost(BukkitPartiesPlayerPostInviteEvent event) {
 
 
-        System.out.println("[PartiesExample] This event is called when a player has been invited");
+        Bukkit.getLogger().info("[PartiesExample] This event is called when a player has been invited");
     }
 }

@@ -23,6 +23,7 @@ import java.util.UUID;
 public class PlayerSword {
 
     private int swordLevel, slownessLevel, sweepingEdgeLevel;
+    private int swordUpgradesBought;
 
     private final Player player;
     private ItemStack playerSword;
@@ -41,6 +42,7 @@ public class PlayerSword {
         this.slownessLevel = 0;
         this.sweepingEdgeLevel = 0;
         this.swordLevel = 1;
+        this.swordUpgradesBought = 0;
 
         // sword attributes instantiated before being passed to createPlayerSword()
         this.playerSword = new ItemStack(Material.WOODEN_SWORD);
@@ -105,6 +107,10 @@ public class PlayerSword {
         return (slownessLevel) * 2;
     }
 
+    public int getSwordUpgradesBought() {
+        return swordUpgradesBought;
+    }
+
     public void setSwordLevel(int swordLevel) {
 
         // based upon the player's sword level, it initializes the newSwordMaterial as it
@@ -163,12 +169,15 @@ public class PlayerSword {
         swordMeta.displayName(Component.text(ChatColor.GOLD + "Tower Defense Sword")); // sword name-tag
         swordMeta.setUnbreakable(true); // makes the sword unbreakable
         swordMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE); // the sword will not show its unbreakable status
+        swordMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
 
         // this is the key to later identify the sword by later
         NamespacedKey key = new NamespacedKey(BlocksTowerDefense1.getInstance(), "sword_id");
+        NamespacedKey notDroppableKey = new NamespacedKey(BlocksTowerDefense1.getInstance(), "not_droppable");
         PersistentDataContainer data = swordMeta.getPersistentDataContainer();
         String swordUUID = player.getUniqueId() + "-" + UUID.randomUUID(); // creates a random UUID for the sword when created
         data.set(key, PersistentDataType.STRING, swordUUID); // stores the swordUUID into the sword's persistent meta-data
+        data.set(notDroppableKey, PersistentDataType.BOOLEAN, false); // creates a key to disable the player from dropping the item
 
         playerSword.setItemMeta(swordMeta); // this applies all changes done to swordMeta to the playerSword
 

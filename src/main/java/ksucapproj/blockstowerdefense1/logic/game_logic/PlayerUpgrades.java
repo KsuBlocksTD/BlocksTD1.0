@@ -23,19 +23,35 @@ public class PlayerUpgrades{
     private static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
 
     private int swiftnessLevel, strengthLevel;
-    private Player player;
-    private PlayerSword sword;
+    private final Player player;
+    private final PlayerSword sword;
+    private final int playerUpgradesBought;
+    private final int totalUpgradesBought;
 
 
     // all levels are initialized to 0, which is representative of their swiftness tier (0-5)
     // i.e. swiftness level 0 = no swiftness, swiftness level 1 = swiftness 1, etc.
 
+    /*
+        -- Eventually requires the implementation of total upgrades bought --
+        * start with a counter tallying the total amount of upgrades bought throughout the game
+            - increment this value each time one is purchased
+        * also tally the amount of playerSword upgrades bought
+        * at the end of the game, call a function in databaseManager that adds the num of total upgrades
+        to the currently stored total
+
+
+     */
+
     public PlayerUpgrades(Player player){
         this.player = player;
         this.swiftnessLevel = 0;
         this.strengthLevel = 0;
+        this.playerUpgradesBought = 0;
 
         this.sword = new PlayerSword(player);
+
+        this.totalUpgradesBought = playerUpgradesBought + getSword().getSwordUpgradesBought();
     }
 
     // if upgradeLevel is less than the maximum specified in the config
@@ -97,5 +113,9 @@ public class PlayerUpgrades{
 
     public Player getPlayer() {
         return player;
+    }
+
+    public int getTotalUpgradesBought() {
+        return totalUpgradesBought;
     }
 }
