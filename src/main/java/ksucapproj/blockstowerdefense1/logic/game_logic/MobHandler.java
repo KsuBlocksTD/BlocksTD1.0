@@ -17,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -30,7 +31,7 @@ public class MobHandler implements Listener {
     // Track zombie movement tasks for cleanup
     private static final Map<UUID, BukkitTask> zombieMovementTasks = new ConcurrentHashMap<>();
     private static final Map<UUID, BukkitTask> healthBarTasks = new ConcurrentHashMap<>();
-    private static final Map<UUID, UUID> zombieOwners = new ConcurrentHashMap<>();
+    //private static final Map<UUID, UUID> zombieOwners = new ConcurrentHashMap<>();
 
     public MobHandler(JavaPlugin plugin) {
         MobHandler.plugin = plugin;
@@ -76,7 +77,8 @@ public class MobHandler implements Listener {
 
         return new BukkitRunnable() {
             int waypointIndex = 0;
-            final double stepDistance = 0.2;
+            final double baseStepDistance = 0.2;
+            final double slownessMultiplier = 0.5; // Reduces speed by half when slowed
 
             @Override
             public void run() {
@@ -86,6 +88,10 @@ public class MobHandler implements Listener {
                     zombieMovementTasks.remove(zombie.getUniqueId());
                     return;
                 }
+
+                // Calculate current step distance based on slowness effect
+                double stepDistance = baseStepDistance *
+                        (zombie.hasPotionEffect(PotionEffectType.SLOWNESS) ? slownessMultiplier : 1.0);
 
                 // Game end check - zombie reached endpoint
                 if (endLocation != null && zombie.getLocation().distance(endLocation) < 1.5) {
@@ -313,6 +319,6 @@ public class MobHandler implements Listener {
 
         zombieMovementTasks.clear();
         healthBarTasks.clear();
-        zombieOwners.clear();
+        //zombieOwners.clear();
     }
 }

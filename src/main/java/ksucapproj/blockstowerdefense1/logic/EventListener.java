@@ -12,6 +12,7 @@ import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerSword;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,9 +21,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 public class EventListener implements Listener {
     // TO REBUILD THE ARTIFACT: F5
@@ -33,6 +36,8 @@ public class EventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event){
         // activates the player join event for economy
         Player player = event.getPlayer();
+
+
 
 //        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 //        Bukkit.broadcastMessage(String.valueOf((partyPlayer.isInParty())));
@@ -78,19 +83,31 @@ public class EventListener implements Listener {
 
 
     @EventHandler
-    public void onInvClick(InventoryClickEvent event) {
+    public void onInvClick(PlayerDropItemEvent event) {
 
-        //event.setCancelled(true);
+        // check if a player is in a game first, or only work if a game has been created
+        // this is just so players cannot drop their swords
+
+        NamespacedKey notDroppableKey = new NamespacedKey(BlocksTowerDefense1.getInstance(), "not_droppable");
+
+        // checks to see if the item has key that disables the ability to drop it
+        if (event.getItemDrop().getItemStack().getItemMeta()
+                .getPersistentDataContainer().has(notDroppableKey, PersistentDataType.BOOLEAN)){
+            event.setCancelled(true); // if true, disable drop ability
+        }
     }
 
 
     @EventHandler
     public void onPlayerHit(EntityDamageByEntityEvent event){
+        if (event.getDamager() instanceof Player){
 
-        PlayerUpgrades player = new PlayerUpgrades((Player) event.getDamager());
+            PlayerUpgrades player = PlayerUpgrades.getPlayerUpgradesMap().get(event.getDamager());
 
-        if (player.getSword().getSlownessLevel() > 0){
-            player.getSword().applySlownessEffect((LivingEntity) event.getEntity());
+            if (player.getSword().getSlownessLevel() > 0){
+                player.getSword().applySlownessEffect((LivingEntity) event.getEntity());
+            }
+
         }
     }
 

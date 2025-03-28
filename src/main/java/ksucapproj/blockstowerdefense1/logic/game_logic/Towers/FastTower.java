@@ -8,14 +8,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-public class BasicTower extends Tower {
-    public BasicTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
-        super(location, owner, mapId, 5, 20L, plugin);
+public class FastTower extends Tower {
+    public FastTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
+        // Small scan radius, very fast attack interval, low damage
+        super(location, owner, mapId, 4, 5L, plugin);
     }
 
     @Override
     protected String getTowerName() {
-        return "Basic Tower";
+        return "Fast Tower";
     }
 
     @Override
@@ -44,9 +45,10 @@ public class BasicTower extends Tower {
             faceTarget(target);
             if (target instanceof Zombie) {
                 Zombie zombie = (Zombie) target;
-                towerEntity.getWorld().strikeLightningEffect(zombie.getLocation());
-                zombie.damage(10.0);
-                zombie.setVelocity(new Vector(0, 0.2, 0));
+                // Particle effect for fast attacks
+                zombie.getWorld().spawnParticle(org.bukkit.Particle.CRIT, zombie.getLocation(), 10);
+                // Low damage but rapid attacks
+                zombie.damage(3.0);
             }
         }
     }

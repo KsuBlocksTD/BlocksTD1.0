@@ -1,241 +1,272 @@
 package ksucapproj.blockstowerdefense1.commands;
 
-import ksucapproj.blockstowerdefense1.maps.MapData;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import static ksucapproj.blockstowerdefense1.maps.MapData.*;
+import ksucapproj.blockstowerdefense1.maps.MapData;
 
-public class MapCommand implements CommandExecutor, TabCompleter {
+public class MapCommand {
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("§cThis command can only be used by players.");
-            return true;
-        }
+    @NullMarked
+    public static LiteralCommandNode<CommandSourceStack> mapCommand() {
+        return Commands.literal("tdmap")
+                .requires(ctx -> ctx.getExecutor() instanceof Player)
 
-        Player player = (Player) sender;
+                // List maps
+                .then(Commands.literal("list")
+                        .executes(MapCommand::executeListMaps)
+                )
 
-        // Check permission
-        if (!player.hasPermission("towerdefense.map")) {
-            player.sendMessage("§cYou don't have permission to use this command.");
-            return true;
-        }
+                // Create map
+                .then(Commands.literal("create")
+                        .then(Commands.argument("map_id", StringArgumentType.word())
+                                .executes(MapCommand::executeCreateMap)
+                        )
+                )
 
-        // No arguments, show help
-        if (args.length == 0) {
-            showHelp(player);
-            return true;
-        }
+                // Delete map
+                .then(Commands.literal("delete")
+                        .then(Commands.argument("map_id", StringArgumentType.word())
+                                .suggests(MapCommand::getAvailableMapsSuggestions)
+                                .executes(MapCommand::executeDeleteMap)
+                        )
+                )
 
-        String subCommand = args[0].toLowerCase();
-
-        switch (subCommand) {
-            case "list":
-                // List all available maps
-                listMaps(player);
-                break;
-
-            case "create":
-                // Create a new map with player's current location as start
-                if (args.length < 2) {
-                    player.sendMessage("§cUsage: /tdmap create <map_id>");
-                    return true;
-                }
-                createMap(player, args[1]);
-                break;
-
-            case "delete":
-                // Delete a map
-                if (args.length < 2) {
-                    player.sendMessage("§cUsage: /tdmap delete <map_id>");
-                    return true;
-                }
-                deleteMap(player, args[1]);
-                break;
-
-            case "setdefault":
                 // Set default map
-                if (args.length < 2) {
-                    player.sendMessage("§cUsage: /tdmap setdefault <map_id>");
-                    return true;
-                }
-                setDefaultMap(player, args[1]);
-                break;
+                .then(Commands.literal("setdefault")
+                        .then(Commands.argument("map_id", StringArgumentType.word())
+                                .suggests(MapCommand::getAvailableMapsSuggestions)
+                                .executes(MapCommand::executeSetDefaultMap)
+                        )
+                )
 
-            case "addwp":
-                // Add waypoint to a map
-                if (args.length < 2) {
-                    player.sendMessage("§cUsage: /tdmap addwp <map_id>");
-                    return true;
-                }
-                addWaypoint(player, args[1]);
-                break;
+                // Add waypoint
+                .then(Commands.literal("addwp")
+                        .then(Commands.argument("map_id", StringArgumentType.word())
+                                .suggests(MapCommand::getAvailableMapsSuggestions)
+                                .executes(MapCommand::executeAddWaypoint)
+                        )
+                )
 
-            case "clearwp":
-                // Clear all waypoints from a map
-                if (args.length < 2) {
-                    player.sendMessage("§cUsage: /tdmap clearwp <map_id>");
-                    return true;
-                }
-                clearWaypoints(player, args[1]);
-                break;
+                // Clear waypoints
+                .then(Commands.literal("clearwp")
+                        .then(Commands.argument("map_id", StringArgumentType.word())
+                                .suggests(MapCommand::getAvailableMapsSuggestions)
+                                .executes(MapCommand::executeClearWaypoints)
+                        )
+                )
 
-            case "info":
                 // Show map info
-                if (args.length < 2) {
-                    player.sendMessage("§cUsage: /tdmap info <map_id>");
-                    return true;
-                }
-                showMapInfo(player, args[1]);
-                break;
+                .then(Commands.literal("info")
+                        .then(Commands.argument("map_id", StringArgumentType.word())
+                                .suggests(MapCommand::getAvailableMapsSuggestions)
+                                .executes(MapCommand::executeShowMapInfo)
+                        )
+                )
 
-            default:
-                showHelp(player);
-                break;
+                // Default help command
+                .executes(MapCommand::showHelp)
+                .build();
+    }
+
+    // Suggestion provider for map IDs
+    private static CompletableFuture<Suggestions> getAvailableMapsSuggestions(
+            final CommandContext<CommandSourceStack> ctx,
+            final SuggestionsBuilder builder) {
+        MapData.getAvailableMaps().stream()
+                .forEach(builder::suggest);
+        return builder.buildFuture();
+    }
+
+    // List Maps
+    private static int executeListMaps(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
         }
 
-        return true;
+        List<String> mapIds = MapData.getAvailableMaps();
+        player.sendMessage(Component.text("§6Available maps (" + mapIds.size() + "):"));
+        mapIds.forEach(mapId -> player.sendMessage(Component.text("§e- " + mapId)));
+        return 1;
     }
 
-    // Show command help
-    private void showHelp(Player player) {
-        player.sendMessage("§6==== Tower Defense Map Commands ====");
-        player.sendMessage("§e/tdmap list §7- List all available maps");
-        player.sendMessage("§e/tdmap create <map_id> §7- Create a new map using your location as start");
-        player.sendMessage("§e/tdmap delete <map_id> §7- Delete a map");
-        player.sendMessage("§e/tdmap setdefault <map_id> §7- Set default map");
-        player.sendMessage("§e/tdmap addwp <map_id> §7- Add waypoint to map at your location");
-        player.sendMessage("§e/tdmap clearwp <map_id> §7- Clear all waypoints from map");
-        player.sendMessage("§e/tdmap info <map_id> §7- Show map information");
-    }
+    // Create Map
+    private static int executeCreateMap(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
+        }
 
+        String mapId = StringArgumentType.getString(ctx, "map_id");
 
-
-    // List all available maps
-    private void listMaps(Player player) {
-        List<String> mapIds = getAvailableMaps();
-        player.sendMessage("§6Available maps (" + mapIds.size() + "):");
-
-    }
-
-    // Create a new map
-    private void createMap(Player player, String mapId) {
-        // Check if map ID is valid
+        // Validate map ID
         if (!mapId.matches("^[a-zA-Z0-9_-]+$")) {
-            player.sendMessage("§cInvalid map ID. Use only letters, numbers, underscores, and hyphens.");
-            return;
+            player.sendMessage(Component.text("§cInvalid map ID. Use only letters, numbers, underscores, and hyphens."));
+            return 1;
         }
 
         // Try to create the map
         if (MapData.createMap(mapId, player.getLocation())) {
-            player.sendMessage("§aCreated map §e" + mapId + " §awith start at your location.");
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Created map <yellow>" + mapId + "</yellow> with start at your location."
+            ));
         } else {
-            player.sendMessage("§cA map with ID §e" + mapId + " §calready exists.");
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "A map with ID <yellow>" + mapId + "</yellow> already exists."
+            ));
         }
+        return 1;
     }
 
-    // Delete a map
-    private void deleteMap(Player player, String mapId) {
+    // Delete Map
+    private static int executeDeleteMap(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
+        }
+
+        String mapId = StringArgumentType.getString(ctx, "map_id");
+
         if (MapData.deleteMap(mapId)) {
-            player.sendMessage("§aDeleted map §e" + mapId + "§a.");
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Deleted map <yellow>" + mapId + "</yellow>."
+            ));
+        } else {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Map <yellow>" + mapId + "</yellow> does not exist."
+            ));
         }
-        else {
-                player.sendMessage("§cMap §e" + mapId + " §cdoes not exist.");
-            }
-
+        return 1;
     }
 
-    // Set default map
-    private void setDefaultMap(Player player, String mapId) {
+    // Set Default Map
+    private static int executeSetDefaultMap(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
+        }
+
+        String mapId = StringArgumentType.getString(ctx, "map_id");
+
         if (MapData.setDefaultMap(mapId)) {
-            player.sendMessage("§aSet §e" + mapId + " §aas the default map.");
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Set <yellow>" + mapId + "</yellow> as the default map."
+            ));
         } else {
-            player.sendMessage("§cMap §e" + mapId + " §cdoes not exist.");
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Map <yellow>" + mapId + "</yellow> does not exist."
+            ));
         }
+        return 1;
     }
 
-    // Add waypoint to a map
-    private void addWaypoint(Player player, String mapId) {
+    // Add Waypoint
+    private static int executeAddWaypoint(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
+        }
+
+        String mapId = StringArgumentType.getString(ctx, "map_id");
+
         if (MapData.addWaypoint(mapId, player.getLocation())) {
-            int waypointCount = getWaypointCount(mapId);
-            player.sendMessage("§aAdded waypoint #" + waypointCount + " to map §e" + mapId + " §aat your location.");
+            int waypointCount = MapData.getWaypointCount(mapId);
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Added waypoint #<yellow>" + waypointCount + "</yellow> to map <yellow>" + mapId + "</yellow> at your location."
+            ));
         } else {
-            player.sendMessage("§cMap §e" + mapId + " §cdoes not exist.");
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Map <yellow>" + mapId + "</yellow> does not exist."
+            ));
         }
+        return 1;
     }
 
-    // Clear all waypoints from a map
-    private void clearWaypoints(Player player, String mapId) {
+    // Clear Waypoints
+    private static int executeClearWaypoints(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
+        }
+
+        String mapId = StringArgumentType.getString(ctx, "map_id");
+
         if (MapData.clearWaypoints(mapId)) {
-            player.sendMessage("§aCleared all waypoints from map §e" + mapId + "§a.");
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Cleared all waypoints from map <yellow>" + mapId + "</yellow>."
+            ));
         } else {
-            player.sendMessage("§cMap §e" + mapId + " §cdoes not exist.");
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Map <yellow>" + mapId + "</yellow> does not exist."
+            ));
         }
+        return 1;
     }
 
-
-
-    // Show map info
-    private void showMapInfo(Player player, String mapId) {
-        MapData.MapDetails map = MapData.getMap(mapId);
-        if (map == null) {
-            player.sendMessage("§cMap §e" + mapId + " §cdoes not exist.");
-            return;
+    // Show Map Info
+    private static int executeShowMapInfo(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
         }
 
+        String mapId = StringArgumentType.getString(ctx, "map_id");
+        MapData.MapDetails map = MapData.getMap(mapId);
 
+        if (map == null) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Map <yellow>" + mapId + "</yellow> does not exist."
+            ));
+            return 1;
+        }
 
-        Location start = map.getStartLocation();
+        Location start = map.getStartLocationinternal();
         List<Location> waypoints = map.getWaypoints();
 
-        player.sendMessage("§6==== Map: " + mapId + " ====");
-        player.sendMessage("§eStart: §7X: " + formatCoordinate(start.getX()) +
+        player.sendMessage(Component.text("§6==== Map: " + mapId + " ===="));
+        player.sendMessage(Component.text("§eStart: §7X: " + formatCoordinate(start.getX()) +
                 ", Y: " + formatCoordinate(start.getY()) +
-                ", Z: " + formatCoordinate(start.getZ()));
-        player.sendMessage("§eWaypoints: §7" + waypoints.size());
+                ", Z: " + formatCoordinate(start.getZ())));
+        player.sendMessage(Component.text("§eWaypoints: §7" + waypoints.size()));
 
         for (int i = 0; i < waypoints.size(); i++) {
             Location wp = waypoints.get(i);
-            player.sendMessage("§e  " + (i + 1) + ": §7X: " + formatCoordinate(wp.getX()) +
+            player.sendMessage(Component.text("§e  " + (i + 1) + ": §7X: " + formatCoordinate(wp.getX()) +
                     ", Y: " + formatCoordinate(wp.getY()) +
-                    ", Z: " + formatCoordinate(wp.getZ()));
+                    ", Z: " + formatCoordinate(wp.getZ())));
         }
+        return 1;
     }
 
-    private String formatCoordinate(double coord) {
+    // Default Help Command
+    private static int showHelp(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
+        }
+
+        player.sendMessage(Component.text("§6==== Tower Defense Map Commands ===="));
+        player.sendMessage(Component.text("§e/tdmap list §7- List all available maps"));
+        player.sendMessage(Component.text("§e/tdmap create <map_id> §7- Create a new map using your location as start"));
+        player.sendMessage(Component.text("§e/tdmap delete <map_id> §7- Delete a map"));
+        player.sendMessage(Component.text("§e/tdmap setdefault <map_id> §7- Set default map"));
+        player.sendMessage(Component.text("§e/tdmap addwp <map_id> §7- Add waypoint to map at your location"));
+        player.sendMessage(Component.text("§e/tdmap clearwp <map_id> §7- Clear all waypoints from map"));
+        player.sendMessage(Component.text("§e/tdmap info <map_id> §7- Show map information"));
+        return 1;
+    }
+
+    // Utility method to format coordinates
+    private static String formatCoordinate(double coord) {
         return String.format("%.2f", coord);
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            // First argument - subcommands
-            List<String> subCommands = Arrays.asList("list", "create", "delete", "setdefault", "addwp", "clearwp", "info");
-            return filterStartingWith(subCommands, args[0]);
-        } else if (args.length == 2) {
-            // Second argument - map ID for all except create
-            if (!args[0].equalsIgnoreCase("create")) {
-                return filterStartingWith(getAvailableMaps(), args[1]);
-            }
-        }
-
-        return new ArrayList<>();
-    }
-
-    private List<String> filterStartingWith(List<String> list, String prefix) {
-        return list.stream()
-                .filter(s -> s.toLowerCase().startsWith(prefix.toLowerCase()))
-                .collect(Collectors.toList());
     }
 }

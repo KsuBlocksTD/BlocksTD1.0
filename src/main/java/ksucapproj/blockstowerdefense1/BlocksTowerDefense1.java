@@ -16,10 +16,9 @@ import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.jetbrains.annotations.NotNull;
+
 
 
 import java.time.Duration;
@@ -36,6 +35,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         api = Parties.getApi();
         instance = this;
         getLogger().info("BlocksTowerDefence1 has been enabled!");
@@ -46,8 +46,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         // Register commands with the same instance
         getCommand("startgame").setExecutor(gameManager);
         getCommand("readyup").setExecutor(gameManager);
-        getCommand("tdmap").setExecutor(new MapCommand());
-        getCommand("tdmap").setTabCompleter(new MapCommand());
+
 
 
         // Use the same gameManager instance for PlayerEventHandler
@@ -60,9 +59,9 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new MobHandler(this), this);
 
-        // For static api getter
 
-        Economy econ = new Economy(); // Creating economy object
+
+
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
         getServer().getPluginManager().registerEvents(new EventListener(), this);
@@ -72,7 +71,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
 
 
-        // needed for instantiating proper mob killing & economy function
+
         // this is solely for recompiling the server and keeping a working economy while players are still online
         Economy.playerCountFix();
 
@@ -83,6 +82,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             commands.registrar().register(TestCommand.addCoinsCommand());
             commands.registrar().register(MtdCommand.register());
             commands.registrar().register(SpawnCommand.register());
+            commands.registrar().register(MapCommand.mapCommand());
+            commands.registrar().register(ApplyUpgradeCommand.register());
 
         });
 

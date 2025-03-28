@@ -1,7 +1,11 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic.Towers;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -80,9 +84,9 @@ public abstract class Tower {
         towerEntity.setRotation(yaw, 0);
     }
 
-    /**
-     * Cancel all tower tasks for a specific player
-     */
+
+     //Cancel all tower tasks for a specific player
+
     public static void cancelTasksForPlayer(UUID playerUUID) {
         Set<UUID> towersToRemove = new HashSet<>();
 
@@ -104,9 +108,9 @@ public abstract class Tower {
         }
     }
 
-    /**
-     * Remove all towers for a specific player and map
-     */
+
+     //Remove all towers for a specific player and map
+
     public static void removeTowersForPlayer(Player player, String mapId) {
         UUID playerUUID = player.getUniqueId();
 
@@ -135,9 +139,7 @@ public abstract class Tower {
         }
     }
 
-    /**
-     * Remove all towers from the game
-     */
+
     public static void removeAllTowers() {
         for (BukkitTask task : towerTasks.values()) {
             if (task != null && !task.isCancelled()) {

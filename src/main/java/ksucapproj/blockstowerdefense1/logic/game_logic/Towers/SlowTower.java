@@ -1,21 +1,25 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic.Towers;
 
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-public class BasicTower extends Tower {
-    public BasicTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
-        super(location, owner, mapId, 5, 20L, plugin);
+public class SlowTower extends Tower {
+    public SlowTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
+        // Medium scan radius, medium attack interval, apply slowness
+        super(location, owner, mapId, 7, 25L, plugin);
     }
 
     @Override
     protected String getTowerName() {
-        return "Basic Tower";
+        return "Slow Tower";
     }
 
     @Override
@@ -42,11 +46,25 @@ public class BasicTower extends Tower {
         if (!targetQueue.isEmpty()) {
             Entity target = targetQueue.poll();
             faceTarget(target);
-            if (target instanceof Zombie) {
-                Zombie zombie = (Zombie) target;
-                towerEntity.getWorld().strikeLightningEffect(zombie.getLocation());
-                zombie.damage(10.0);
-                zombie.setVelocity(new Vector(0, 0.2, 0));
+            if (target instanceof Zombie zombie) {
+                // Minimal direct damage
+                zombie.damage(2.0);
+
+                // Apply slowness effect
+                zombie.addPotionEffect(new PotionEffect(
+                        PotionEffectType.SLOWNESS,
+                        100,  // Duration (5 seconds)
+                        2     //
+                ));
+
+                // Visual effect of slowing
+                zombie.getWorld().spawnParticle(
+                        Particle.DRIPPING_HONEY,
+                        zombie.getLocation(),
+                        20,
+                        0.5, 0.5, 0.5,
+                        0.1
+                );
             }
         }
     }
