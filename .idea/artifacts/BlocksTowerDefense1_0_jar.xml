@@ -4,6 +4,7 @@
     <root id="archive" name="BlocksTowerDefense1.0.jar">
       <element id="module-output" name="BlocksTowerDefense1.0" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/xerial/sqlite-jdbc/3.49.1.0/sqlite-jdbc-3.49.1.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

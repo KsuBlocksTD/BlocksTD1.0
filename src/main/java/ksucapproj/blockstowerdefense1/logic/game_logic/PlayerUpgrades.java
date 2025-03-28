@@ -71,6 +71,15 @@ public class PlayerUpgrades{
     }
 
 
+    // deletes the playerUpgrades object along with their playerSword
+    public static void playerDelete(Player player){
+        PlayerUpgrades leaver = playerUpgradesMap.get(player);
+
+        leaver.getSword().removeTrackedSword();
+        playerUpgradesMap.remove(player);
+    }
+
+
 
 
     public void setSwiftnessLevel(int swiftnessLevel) {

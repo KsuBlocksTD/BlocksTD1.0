@@ -4,32 +4,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ConfigOptions {
-
-    private final JavaPlugin plugin;
-    private final FileConfiguration config;
+    private FileConfiguration config;  // Remove `final` so we can update it after loading
 
     public ConfigOptions(JavaPlugin plugin) {
-        this.plugin = plugin;
-        this.config = plugin.getConfig();
+        config = plugin.getConfig();
     }
 
-    // Save the config file
-    private void saveConfig() {
-        plugin.saveConfig();  // Save changes made to the config file
-    }
 
-    // Reload the config file (useful for runtime updates)
-    public void reloadConfig() {
-        plugin.reloadConfig();  // Reload config.yml to apply any manual changes
-    }
-
-    public void loadConfig() {
-        plugin.saveDefaultConfig();  // Ensures the config.yml is created if not already present
-    }
-
-    public void getConfig(){
-        plugin.getConfig();
-    }
 
     /*
 
@@ -77,6 +58,16 @@ public class ConfigOptions {
     public int getSwordMaterialMaxLevel() {
         // 1: wood, 2: stone, 3: iron, 4: diamond, 5: netherite
         return config.getInt("server.upgrades.player.sword.material.max-level", 5);  // Default value is 5 if not set
+    }
+
+
+
+
+    public String getMOTDOnPlayerJoin(){
+        if (config.getBoolean("server.settings.greet-player.enable")){
+            return config.getString("server.settings.greet-player.message");
+        }
+        return null;
     }
 
 

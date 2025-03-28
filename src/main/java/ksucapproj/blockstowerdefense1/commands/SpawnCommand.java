@@ -38,12 +38,12 @@ public class SpawnCommand {
 
         Location location = player.getLocation();
 
-        config.set("spawn.world", location.getWorld().getName());
-        config.set("spawn.x", location.getBlockX());
-        config.set("spawn.y", location.getBlockY());
-        config.set("spawn.z", location.getBlockZ());
-        config.set("spawn.yaw", location.getYaw());
-        config.set("spawn.pitch", location.getPitch());
+        config.set("server.spawn.world", location.getWorld().getName());
+        config.set("server.spawn.x", location.getBlockX());
+        config.set("server.spawn.y", location.getBlockY());
+        config.set("server.spawn.z", location.getBlockZ());
+        config.set("server.spawn.yaw", location.getYaw());
+        config.set("server.spawn.pitch", location.getPitch());
 
         instance.saveConfig();
 

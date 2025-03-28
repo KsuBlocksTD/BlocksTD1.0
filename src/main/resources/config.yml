@@ -7,18 +7,25 @@ server:
       default-weather:
 
     natural-mob-spawn:
+    motd:
+      enable:
+      message:
+    greet-player:
+      enable:
+      message:
+
 
 
   spawn:
-    world:
-    x:
-    y:
-    z:
-    yaw:
-    pitch:
+    world: world
+    x: 78
+    y: 108
+    z: -709
+    yaw: 179.81284
+    pitch: 5.829553
 
   database:
-    url:
+    url: jdbc:sqlite:F:\IntelliJ Projects\BlocksTD1.0\src\main\resources\test_db.db
 
   upgrades:
 

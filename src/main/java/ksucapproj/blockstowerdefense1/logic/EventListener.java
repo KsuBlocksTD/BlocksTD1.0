@@ -9,6 +9,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.Bukkit;
@@ -31,6 +32,7 @@ public class EventListener implements Listener {
     // TO REBUILD THE ARTIFACT: F5
 
     public static final PartiesAPI api = BlocksTowerDefense1.getApi();
+    ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
@@ -47,6 +49,12 @@ public class EventListener implements Listener {
 
 
         int playerCount = Bukkit.getOnlinePlayers().size();
+
+        // checks if msg on join is enabled
+        // if so, send player the specified message
+        if (config.getMOTDOnPlayerJoin() != null){
+            player.sendMessage(config.getMOTDOnPlayerJoin());
+        }
 
         event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
         //Bukkit.broadcastMessage("The player count is now " + playerCount);

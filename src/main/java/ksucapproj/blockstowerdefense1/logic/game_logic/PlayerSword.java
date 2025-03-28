@@ -59,8 +59,8 @@ public class PlayerSword {
 
         if (swordLevel < config.getSwordMaterialMaxLevel()){
 
-            setSwordLevel(++swordLevel);
-            swordUpgradesBought += 1;
+            setSwordLevel(++swordLevel); // takes in the new material level and makes the new sword with it
+            swordUpgradesBought += 1; // increments bought upgrades counter
         }
     }
 
@@ -71,7 +71,7 @@ public class PlayerSword {
         if (slownessLevel < config.getSlownessMaxLevel()){
 
             ++slownessLevel; // increase the level
-            swordUpgradesBought += 1;
+            swordUpgradesBought += 1; // increments bought upgrades counter
         }
 
     }
@@ -191,7 +191,7 @@ public class PlayerSword {
     }
 
 
-    private void removeTrackedSword(){
+    public void removeTrackedSword(){
         if (swordUUID == null) return; // if the player doesn't have a sword, it cannot be removed
 
         NamespacedKey key = new NamespacedKey(BlocksTowerDefense1.getInstance(), "sword_id");

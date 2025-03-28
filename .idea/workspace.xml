@@ -10,56 +10,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="3/26 5:18 PlayerSword Upgrades working with Sweeping Edge and Material Upgrades">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/BlocksTowerDefense1_0_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/BlocksTowerDefense1_0_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/ApplyUpgradeCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/ApplyUpgradeCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/TestCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/TestCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/Economy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/ConfigOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/ConfigOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/SpawnCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/SpawnCommand.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/EventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/EventListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/placeholderAPI/PlaceholderAPIExpansion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/placeholderAPI/PlaceholderAPIExpansion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/ConfigOptions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/ConfigOptions.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/ApplyUpgradeCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/ApplyUpgradeCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/HubCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/HubCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/MtdCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/MtdCommand.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/SpawnCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/SpawnCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/TestCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/TestCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/CreatePartyCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/CreatePartyCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/DeletePartyCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/DeletePartyCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/InvitePartyCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/InvitePartyCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/KickPartyCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/KickPartyCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/LeavePartyCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/LeavePartyCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/PartyCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/PartyCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/ViewPartyCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/party/ViewPartyCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/AsyncTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/AsyncTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/DatabaseManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/DatabaseManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/Economy.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/EventListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/EventListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/MultiCommandHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/MultiCommandHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/TeleportationLogic.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/TeleportationLogic.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$GameSession.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$GameSession.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/SummonTower$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/SummonTower$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/SummonTower.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/SummonTower.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/SummonTowerCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/SummonTowerCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/UpgradeType.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/maps/MapData$MapCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/maps/MapData$MapCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/maps/MapData$MapDetails.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/maps/MapData$MapDetails.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/maps/MapData.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/maps/MapData.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/placeholderAPI/PlaceholderAPIExpansion.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/placeholderAPI/PlaceholderAPIExpansion.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/test_db.db" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/test_db.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,10 +93,10 @@
     &quot;accountId&quot;: &quot;f5eaf120-fec4-4446-b020-4aa89dec38f3&quot;
   }
 }</component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "2791cbff",
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;2791cbff&quot;,
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2u9Fs6lMnMrPt2QQ9r8327O04qE" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -149,7 +115,7 @@
     &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;
   }
 }</component>
   <component name="RecentsManager">

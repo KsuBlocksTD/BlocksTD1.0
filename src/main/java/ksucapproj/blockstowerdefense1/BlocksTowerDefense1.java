@@ -37,8 +37,9 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     public void onEnable() {
         getLogger().info("BlocksTowerDefence1 has been enabled!");
 
-        config = new ConfigOptions(this);
-        config.loadConfig();
+//        config = new ConfigOptions(this);
+
+        saveDefaultConfig();
 
         gameManager = new StartGame(this);
 
@@ -105,7 +106,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        saveConfig();
+//        saveConfig();
         MapData.saveMaps();
 
         MobHandler.cleanupAll();
