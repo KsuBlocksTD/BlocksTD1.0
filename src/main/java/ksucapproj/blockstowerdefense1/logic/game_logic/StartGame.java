@@ -1,6 +1,6 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
-import ksucapproj.blockstowerdefense1.commands.party.PartyCommand;
+import ksucapproj.blockstowerdefense1.commands.PartyCommand;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
 import org.bukkit.command.Command;

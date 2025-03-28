@@ -37,9 +37,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     public void onEnable() {
         getLogger().info("BlocksTowerDefence1 has been enabled!");
 
-//        config = new ConfigOptions(this);
-
-        saveDefaultConfig();
+        config = new ConfigOptions(this);
+        this.saveDefaultConfig();
 
         gameManager = new StartGame(this);
 

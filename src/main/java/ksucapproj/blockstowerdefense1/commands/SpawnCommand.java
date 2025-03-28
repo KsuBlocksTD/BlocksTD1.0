@@ -46,6 +46,7 @@ public class SpawnCommand {
         config.set("server.spawn.pitch", location.getPitch());
 
         instance.saveConfig();
+        instance.reloadConfig();
 
         player.sendMessage("New spawn point set for the hub!");
 //        player.sendMessage("Yaw set: " + config.getDouble("spawn.pitch"));

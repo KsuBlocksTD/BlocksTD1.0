@@ -1,4 +1,4 @@
-package ksucapproj.blockstowerdefense1.commands.party;
+package ksucapproj.blockstowerdefense1.commands;
 
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
@@ -12,6 +12,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.commands.party.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

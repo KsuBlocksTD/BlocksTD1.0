@@ -9,7 +9,7 @@ import java.sql.*;
 
 public class DatabaseManager {
 
-    private static final String URL = BlocksTowerDefense1.getInstance().getConfig().getString("database.url"); // Change the path accordingly
+    private static final String URL = BlocksTowerDefense1.getInstance().getConfig().getString("server.database.url"); // Change the path accordingly
 
 
 

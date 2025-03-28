@@ -9,7 +9,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
-import ksucapproj.blockstowerdefense1.commands.party.PartyCommand;
 import ksucapproj.blockstowerdefense1.logic.TeleportationLogic;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

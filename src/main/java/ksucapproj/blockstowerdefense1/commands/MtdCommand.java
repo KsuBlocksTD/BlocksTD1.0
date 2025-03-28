@@ -7,7 +7,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import ksucapproj.blockstowerdefense1.commands.party.PartyCommand;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
