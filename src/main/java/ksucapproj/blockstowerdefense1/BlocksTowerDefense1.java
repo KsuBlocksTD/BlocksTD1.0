@@ -10,7 +10,7 @@ import ksucapproj.blockstowerdefense1.commands.MtdCommand;
 import ksucapproj.blockstowerdefense1.commands.SpawnCommand;
 import ksucapproj.blockstowerdefense1.commands.TestCommand;
 import ksucapproj.blockstowerdefense1.logic.AsyncTest;
-import ksucapproj.blockstowerdefense1.logic.Economy;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.EventListener;
 import ksucapproj.blockstowerdefense1.logic.game_logic.*;
 import ksucapproj.blockstowerdefense1.maps.MapData;
@@ -18,6 +18,7 @@ import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -72,10 +73,9 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         }
 
 
-
         // needed for instantiating proper mob killing & economy function
         // this is solely for recompiling the server and keeping a working economy while players are still online
-
+        Economy.playerCountFix();
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             // register main commands here
             commands.registrar().register(TestCommand.flightCommand());
@@ -120,6 +120,10 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         for (Party party : api.getOnlineParties()){
             party.delete();
+        }
+
+        for (Player player : PlayerUpgrades.getPlayerUpgradesMap().keySet()){
+            PlayerUpgrades.getPlayerUpgradesMap().remove(player);
         }
     }
 

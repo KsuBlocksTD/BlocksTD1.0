@@ -1,7 +1,6 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
 import ksucapproj.blockstowerdefense1.commands.party.PartyCommand;
-import ksucapproj.blockstowerdefense1.logic.Economy;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -318,7 +317,7 @@ public class StartGame implements CommandExecutor, Listener {
                 // Only the Basic Tower is implemented
                 if (itemName.equals("§bBasic Tower")) {
                     // Check economy synchronously
-                    int coins = Integer.parseInt(Economy.getPlayerMoney(player));
+                    int coins = Economy.getPlayerMoney(player);
 
                     if (coins >= 500) {
                         // Get placement location
@@ -328,7 +327,7 @@ public class StartGame implements CommandExecutor, Listener {
                         }
 
                         // Deduct coins and place tower
-                        Economy.addPlayerMoney(player, -500);
+                        Economy.spendMoney(player, 500);
                         item.setAmount(item.getAmount() - 1);
 
                         // Spawn tower with player and map association

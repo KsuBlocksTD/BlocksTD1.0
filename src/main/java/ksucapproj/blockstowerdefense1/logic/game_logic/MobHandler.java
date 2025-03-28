@@ -1,7 +1,6 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
-import ksucapproj.blockstowerdefense1.logic.Economy;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

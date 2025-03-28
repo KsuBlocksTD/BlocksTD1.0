@@ -27,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 public class ApplyUpgradeCommand {
 
     private static final List<String> upgradeTypes = List.of("SWIFTNESS", "STRENGTH", "MATERIAL", "SLOWNESS", "SWEEPING-EDGE");
-
     private static PlayerUpgrades playerUpgrades = null;
 
     @NullMarked
@@ -63,13 +62,11 @@ public class ApplyUpgradeCommand {
         final int tier = IntegerArgumentType.getInteger(ctx, "tier");
 
 
-        if (playerUpgrades == null){ // is only working for first player that executes command (MIGHT BE FIXED; UNTESTED)
-            playerUpgrades = new PlayerUpgrades(player);
+        if (PlayerUpgrades.getPlayerUpgradesMap().get(player) == null){
+            PlayerUpgrades.getPlayerUpgradesMap().put(player, new PlayerUpgrades(player));
         }
 
-        if (playerUpgrades.getPlayer() != player){
-            playerUpgrades = new PlayerUpgrades(player);
-        }
+        playerUpgrades = PlayerUpgrades.getPlayerUpgradesMap().get(player);
 
 
         switch (upgradeType) {

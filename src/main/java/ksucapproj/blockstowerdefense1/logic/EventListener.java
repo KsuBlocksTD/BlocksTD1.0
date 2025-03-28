@@ -9,6 +9,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -24,6 +25,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.HashMap;
+
 public class EventListener implements Listener {
     // TO REBUILD THE ARTIFACT: F5
 
@@ -38,7 +41,9 @@ public class EventListener implements Listener {
 //        Bukkit.broadcastMessage(String.valueOf((partyPlayer.isInParty())));
 
         // This needs to be eventually called when the player is put into a game state instead of when joining the lobby
+        // and at that point will be deleted here
         Economy.playerJoin(player);
+        PlayerUpgrades.getPlayerUpgradesMap().put(player, new PlayerUpgrades(player));
 
 
         int playerCount = Bukkit.getOnlinePlayers().size();
@@ -72,6 +77,8 @@ public class EventListener implements Listener {
 
         // activates the player leave event for economy
         Economy.playerLeave(player);
+        PlayerUpgrades.getPlayerUpgradesMap().remove(player);
+
         int playerCount = (Bukkit.getOnlinePlayers().size() - 1);
         Bukkit.broadcastMessage("The player count is now " + playerCount);
     }
@@ -96,11 +103,14 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerHit(EntityDamageByEntityEvent event){
+        if (event.getDamager() instanceof Player){
 
-        PlayerUpgrades player = new PlayerUpgrades((Player) event.getDamager());
+            PlayerUpgrades player = PlayerUpgrades.getPlayerUpgradesMap().get(event.getDamager());
 
-        if (player.getSword().getSlownessLevel() > 0){
-            player.getSword().applySlownessEffect((LivingEntity) event.getEntity());
+            if (player.getSword().getSlownessLevel() > 0){
+                player.getSword().applySlownessEffect((LivingEntity) event.getEntity());
+            }
+
         }
     }
 

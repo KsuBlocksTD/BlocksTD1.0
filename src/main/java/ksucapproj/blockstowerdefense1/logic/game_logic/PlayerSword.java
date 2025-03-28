@@ -34,6 +34,8 @@ public class PlayerSword {
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
     private static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
 
+    // Currently, logic for handling the command of setting sword attributes is hard coded into
+    // ApplyUpgradeCommand.java : 40
 
     public PlayerSword(Player player){
 
@@ -53,23 +55,23 @@ public class PlayerSword {
 
 
 
-    public static void applySwordMaterialUpgrade(PlayerSword upgrades){
+    public void applySwordMaterialUpgrade(){
 
-        if (upgrades.swordLevel < config.getSwordMaterialMaxLevel()){
+        if (swordLevel < config.getSwordMaterialMaxLevel()){
 
-            upgrades.setSwordLevel(++upgrades.swordLevel);
-            upgrades.swordUpgradesBought += 1;
+            setSwordLevel(++swordLevel);
+            swordUpgradesBought += 1;
         }
     }
 
 
-    public static void applySlownessUpgrade(PlayerSword upgrades) {
+    public void applySlownessUpgrade() {
 
         // Apply slowness to the mob (target)
-        if (upgrades.slownessLevel < config.getSlownessMaxLevel()){
+        if (slownessLevel < config.getSlownessMaxLevel()){
 
-            ++upgrades.slownessLevel; // increase the level
-            upgrades.swordUpgradesBought += 1;
+            ++slownessLevel; // increase the level
+            swordUpgradesBought += 1;
         }
 
     }
@@ -87,12 +89,12 @@ public class PlayerSword {
         target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, config.getSlownessDuration(), slownessLevel, false, true));
     }
 
-    public void applySweepingEdgeUpgrade(PlayerSword upgrades){
+    public void applySweepingEdgeUpgrade(){
 
-        if (upgrades.sweepingEdgeLevel < config.getSweepingEdgeMaxLevel()){
+        if (sweepingEdgeLevel < config.getSweepingEdgeMaxLevel()){
 
-            upgrades.setSweepingEdgeLevel(++upgrades.sweepingEdgeLevel); // increase the level
-            upgrades.swordUpgradesBought += 1;
+            setSweepingEdgeLevel(++sweepingEdgeLevel); // increase the level
+            swordUpgradesBought += 1;
         }
     }
 
@@ -125,7 +127,7 @@ public class PlayerSword {
             default -> Material.GOLDEN_SWORD;
         };
 
-        swordMeta = playerSword.getItemMeta();
+        swordMeta = playerSword.getItemMeta(); // stores sword meta-data before sword's deletion
 
         removeTrackedSword();
 
@@ -155,10 +157,10 @@ public class PlayerSword {
             swordMeta.removeEnchant(Enchantment.SWEEPING_EDGE);
         }
 
-        swordMeta.addEnchant(Enchantment.SWEEPING_EDGE, sweepingEdgeLevel, true);
-        playerSword.setItemMeta(swordMeta);
+        swordMeta.addEnchant(Enchantment.SWEEPING_EDGE, sweepingEdgeLevel, true); // adds the enchant with the specified level
+        playerSword.setItemMeta(swordMeta); // places the old sword's meta-data into the new sword's
 
-        removeTrackedSword();
+        removeTrackedSword(); // deletes old sword
 
         player.getInventory().addItem(playerSword);
     }

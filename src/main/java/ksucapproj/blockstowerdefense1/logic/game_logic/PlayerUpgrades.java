@@ -7,10 +7,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.HashMap;
+
 public class PlayerUpgrades{
 
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
     private static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
+    private static final HashMap<Player, PlayerUpgrades> playerUpgradesMap = new HashMap<>();
 
     private int swiftnessLevel, strengthLevel;
     private final Player player;
@@ -47,24 +50,23 @@ public class PlayerUpgrades{
     // if upgradeLevel is less than the maximum specified in the config
     // it will apply one last upgrade, and then on no longer apply
 
-    public static void applySwiftnessUpgrade(PlayerUpgrades upgrades) {
+    public void applySwiftnessUpgrade() {
 
-        if (upgrades.swiftnessLevel < config.getSpeedMaxLevel()){
+        if (swiftnessLevel < config.getSpeedMaxLevel()){
 
             // changes the current speed effect applied and applies the new level on top
-            upgrades.setSwiftnessLevel(upgrades.swiftnessLevel++);
+            setSwiftnessLevel(++swiftnessLevel);
         }
     }
 
 
-    public static void applyStrengthUpgrade(PlayerUpgrades upgrades) {
+    public void applyStrengthUpgrade() {
 
-        if (upgrades.strengthLevel < config.getStrengthMaxLevel()){
+        if (strengthLevel < config.getStrengthMaxLevel()){
 
-            Player player = upgrades.player;
 
             // changes the current strength effect applied and applies the new level on top
-            upgrades.setStrengthLevel(upgrades.strengthLevel++);
+            setStrengthLevel(++strengthLevel);
         }
     }
 
@@ -107,5 +109,9 @@ public class PlayerUpgrades{
 
     public int getTotalUpgradesBought() {
         return totalUpgradesBought;
+    }
+
+    public static HashMap<Player, PlayerUpgrades> getPlayerUpgradesMap() {
+        return playerUpgradesMap;
     }
 }

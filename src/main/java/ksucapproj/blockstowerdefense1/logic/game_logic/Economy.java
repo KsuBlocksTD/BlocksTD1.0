@@ -1,4 +1,4 @@
-package ksucapproj.blockstowerdefense1.logic;
+package ksucapproj.blockstowerdefense1.logic.game_logic;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -74,12 +74,15 @@ public class Economy {
 
     }
 
-    public boolean spendMoney(int cost){
+    // will not need to be static upon StartGame change
+    public static boolean spendMoney(Player player, int cost){
 
-        if (currTotal >= cost){
+        Economy spender = playerEconomies.get(player);
 
-            currTotal -= cost;
-            totalCoinsSpent += cost;
+        if (spender.currTotal >= cost){
+
+            spender.currTotal -= cost;
+            spender.totalCoinsSpent += cost;
 
             return true;
         }
@@ -91,23 +94,26 @@ public class Economy {
 
 
     // this is for manual admin command
-    public void addPlayerMoney(int amt){
-        this.currTotal+= amt;
+    public static void addPlayerMoney(Player player, int amt){
+        Economy playerEconomy = playerEconomies.get(player);
+        playerEconomy.currTotal += amt;
     }
 
 
-    public void shareMoneyWithTeammate(Player receiver, int amt){
-        int currSenderMoney = currTotal;  // sets value for sender's current coin total
+    public static void shareMoneyWithTeammate(Player sender, Player receiver, int amt){
+
+        Economy senderEconomy = playerEconomies.get(sender);
+        int currSenderMoney = senderEconomy.currTotal;  // sets value for sender's current coin total
 
         // if the amt to send is more than currSenderMoney, it sends all of sender's money
         if (amt > currSenderMoney){
             amt = currSenderMoney;
         }
 
-        setPlayerMoney(currTotal -= amt);
+        senderEconomy.setPlayerMoney(currSenderMoney -= amt);
 
         // send confirmation message for send coins transaction
-        player.sendRichMessage("You sent <player> <amount> coins!",
+        sender.sendRichMessage("You sent <player> <amount> coins!",
                 Placeholder.component("player", Component.text(receiver.getName())),
                 Placeholder.component("amount", Component.text(amt))
         );
@@ -119,13 +125,15 @@ public class Economy {
         // send confirmation message for receive coins transaction
         receiver.sendRichMessage("<player> sent you <amount> coins!",
                 Placeholder.component("amount", Component.text(amt)),
-                Placeholder.component("player", Component.text(player.getName()))
+                Placeholder.component("player", Component.text(sender.getName()))
         );
     }
 
 
 
     // simply adds the joining player to the current players eligible to kill and gain money
+    // will not need to be static upon StartGame change
+    // upon change requires deletion of join in EventListener
     public static void playerJoin(Player player){
         playerEconomies.put(player, new Economy(player));
     }
@@ -137,14 +145,12 @@ public class Economy {
     // removes the player from the hashmap, takes their money,
     // and splits evenly it among all remaining players in the game
     public static void playerLeave(Player leaver){
-        Bukkit.broadcastMessage(leaver.getPlayer().getName() + " has left the game! Reallocating coins..");
+        Bukkit.broadcastMessage(leaver.getName() + " has left the game! Reallocating coins..");
 
-        Economy leaverEconomy = playerEconomies.get(leaver);
+        final int leaverMoney = getPlayerEconomies().get(leaver).currTotal;
 
-        final int leaverMoney = leaverEconomy.currTotal;
-
-        leaverEconomy.currTotal = 0;
-        playerEconomies.remove(leaverEconomy);
+        getPlayerEconomies().get(leaver).currTotal = 0;
+        playerEconomies.remove(leaver);
 
         final int numPlayersOnline = playerEconomies.size();
 
@@ -156,20 +162,20 @@ public class Economy {
 
         // if a player in the server is not the leaver, it gives them a portion of the coins
         for (Economy onlinePlayer : playerEconomies.values()){
-            if (onlinePlayer.player != leaverEconomy.player){
+            if (onlinePlayer.player != leaver){
                 onlinePlayer.currTotal += (leaverMoney / numPlayersOnline);
             }
         }
     }
 
-    public static String getPlayerMoney(Player player) {
-        return String.valueOf(playerEconomies.get(player).currTotal);
+    public static int getPlayerMoney(Player player) {
+        return playerEconomies.get(player).currTotal;
     }
 
     // this is for a compilation fix bug that occurs when the # of players in the lobby does not match # of player in playerMoney
     // this executes on startup by default. if the server starts empty, nothing happens
 
-    /*
+
     public static void playerCountFix(){
         if (playerEconomies.size() != Bukkit.getOnlinePlayers().size()){
 
@@ -184,11 +190,17 @@ public class Economy {
 
         }
     }
-     */
 
+    public static HashMap<Player, Economy> getPlayerEconomies() {
+        return playerEconomies;
+    }
 
     public void setPlayerMoney(int currTotal) {
         this.currTotal = currTotal;
+    }
+    public static void setPlayerMoney(Player player, int currTotal){
+        Economy playerEconomy = playerEconomies.get(player);
+        playerEconomy.currTotal = currTotal;
     }
 
     public int getTotalCoinsGained() {

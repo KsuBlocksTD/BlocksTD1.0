@@ -3,7 +3,7 @@ package ksucapproj.blockstowerdefense1.placeholderAPI;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
-import ksucapproj.blockstowerdefense1.logic.Economy;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -53,7 +53,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
         // Define your custom placeholder
         if (identifier.equalsIgnoreCase("coins")) {
-            return Economy.getPlayerMoney(player); // Retrieve coins
+            return String.valueOf(Economy.getPlayerMoney(player)); // Retrieve coins
         }
 
         if (identifier.equalsIgnoreCase("db_Url")) {
