@@ -1,3 +1,9 @@
+
+// this is the code for setting ownership for a tower:
+//towerEntity.setMetadata("owner", new FixedMetadataValue(plugin, owner.getUniqueId().toString()));
+//zombie.setMetadata("attacker", new FixedMetadataValue(plugin, owner.getUniqueId().toString()));
+
+
 package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
 import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;

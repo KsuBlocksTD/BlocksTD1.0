@@ -17,6 +17,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -127,12 +128,19 @@ public class EventListener implements Listener {
 
         EntityType mobType = event.getEntityType();
         Player killer = event.getEntity().getKiller();
+        String playerID;
 
-        if (killer != null){
+        if (event.getEntity() instanceof Zombie){
+            Zombie zomb = (Zombie) event.getEntity();
+
+            if (zomb.hasMetadata("attacker")){
+                playerID = zomb.getMetadata("attacker").get(0).asString();
+                killer = Bukkit.getPlayer(playerID);
+                Economy.earnMoney(killer, mobType);
+                return;
+            }
+
             Economy.earnMoney(killer, mobType);
-        }
-
-        else{
 
         }
     }
