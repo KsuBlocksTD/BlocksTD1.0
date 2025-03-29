@@ -2,11 +2,13 @@ package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
 
 import org.bukkit.Location;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;

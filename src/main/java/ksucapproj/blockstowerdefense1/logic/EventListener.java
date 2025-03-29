@@ -26,8 +26,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.HashMap;
-
 public class EventListener implements Listener {
     // TO REBUILD THE ARTIFACT: F5
 

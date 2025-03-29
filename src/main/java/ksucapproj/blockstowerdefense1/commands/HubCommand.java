@@ -16,7 +16,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import static ksucapproj.blockstowerdefense1.commands.PartyCommand.*;
+import static ksucapproj.blockstowerdefense1.commands.PartyCommand.checkPartyLeaderStatus;
 
 public class HubCommand {
     private static TeleportationLogic tpManager;

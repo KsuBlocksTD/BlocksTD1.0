@@ -1,7 +1,6 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
-import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.Bukkit;
@@ -15,14 +14,15 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MobHandler implements Listener {

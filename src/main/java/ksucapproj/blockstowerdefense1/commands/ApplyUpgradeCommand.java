@@ -10,8 +10,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 

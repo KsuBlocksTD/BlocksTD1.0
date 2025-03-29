@@ -4,7 +4,6 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
