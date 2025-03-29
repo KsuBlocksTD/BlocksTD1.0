@@ -16,6 +16,8 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import static ksucapproj.blockstowerdefense1.commands.PartyCommand.*;
+
 public class HubCommand {
     private static TeleportationLogic tpManager;
     private static final BlocksTowerDefense1 instance = BlocksTowerDefense1.getInstance();
@@ -47,11 +49,11 @@ public class HubCommand {
 
 
         // if the player is not in a party or is not the party leader
-        if (!(PartyCommand.checkPartyLeaderStatus(player))){
+        if (!Boolean.TRUE.equals(checkPartyLeaderStatus(player))) {
 //            player.sendMessage("gets into party is null statement"); // for testing
 
             // passes the target location to the tpManager that employs the function with the teleport logic
-            tpManager.teleportWithRetry(player, hubSpawn, 3 );
+            tpManager.teleportWithRetry(player, hubSpawn, 3);
             return Command.SINGLE_SUCCESS;
         }
 
@@ -81,7 +83,7 @@ public class HubCommand {
     public static Location getHubFromConfig(){
         FileConfiguration config = BlocksTowerDefense1.getInstance().getConfig();
 
-        String worldName = config.getString("spawn.world");
+        String worldName = config.getString("server.spawn.world");
         if (worldName == null){
             instance.getLogger().warning("Cannot get world name from config.yml");
             return null;

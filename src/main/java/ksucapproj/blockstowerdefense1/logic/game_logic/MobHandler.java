@@ -1,6 +1,8 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
+import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,14 +15,14 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MobHandler implements Listener {
@@ -29,7 +31,7 @@ public class MobHandler implements Listener {
     // Track zombie movement tasks for cleanup
     private static final Map<UUID, BukkitTask> zombieMovementTasks = new ConcurrentHashMap<>();
     private static final Map<UUID, BukkitTask> healthBarTasks = new ConcurrentHashMap<>();
-    private static final Map<UUID, UUID> zombieOwners = new ConcurrentHashMap<>();
+    //private static final Map<UUID, UUID> zombieOwners = new ConcurrentHashMap<>();
 
     public MobHandler(JavaPlugin plugin) {
         MobHandler.plugin = plugin;
@@ -75,7 +77,8 @@ public class MobHandler implements Listener {
 
         return new BukkitRunnable() {
             int waypointIndex = 0;
-            final double stepDistance = 0.2;
+            final double baseStepDistance = 0.2;
+            final double slownessMultiplier = 0.5; // Reduces speed by half when slowed
 
             @Override
             public void run() {
@@ -85,6 +88,10 @@ public class MobHandler implements Listener {
                     zombieMovementTasks.remove(zombie.getUniqueId());
                     return;
                 }
+
+                // Calculate current step distance based on slowness effect
+                double stepDistance = baseStepDistance *
+                        (zombie.hasPotionEffect(PotionEffectType.SLOWNESS) ? slownessMultiplier : 1.0);
 
                 // Game end check - zombie reached endpoint
                 if (endLocation != null && zombie.getLocation().distance(endLocation) < 1.5) {
@@ -204,7 +211,7 @@ public class MobHandler implements Listener {
         Economy.setPlayerMoney(player, 0);
 
         // Remove all towers for this player's session
-        SummonTower.removeTowersForPlayer(player, mapId);
+        Tower.removeTowersForPlayer(player, mapId);
 
         // Cancel any active tasks for this player's game
         cancelTasksForPlayer(player.getUniqueId());
@@ -312,6 +319,6 @@ public class MobHandler implements Listener {
 
         zombieMovementTasks.clear();
         healthBarTasks.clear();
-        zombieOwners.clear();
+        //zombieOwners.clear();
     }
 }

@@ -39,13 +39,11 @@ public class EventListener implements Listener {
         // activates the player join event for economy
         Player player = event.getPlayer();
 
-//        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
-//        Bukkit.broadcastMessage(String.valueOf((partyPlayer.isInParty())));
 
         // This needs to be eventually called when the player is put into a game state instead of when joining the lobby
         // and at that point will be deleted here
-        Economy.playerJoin(player);
-        PlayerUpgrades.getPlayerUpgradesMap().put(player, new PlayerUpgrades(player));
+//        Economy.playerJoin(player);
+//        PlayerUpgrades.getPlayerUpgradesMap().put(player, new PlayerUpgrades(player));
 
 
         int playerCount = Bukkit.getOnlinePlayers().size();
@@ -56,8 +54,8 @@ public class EventListener implements Listener {
             player.sendMessage(config.getMOTDOnPlayerJoin());
         }
 
+        // this will eventually be the default greeting on player join
         event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
-        //Bukkit.broadcastMessage("The player count is now " + playerCount);
 
         // this checks if a player is in the db already, if not, adds them to it
         DatabaseManager.checkPlayerInDB(player);
@@ -84,8 +82,9 @@ public class EventListener implements Listener {
 
 
         // activates the player leave event for economy
-        Economy.playerLeave(player);
-        PlayerUpgrades.getPlayerUpgradesMap().remove(player);
+        // this needs to check if the player is in a session first ***************************
+//        Economy.playerLeave(player);
+//        PlayerUpgrades.getPlayerUpgradesMap().remove(player);
 
         int playerCount = (Bukkit.getOnlinePlayers().size() - 1);
         Bukkit.broadcastMessage("The player count is now " + playerCount);
@@ -143,7 +142,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPartyCreatePre(BukkitPartiesPartyPreCreateEvent event) {
-        System.out.println("[PartiesExample] This event is called when a party is being created");
+        Bukkit.getLogger().info("[PartiesExample] This event is called when a party is being created");
 
         if (false)
             event.setCancelled(true); // You can cancel it

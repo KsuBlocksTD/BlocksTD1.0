@@ -13,6 +13,7 @@ import ksucapproj.blockstowerdefense1.logic.AsyncTest;
 import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.EventListener;
 import ksucapproj.blockstowerdefense1.logic.game_logic.*;
+import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
 import org.bukkit.Bukkit;
@@ -35,35 +36,32 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("BlocksTowerDefence1 has been enabled!");
+        getLogger().info("BlocksTowerDefense1 has been enabled!");
+
+        api = Parties.getApi(); // For static api getter
+        instance = this;
 
         config = new ConfigOptions(this);
         this.saveDefaultConfig();
 
-        gameManager = new StartGame(this);
+        gameManager = new StartGame(this, api);
 
         // Register commands with the same instance
         getCommand("startgame").setExecutor(gameManager);
         getCommand("readyup").setExecutor(gameManager);
-        getCommand("summontower").setExecutor(new SummonTowerCommand(this));
-        getCommand("tdmap").setExecutor(new MapData.MapCommand());
-        getCommand("tdmap").setTabCompleter(new MapData.MapCommand());
+
 
 
         // Use the same gameManager instance for PlayerEventHandler
         new MobHandler(this);
-        new SummonTower(this);
         new PlayerEventHandler(this, gameManager);
 
-        MapData.saveDefaultConfig(this);
         MapData.loadMaps(this);
 
         getServer().getPluginManager().registerEvents(new MobHandler(this), this);
-
         getServer().getPluginManager().registerEvents(new MobHandler(this), this);
 
-        api = Parties.getApi(); // For static api getter
-        instance = this;
+
         new Economy(); // Creating economy object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
@@ -76,6 +74,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         // needed for instantiating proper mob killing & economy function
         // this is solely for recompiling the server and keeping a working economy while players are still online
         Economy.playerCountFix();
+
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             // register main commands here
             commands.registrar().register(TestCommand.flightCommand());
@@ -109,14 +108,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         MapData.saveMaps();
 
         MobHandler.cleanupAll();
-        SummonTower.removeAllTowers();
-
-        for (Party party : api.getOnlineParties()){
-            party.delete();
-        }
-
-        getLogger().info("BlocksTowerDefence1 has been disabled!");
-
+        Tower.removeAllTowers();
 
         for (Party party : api.getOnlineParties()){
             party.delete();
@@ -125,6 +117,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         for (Player player : PlayerUpgrades.getPlayerUpgradesMap().keySet()){
             PlayerUpgrades.getPlayerUpgradesMap().remove(player);
         }
+
+        getLogger().info("BlocksTowerDefence1 has been disabled!");
     }
 
 

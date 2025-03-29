@@ -4,6 +4,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -183,6 +184,12 @@ public class PlayerSword {
         data.set(key, PersistentDataType.STRING, swordUUID); // stores the swordUUID into the sword's persistent meta-data
         data.set(notDroppableKey, PersistentDataType.BOOLEAN, false); // creates a key to disable the player from dropping the item
 
+
+        // enable this for tracking/testing purposes of the playerSword on creation
+//        player.sendRichMessage("SwordUUID: <gold><sworduuid></gold>",
+//                Placeholder.component("sworduuid", Component.text(swordUUID))
+//        );
+
         playerSword.setItemMeta(swordMeta); // this applies all changes done to swordMeta to the playerSword
 
         player.getInventory().addItem(playerSword); // gives the player the sword
@@ -207,6 +214,11 @@ public class PlayerSword {
             if (data.has(key, PersistentDataType.STRING)) {
 
                 itemUUID = data.get(key, PersistentDataType.STRING); // if the item's itemUUID matches sword_id, it removes the item from inv
+
+                // enable this for tracking/testing purposes of the playerSword on deletion
+//                player.sendRichMessage("itemUUID: <gold><sworduuid></gold>",
+//                        Placeholder.component("sworduuid", Component.text(itemUUID))
+//                );
 
                 if (swordUUID.equals(itemUUID)) {
                     player.getInventory().remove(item);

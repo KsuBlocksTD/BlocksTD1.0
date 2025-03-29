@@ -10,6 +10,8 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
@@ -27,7 +29,6 @@ import java.util.concurrent.CompletableFuture;
 public class ApplyUpgradeCommand {
 
     private static final List<String> upgradeTypes = List.of("SWIFTNESS", "STRENGTH", "MATERIAL", "SLOWNESS", "SWEEPING-EDGE");
-    private static PlayerUpgrades playerUpgrades = null;
 
     @NullMarked
     public static LiteralCommandNode<CommandSourceStack> register() {
@@ -58,15 +59,21 @@ public class ApplyUpgradeCommand {
             return Command.SINGLE_SUCCESS;
         }
 
+        if (PlayerUpgrades.getPlayerUpgradesMap().get(player) == null){
+            player.sendRichMessage("<red>You must be in a game in order to use this command!");
+
+            // enable this for tracking/testing purposes of the playerUpgradesMap size
+//            player.sendRichMessage("Size of PlayerUpgradesMap(): <gold><size></gold>",
+//                    Placeholder.component("size", Component.text(PlayerUpgrades.getPlayerUpgradesMap().size()))
+//            );
+
+            return Command.SINGLE_SUCCESS;
+        }
+
         final String upgradeType = StringArgumentType.getString(ctx, "upgrade-type");
         final int tier = IntegerArgumentType.getInteger(ctx, "tier");
 
-
-        if (PlayerUpgrades.getPlayerUpgradesMap().get(player) == null){
-            PlayerUpgrades.getPlayerUpgradesMap().put(player, new PlayerUpgrades(player));
-        }
-
-        playerUpgrades = PlayerUpgrades.getPlayerUpgradesMap().get(player);
+        PlayerUpgrades playerUpgrades = PlayerUpgrades.getPlayerUpgradesMap().get(player);
 
 
         switch (upgradeType) {

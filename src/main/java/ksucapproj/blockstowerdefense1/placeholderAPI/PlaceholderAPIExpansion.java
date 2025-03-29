@@ -53,6 +53,10 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
         // Define your custom placeholder
         if (identifier.equalsIgnoreCase("coins")) {
+
+            if (Economy.getPlayerEconomies().get(player) == null){
+                return "N/A";
+            }
             return String.valueOf(Economy.getPlayerMoney(player)); // Retrieve coins
         }
 
