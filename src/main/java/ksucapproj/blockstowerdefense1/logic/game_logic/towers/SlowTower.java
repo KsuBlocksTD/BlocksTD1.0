@@ -6,6 +6,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -52,6 +53,7 @@ public class SlowTower extends Tower {
             if (target instanceof Zombie zombie) {
                 // Minimal direct damage
                 zombie.damage(2.0);
+                target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
 
                 // Apply slowness effect
                 zombie.addPotionEffect(new PotionEffect(

@@ -18,7 +18,7 @@ public class TowerFactory {
         BASIC(500, BasicTower.class),
         FAST(300, FastTower.class),
         SNIPER(750, SniperTower.class),
-        SPLASH(600, SplashTower.class),
+        SPLASH(900, SplashTower.class),
         SLOW(450, SlowTower.class);
 
         private final int cost;
@@ -43,6 +43,8 @@ public class TowerFactory {
         int coins = Economy.getPlayerMoney(player);
 
         if (coins >= towerType.getCost()) {
+
+
             // Use default location if placement location is null
             if (placementLocation == null) {
                 placementLocation = player.getLocation();

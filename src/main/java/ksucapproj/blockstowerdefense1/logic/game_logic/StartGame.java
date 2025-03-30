@@ -3,19 +3,18 @@ package ksucapproj.blockstowerdefense1.logic.game_logic;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
-import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerFactory;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Items.CreateEgg;
+import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -38,6 +37,12 @@ public class StartGame implements CommandExecutor, Listener {
     private final JavaPlugin plugin;
     private final Map<UUID, GameSession> playerSessions = new ConcurrentHashMap<>();
 
+    public boolean isInplayerSessions(UUID uuid) {
+        return playerSessions.containsKey(uuid);
+    }
+
+
+
     public void resetPlayerGame(Player player, String mapId) {
     }
 
@@ -56,6 +61,46 @@ public class StartGame implements CommandExecutor, Listener {
         GameSession(String mapId) {
             this.currentMapId = mapId;
         }
+    }
+
+    public void removeZombie(UUID zombieId, UUID playerUUID) {
+        GameSession session = playerSessions.get(playerUUID);
+        session.activeZombies.remove(zombieId);
+    }
+
+    public void setZombiesPerRound(UUID playerUUID) {
+        GameSession session = playerSessions.get(playerUUID);
+        session.zombiesPerRound += (session.currentRound <= 10) ? 7 : 10;
+    }
+
+    public void setRoundInProgress(UUID playerUUID, boolean bool) {
+        GameSession session = playerSessions.get(playerUUID);
+        session.roundInProgress = bool;
+    }
+
+    public int incrAndGetZombiesKilled(UUID playerUUID) {
+        GameSession session = playerSessions.get(playerUUID);
+        return session.zombiesKilled.incrementAndGet();
+    }
+
+    public  int getZombiesThisRound(UUID playerUUID) {
+        GameSession session = playerSessions.get(playerUUID);
+        return session.totalZombiesThisRound;
+    }
+
+    public void setIsReady(UUID playerUUID, boolean bool) {
+        GameSession session = playerSessions.get(playerUUID);
+        session.isReady = bool;
+    }
+
+    public int getCurrentRound(UUID playerUUID) {
+        GameSession session = playerSessions.get(playerUUID);
+        return session.currentRound;
+    }
+
+    public void setCurrentRound(int currentRound, UUID playerUUID) {
+        GameSession session = playerSessions.get(playerUUID);
+        session.currentRound = currentRound;
     }
 
     public StartGame(JavaPlugin plugin, PartiesAPI api) {
@@ -136,24 +181,6 @@ public class StartGame implements CommandExecutor, Listener {
             handlePlayerQuit(player);
         }
 
-        // Basic Tower
-        ItemStack basicTowerEgg = createTowerEgg("Basic Tower", ChatColor.AQUA,
-                "A simple tower with moderate damage and range");
-
-        // Future tower placeholders
-        ItemStack fastTowerEgg = createTowerEgg("Fast Tower", ChatColor.GREEN,
-                "Rapid-fire tower with low damage but high attack speed");
-
-        ItemStack sniperTowerEgg = createTowerEgg("Sniper Tower", ChatColor.RED,
-                "Long-range tower with high damage but slow attack speed");
-
-        ItemStack splashTowerEgg = createTowerEgg("Splash Tower", ChatColor.YELLOW,
-                "Area-of-effect tower that damages multiple enemies");
-
-        ItemStack slowTowerEgg = createTowerEgg("Slow Tower", ChatColor.BLUE,
-                "Tower that slows down enemies in its range");
-
-
         // Initialize game session
         GameSession session = new GameSession(mapId);
 
@@ -169,11 +196,6 @@ public class StartGame implements CommandExecutor, Listener {
 
         for (PartyPlayer partyMember : party.getOnlineMembers()){
             Player currentPlayer = Bukkit.getPlayer(partyMember.getPlayerUUID());
-
-
-
-
-
 
 
             playerSessions.put(currentPlayer.getUniqueId(), session);
@@ -202,11 +224,11 @@ public class StartGame implements CommandExecutor, Listener {
             currentPlayer.teleport(startLocation);
 
             // Give player tower items
-            currentPlayer.getInventory().addItem(basicTowerEgg);
-            currentPlayer.getInventory().addItem(fastTowerEgg);
-            currentPlayer.getInventory().addItem(sniperTowerEgg);
-            currentPlayer.getInventory().addItem(splashTowerEgg);
-            currentPlayer.getInventory().addItem(slowTowerEgg);
+            currentPlayer.getInventory().addItem(CreateEgg.BASIC.createTowerEgg(CreateEgg.BASIC));
+            currentPlayer.getInventory().addItem(CreateEgg.SPLASH.createTowerEgg(CreateEgg.SPLASH));
+            currentPlayer.getInventory().addItem(CreateEgg.SLOW.createTowerEgg(CreateEgg.SLOW));
+            currentPlayer.getInventory().addItem(CreateEgg.SNIPER.createTowerEgg(CreateEgg.SNIPER));
+            currentPlayer.getInventory().addItem(CreateEgg.FAST.createTowerEgg(CreateEgg.FAST));
 
 
 
@@ -217,25 +239,6 @@ public class StartGame implements CommandExecutor, Listener {
 
     }
 
-
-    //Helper method to create tower spawn eggs with proper metadata
-
-    private ItemStack createTowerEgg(String name, ChatColor color, String description) {
-        ItemStack towerEgg = new ItemStack(Material.ZOMBIE_SPAWN_EGG, 5);
-        ItemMeta meta = towerEgg.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(color + name);
-
-            // Add lore with description and price
-            List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.GRAY + description);
-            lore.add(ChatColor.YELLOW + "Cost: " + ChatColor.GOLD + "500 coins");
-            meta.setLore(lore);
-
-            towerEgg.setItemMeta(meta);
-        }
-        return towerEgg;
-    }
 
     private void handleReadyUpCommand(Player player) {
         UUID playerUUID = player.getUniqueId();
@@ -307,141 +310,6 @@ public class StartGame implements CommandExecutor, Listener {
         }.runTaskTimer(plugin, 0, 10); // 500ms interval (10 ticks)
     }
 
-    @EventHandler
-    public void onPlayerUseEgg(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        ItemStack item = event.getItem();
-
-        // Check if this is a valid tower placement attempt
-        if (item != null && item.getType() == Material.ZOMBIE_SPAWN_EGG && item.getItemMeta() != null) {
-            String itemName = item.getItemMeta().getDisplayName();
-
-            // Check if it's one of our tower spawn eggs
-            if (itemName.startsWith("§")) {  // Check for color codes
-                // Cancel the event to prevent default zombie spawning
-                event.setCancelled(true);
-
-                // Check if player is in a game
-                UUID playerUUID = player.getUniqueId();
-                if (!playerSessions.containsKey(playerUUID)) {
-                    player.sendMessage(ChatColor.RED + "You must start a game first!");
-                    return;
-                }
-
-                GameSession session = playerSessions.get(playerUUID);
-                String mapId = session.currentMapId;
-
-
-
-
-                if (itemName.equals("§aFast Tower")) {
-                    TowerFactory.placeTower(
-                            TowerFactory.TowerType.FAST,
-                            player,
-                            event.getInteractionPoint(),
-                            mapId,
-                            plugin,
-                            item
-                    );
-                }
-                if (itemName.equals("§bBasic Tower")) {
-                    TowerFactory.placeTower(
-                            TowerFactory.TowerType.BASIC,
-                            player,
-                            event.getInteractionPoint(),
-                            mapId,
-                            plugin,
-                            item
-                    );
-                }
-                if (itemName.equals("§cSniper Tower")) {
-                    TowerFactory.placeTower(
-                            TowerFactory.TowerType.SNIPER,
-                            player,
-                            event.getInteractionPoint(),
-                            mapId,
-                            plugin,
-                            item
-                    );
-                }
-                if (itemName.equals("§eSplash Tower")) {
-                    TowerFactory.placeTower(
-                            TowerFactory.TowerType.SPLASH,
-                            player,
-                            event.getInteractionPoint(),
-                            mapId,
-                            plugin,
-                            item
-                    );
-                }
-                if (itemName.equals("§9Slow Tower")) {
-                    TowerFactory.placeTower(
-                            TowerFactory.TowerType.SLOW,
-                            player,
-                            event.getInteractionPoint(),
-                            mapId,
-                            plugin,
-                            item
-
-                    );
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void onEntityDeath(EntityDeathEvent event) {
-        if (!(event.getEntity() instanceof Zombie)) {
-            return;
-        }
-
-        Zombie zombie = (Zombie) event.getEntity();
-
-
-        if (!zombie.hasMetadata("gameSession")) {
-            return;
-        }
-
-        String gameSessionId = zombie.getMetadata("gameSession").get(0).asString();
-        UUID playerUUID = UUID.fromString(gameSessionId);
-
-        // Make sure this player still has an active session
-        if (!playerSessions.containsKey(playerUUID)) {
-            return;
-        }
-
-        GameSession session = playerSessions.get(playerUUID);
-
-        // Remove this zombie from tracking
-        session.activeZombies.remove(zombie.getUniqueId());
-
-        int killed = session.zombiesKilled.incrementAndGet();
-
-        if (killed >= session.totalZombiesThisRound) {
-            Player player = Bukkit.getPlayer(playerUUID);
-            if (player != null && player.isOnline()) {
-                // Process round completion
-                session.currentRound++;
-                session.zombiesPerRound += (session.currentRound <= 10) ? 7 : 10;
-                session.isReady = false;
-
-                // Set round as no longer in progress
-                session.roundInProgress = false;
-
-                Bukkit.broadcastMessage(ChatColor.GOLD + "Round " + (session.currentRound - 1) + " completed!");
-                Bukkit.broadcastMessage(ChatColor.GREEN + "Type /readyup for Round " + session.currentRound);
-            }
-        }
-    }
-
-    /**
-     * Gets the map ID for a player's current game session.
-     * Used by the cleanup process to identify which zombies to remove.
-     */
-    public String getPlayerMapId(UUID playerUUID) {
-        GameSession session = playerSessions.get(playerUUID);
-        return session != null ? session.currentMapId : null;
-    }
 
     /**
      * Method to clean up resources when a player quits.
@@ -450,6 +318,7 @@ public class StartGame implements CommandExecutor, Listener {
     public void handlePlayerQuit(Player player) {
         UUID playerUUID = player.getUniqueId();
         GameSession session = playerSessions.get(playerUUID);
+
 
         if (session == null) {
             return; // No cleanup needed
@@ -460,8 +329,9 @@ public class StartGame implements CommandExecutor, Listener {
             session.spawnTask.cancel();
         }
 
-        // Remove any zombies that are part of this game session
+        // Remove any zombies/towers that are part of this game session
         removeGameZombies(player.getWorld(), session, playerUUID);
+        Tower.removeTowersForPlayer(player, getPlayerMapId(playerUUID));
 
         // Remove the session from our tracking
         playerSessions.remove(playerUUID);
@@ -507,6 +377,15 @@ public class StartGame implements CommandExecutor, Listener {
 
     public boolean isPlayerInGame(UUID playerUUID) {
         return playerSessions.containsKey(playerUUID);
+    }
+
+    /**
+     * Gets the map ID for a player's current game session.
+     * Used by the cleanup process to identify which zombies to remove.
+     */
+    public String getPlayerMapId(UUID playerUUID) {
+        GameSession session = playerSessions.get(playerUUID);
+        return session != null ? session.currentMapId : null;
     }
 
 

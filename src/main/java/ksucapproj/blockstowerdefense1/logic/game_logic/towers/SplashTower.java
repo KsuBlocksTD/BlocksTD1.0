@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -54,6 +55,7 @@ public class SplashTower extends Tower {
 
                 // Damage primary target
                 primaryZombie.damage(8.0);
+                target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
 
                 // Damage nearby zombies within 2 blocks
                 for (Entity entity : nearbyEntities) {
@@ -61,7 +63,8 @@ public class SplashTower extends Tower {
                             entity.getLocation().distance(primaryZombie.getLocation()) <= 2.0) {
 
                         nearbyZombie.damage(8.0);
-                        // Slight knockback for each zombie
+                        target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
+                        // Slight slow for each zombie
                         nearbyZombie.addPotionEffect(new PotionEffect(
                                 PotionEffectType.SLOWNESS,
                                 10,  // Duration

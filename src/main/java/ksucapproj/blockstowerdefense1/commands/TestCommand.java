@@ -93,7 +93,7 @@ public class TestCommand {
     // /givecoins <coinamt>
     @NullMarked
     public static LiteralCommandNode<CommandSourceStack> giveCoinsCommand() {
-        return Commands.literal("addcoins")
+        return Commands.literal("givecoins")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
 
                 .then(Commands.argument("coinamt", IntegerArgumentType.integer())

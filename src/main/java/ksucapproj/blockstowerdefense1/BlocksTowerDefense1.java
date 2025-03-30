@@ -10,7 +10,6 @@ import ksucapproj.blockstowerdefense1.commands.MtdCommand;
 import ksucapproj.blockstowerdefense1.commands.SpawnCommand;
 import ksucapproj.blockstowerdefense1.commands.TestCommand;
 import ksucapproj.blockstowerdefense1.logic.AsyncTest;
-import ksucapproj.blockstowerdefense1.logic.EventListener;
 import ksucapproj.blockstowerdefense1.logic.game_logic.*;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
@@ -23,6 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.time.Duration;
+import java.util.EventListener;
 
 
 public class BlocksTowerDefense1 extends JavaPlugin {
@@ -64,7 +64,6 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         new Economy(); // Creating economy object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
-        getServer().getPluginManager().registerEvents(new EventListener(), this);
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new PlaceholderAPIExpansion(this).register();
         }

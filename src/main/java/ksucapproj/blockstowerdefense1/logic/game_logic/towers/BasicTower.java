@@ -51,7 +51,8 @@ public class BasicTower extends Tower {
                 Zombie zombie = (Zombie) target;
                 towerEntity.getWorld().strikeLightningEffect(zombie.getLocation());
                 zombie.damage(10.0);
-                zombie.setVelocity(new Vector(0, 0.2, 0));
+                target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
+
             }
         }
     }

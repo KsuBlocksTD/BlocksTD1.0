@@ -30,8 +30,17 @@ public abstract class Tower {
     protected int scanRadius;
     protected long attackInterval;
 
+    public UUID getTowerOwner(UUID towerUUID) {
+        for (Map.Entry<UUID, UUID> entry : towerOwners.entrySet()) {
+            if (entry.getValue().equals(towerUUID)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
     public Tower(Location location, Player owner, String mapId, int scanRadius, long attackInterval, JavaPlugin plugin) {
-        this.plugin = plugin;  // No longer modifying a static variable
+        this.plugin = plugin;
         this.location = location;
         this.owner = owner;
         this.mapId = mapId;
@@ -52,6 +61,8 @@ public abstract class Tower {
         tower.setSilent(true);
         tower.setCustomName(getTowerName());
         tower.setCustomNameVisible(true);
+        //this is the code for setting ownership for a tower:
+      //  towerEntity.setMetadata("owner", new FixedMetadataValue(plugin, owner.getUniqueId().toString()));
 
         tower.setMetadata("tower", new FixedMetadataValue(plugin, "true"));
         tower.setMetadata("owner", new FixedMetadataValue(plugin, owner.getUniqueId().toString()));
@@ -84,6 +95,7 @@ public abstract class Tower {
         float yaw = (float) Math.toDegrees(Math.atan2(-direction.getX(), direction.getZ()));
         yaw = (yaw + 360) % 360;
         towerEntity.setRotation(yaw, 0);
+
     }
 
 

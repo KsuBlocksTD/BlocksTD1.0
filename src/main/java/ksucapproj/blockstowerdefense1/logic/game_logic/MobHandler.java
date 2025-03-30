@@ -222,8 +222,6 @@ public class MobHandler implements Listener {
         // Reset the player's game state
         gameManager.resetPlayerGame(player, mapId);
 
-        // Make sure the zombie is removed
-        zombie.remove();
     }
 
     /**

@@ -1,9 +1,11 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Comparator;
@@ -48,9 +50,11 @@ public class FastTower extends Tower {
             if (target instanceof Zombie) {
                 Zombie zombie = (Zombie) target;
                 // Particle effect for fast attacks
-                zombie.getWorld().spawnParticle(org.bukkit.Particle.CRIT, zombie.getLocation(), 10);
+                zombie.getWorld().spawnParticle(Particle.SMOKE, zombie.getLocation(), 10);
                 // Low damage but rapid attacks
                 zombie.damage(3.0);
+                //                 this is the code for setting ownership for a tower:
+                target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
             }
         }
     }

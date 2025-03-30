@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
@@ -53,6 +54,7 @@ public class SniperTower extends Tower {
                 zombie.getWorld().spawnParticle(Particle.EXPLOSION, zombie.getLocation(), 1);
                 // High damage but slow attack
                 zombie.damage(25.0);
+                target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
                 // Slight knockback effect
                 zombie.setVelocity(new Vector(0, 0.5, 0));
             }
