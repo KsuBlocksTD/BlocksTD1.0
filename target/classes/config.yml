@@ -63,6 +63,11 @@ server:
           max-level:
           cost:
 
+    towers:
+
+
+
+
 
   economy:
     mobs:
@@ -83,3 +88,22 @@ server:
           damage:
 
         base-speed:
+
+    towers:
+      basic:
+        cost:
+
+      fast:
+        cost:
+
+      sniper:
+        cost:
+
+      splash:
+        cost:
+
+      slow:
+        cost:
+
+
+

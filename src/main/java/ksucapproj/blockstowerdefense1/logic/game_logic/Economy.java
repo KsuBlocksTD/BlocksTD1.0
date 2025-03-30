@@ -22,8 +22,11 @@ public class Economy {
 
         /*
             These values will only be affected ONLY by:
-                * the amt of coins the player earns from mob kills
-                * the amount of coins they spend on towers/upgrades
+                * the amt of coins the player earns:
+                    -  from mob kills
+                    - at the end of each round
+                * the amt of coins the player spends:
+                    -  on towers/upgrades
 
             -- Notable exclusions:
                 * sending/receiving money to/from a teammate

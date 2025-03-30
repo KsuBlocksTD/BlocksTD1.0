@@ -23,6 +23,7 @@ public class DatabaseManager {
 
         catch (NullPointerException e){
             Bukkit.getLogger().warning("Database URL not located.");
+            e.printStackTrace();
         }
 
         catch (ClassNotFoundException e) {
@@ -69,6 +70,7 @@ public class DatabaseManager {
         }
     }
 
+
     public static void checkPlayerInDB(Player player){ // has helper methods to create more concise code
 
         String uuidString = player.getUniqueId().toString();
@@ -92,6 +94,7 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+
 
     public static void updatePlayerData(PlayerUpgrades upgrades){
 

@@ -17,10 +17,11 @@ public class PlayerUpgrades{
     private static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
     private static final HashMap<Player, PlayerUpgrades> playerUpgradesMap = new HashMap<>();
 
+    private int playerUpgradesBought;
     private int swiftnessLevel, strengthLevel;
     private final Player player;
     private final PlayerSword sword;
-    private final int totalUpgradesBought;
+    private int totalUpgradesBought;
     private int currTotal;
     private int cost;
 
@@ -43,7 +44,7 @@ public class PlayerUpgrades{
         this.player = player;
         this.swiftnessLevel = 0;
         this.strengthLevel = 0;
-        int playerUpgradesBought = 0;
+        this.playerUpgradesBought = 0;
 
         this.sword = new PlayerSword(player);
 
@@ -64,6 +65,7 @@ public class PlayerUpgrades{
                 Economy.spendMoney(player, cost);
                 // changes the current speed effect applied and applies the new level on top
                 setSwiftnessLevel(++swiftnessLevel);
+                playerUpgradesBought += 1;
                 return;
             }
             sendMaxLevelMsg();

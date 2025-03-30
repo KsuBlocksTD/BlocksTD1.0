@@ -28,7 +28,7 @@ public class ConfigOptions {
         return config.getInt("server.upgrades.player.speed.max-level", 5);  // Default value is 5 if not set
     }
     public int getSpeedBaseCost() {
-        return config.getInt("server.upgrades.player.speed.cost", 500);
+        return config.getInt("server.upgrades.player.speed.cost", 500); // Default value is 500 if not set
     }
 
 
@@ -36,7 +36,9 @@ public class ConfigOptions {
     public int getSlownessMaxLevel() {
         return config.getInt("server.upgrades.player.sword.slowness.max-level", 5);  // Default value is 5 if not set
     }
-
+    public int getSlownessBaseCost(){
+        return config.getInt("server.upgrades.player.sword.slowness.cost", 400); // Default value is 400 if not set
+    }
     public int getSlownessDuration() {
         return config.getInt("server.upgrades.player.sword.slowness.duration", 10); // Default value is 10 (ticks) if not set
     }
@@ -59,11 +61,18 @@ public class ConfigOptions {
     public int getSweepingEdgeMaxLevel() {
         return config.getInt("server.upgrades.player.sword.sweeping-edge.max-level", 5);  // Default value is 5 if not set
     }
+    public int getSweepingEdgeBaseCost() {
+        return config.getInt("server.upgrades.player.sword.sweeping-edge.cost", 400);  // Default value is 600 if not set
+    }
 
 
     public int getSwordMaterialMaxLevel() {
         // 1: wood, 2: stone, 3: iron, 4: diamond, 5: netherite
         return config.getInt("server.upgrades.player.sword.material.max-level", 5);  // Default value is 5 if not set
+    }
+    public int getSwordMaterialBaseCost() {
+        // 1: wood, 2: stone, 3: iron, 4: diamond, 5: netherite
+        return config.getInt("server.upgrades.player.sword.material.cost", 400);  // Default value is 400 if not set
     }
 
 
