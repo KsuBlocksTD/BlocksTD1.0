@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -108,6 +109,30 @@ public class MobHandler implements Listener {
         return availableMobs.get(random.nextInt(availableMobs.size()));
     }
 
+    private static void applyEffectBasedOnNearbyMob(Zombie zombie) {
+        Location zombieLocation = zombie.getLocation();
+        double radius = 5.0;
+
+        for (Entity entity : zombieLocation.getWorld().getNearbyEntities(zombieLocation, radius, radius, radius)) {
+            if (entity instanceof IronGolem) {
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 10, 3));
+                return;
+            } else if (entity instanceof Witch) {
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 10, 3));
+                return;
+            } else if (entity instanceof Enderman) {
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 1));
+                return;
+            } else if (entity instanceof Piglin) {
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 10, 3));
+                return;
+            } else if (entity instanceof Blaze) {
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 4, 1)); // make them invulnerable until blaze is killed
+                return;
+            }
+        }
+    }
+
 
     public static Zombie spawnMob(World world, String mapId, int currentRound) {
         // Count for random buffs loop
@@ -116,6 +141,8 @@ public class MobHandler implements Listener {
         // Get the start location for the specified map
         Location spawnPoint = MapData.getStartLocation(world, mapId);
 
+
+        // Spawn special mobs for difficulty increase
         if(checkifSpawnSpecial(currentRound)) {
             EntityType type = getMob(currentRound);
 
@@ -179,6 +206,7 @@ public class MobHandler implements Listener {
             int waypointIndex = 0;
             final double baseStepDistance = 0.2;
             final double slownessMultiplier = 0.5; // Reduces speed by half when slowed
+            final  double speedMultiplier = 2.0;  // Doubles speed when applied
 
             @Override
             public void run() {
@@ -189,9 +217,15 @@ public class MobHandler implements Listener {
                     return;
                 }
 
-                // Calculate current step distance based on slowness effect
-                double stepDistance = baseStepDistance *
-                        (zombie.hasPotionEffect(PotionEffectType.SLOWNESS) ? slownessMultiplier : 1.0);
+                // Checking if zombie is near special zombie and applying buff
+                if(zombie.getType() == EntityType.ZOMBIE) {
+                    applyEffectBasedOnNearbyMob((Zombie) zombie);
+                }
+
+
+                // Calculate current step distance based on current effect
+                double stepDistance = baseStepDistance * (zombie.hasPotionEffect(PotionEffectType.SLOWNESS) ? slownessMultiplier : 1.0);
+                stepDistance = stepDistance * (zombie.hasPotionEffect(PotionEffectType.SPEED) ? speedMultiplier : 1.0);
 
                 // Game end check - zombie reached endpoint
                 if (endLocation != null && zombie.getLocation().distance(endLocation) < 1.5) {

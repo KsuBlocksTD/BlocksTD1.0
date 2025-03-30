@@ -9,27 +9,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="3/29 12:10 Major bug fixes:&#10;-Fixed Sword tracking upon game start/join leave/exit&#10;-Players not being added properly to their upgrades&#10;-Game logic inv. deletion on quit/game-end&#10;-Misc">
+    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="things i changed: &#10;-zombies per round is linear, starting at 5 and +=5 every round FOR NOW &#10;-zombies randomly have a chance of spawning with chest and legs, tier depends on the round you are on, gold for 1-10 iron for 11-20 ect,&#10;-added 5 new mob types, a new one for every 10 rounds iron golem, witch, enderman, piglin, and blaze, They currently do nothing but will add effects later. &#10;-fixed some bugs with splash tower not crediting kills&#10;-DID NOT add new mobs to economy this must be done to earn coins from them&#10;-fixed bug where towers would not dissapear onDisable&#10;-Didnt get to do &quot;im also gonna make you start with 500 coins, add a finish round coin bonus, and have it tell you the total you earned for the round&quot; but its bedtime">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/BasicTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/BasicTower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/FastTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/FastTower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SlowTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SlowTower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SniperTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SniperTower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SplashTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SplashTower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/Tower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/Tower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -318,12 +303,30 @@
       <option name="project" value="LOCAL" />
       <updated>1743221510618</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="things i changed: &#10;-zombies per round is linear, starting at 5 and +=5 every round FOR NOW &#10;-zombies randomly have a chance of spawning with chest and legs, tier depends on the round you are on, gold for 1-10 iron for 11-20 ect,&#10;-added 5 new mob types, a new one for every 10 rounds iron golem, witch, enderman, piglin, and blaze, They currently do nothing but will add effects later. &#10;-fixed some bugs with splash tower not crediting kills&#10;-DID NOT add new mobs to economy this must be done to earn coins from them&#10;-fixed bug where towers would not dissapear onDisable&#10;-Didnt get to do &quot;im also gonna make you start with 500 coins, add a finish round coin bonus, and have it tell you the total you earned for the round&quot; but its bedtime">
+      <option name="closed" value="true" />
+      <created>1743317062140</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1743317062140</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="00b48fca-935f-48e1-845b-1c9fb160b5e0" value="TOOL_WINDOW" />
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
+        <entry key="00b48fca-935f-48e1-845b-1c9fb160b5e0">
+          <value>
+            <State />
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State>
@@ -364,6 +367,7 @@
     <MESSAGE value="3/26 5:18 PlayerSword Upgrades working with Sweeping Edge and Material Upgrades" />
     <MESSAGE value="3/28  1:11 &#10;&#10;config.yml from src/resources not copying to server's plugins folder" />
     <MESSAGE value="3/29 12:10 Major bug fixes:&#10;-Fixed Sword tracking upon game start/join leave/exit&#10;-Players not being added properly to their upgrades&#10;-Game logic inv. deletion on quit/game-end&#10;-Misc" />
-    <option name="LAST_COMMIT_MESSAGE" value="3/29 12:10 Major bug fixes:&#10;-Fixed Sword tracking upon game start/join leave/exit&#10;-Players not being added properly to their upgrades&#10;-Game logic inv. deletion on quit/game-end&#10;-Misc" />
+    <MESSAGE value="things i changed: &#10;-zombies per round is linear, starting at 5 and +=5 every round FOR NOW &#10;-zombies randomly have a chance of spawning with chest and legs, tier depends on the round you are on, gold for 1-10 iron for 11-20 ect,&#10;-added 5 new mob types, a new one for every 10 rounds iron golem, witch, enderman, piglin, and blaze, They currently do nothing but will add effects later. &#10;-fixed some bugs with splash tower not crediting kills&#10;-DID NOT add new mobs to economy this must be done to earn coins from them&#10;-fixed bug where towers would not dissapear onDisable&#10;-Didnt get to do &quot;im also gonna make you start with 500 coins, add a finish round coin bonus, and have it tell you the total you earned for the round&quot; but its bedtime" />
+    <option name="LAST_COMMIT_MESSAGE" value="things i changed: &#10;-zombies per round is linear, starting at 5 and +=5 every round FOR NOW &#10;-zombies randomly have a chance of spawning with chest and legs, tier depends on the round you are on, gold for 1-10 iron for 11-20 ect,&#10;-added 5 new mob types, a new one for every 10 rounds iron golem, witch, enderman, piglin, and blaze, They currently do nothing but will add effects later. &#10;-fixed some bugs with splash tower not crediting kills&#10;-DID NOT add new mobs to economy this must be done to earn coins from them&#10;-fixed bug where towers would not dissapear onDisable&#10;-Didnt get to do &quot;im also gonna make you start with 500 coins, add a finish round coin bonus, and have it tell you the total you earned for the round&quot; but its bedtime" />
   </component>
 </project>
