@@ -27,6 +27,9 @@ public class ConfigOptions {
     public int getSpeedMaxLevel() {
         return config.getInt("server.upgrades.player.speed.max-level", 5);  // Default value is 5 if not set
     }
+    public int getSpeedBaseCost() {
+        return config.getInt("server.upgrades.player.speed.cost", 500);
+    }
 
 
     // Getter for Slowness level max upgrade
@@ -46,6 +49,9 @@ public class ConfigOptions {
     // Getter for Strength level max upgrade
     public int getStrengthMaxLevel() {
         return config.getInt("server.upgrades.player.strength.max-level", 5);  // Default value is 5 if not set
+    }
+    public int getStrengthBaseCost() {
+        return config.getInt("server.upgrades.player.strength.cost", 750);
     }
 
 
@@ -70,6 +76,24 @@ public class ConfigOptions {
         return null;
     }
 
+    public int getBasicTowerCost(){
+        return config.getInt("server.economy.towers.basic.cost", 500);
+    }
 
+    public int getFastTowerCost(){
+        return config.getInt("server.economy.towers.fast.cost", 300);
+    }
+
+    public int getSniperTowerCost(){
+        return config.getInt("server.economy.towers.sniper.cost", 750);
+    }
+
+    public int getSplashTowerCost(){
+        return config.getInt("server.economy.towers.splash.cost", 900);
+    }
+
+    public int getSlowTowerCost(){
+        return config.getInt("server.economy.towers.slow.cost", 450);
+    }
 
 }

@@ -40,12 +40,19 @@ public class DatabaseManager {
 
 
     private static void insertPlayer(Connection conn, String uuidAsString, String name) throws SQLException{
-        String sql = "INSERT INTO players (uuid, name) VALUES (?, ?)";
+        String sql = "INSERT INTO players (uuid, name, total_games_played, total_wins, total_coins_gained," +
+                " total_coins_spent, total_towers_bought, total_upgrades_bought) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement pstmt = conn.prepareStatement(sql);
 
         pstmt.setString(1, uuidAsString);
         pstmt.setString(2, name);
+        pstmt.setInt(3, 0);
+        pstmt.setInt(4, 0);
+        pstmt.setInt(5, 0);
+        pstmt.setInt(6, 0);
+        pstmt.setInt(7, 0);
+        pstmt.setInt(8, 0);
         pstmt.executeUpdate();
 
         Bukkit.getLogger().info("Inserted: " + uuidAsString + " (username = " + name + ")"); // confirmation msg

@@ -27,6 +27,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.*;
+
 
 public class StartGame implements CommandExecutor, Listener {
 
@@ -49,6 +51,7 @@ public class StartGame implements CommandExecutor, Listener {
     // Game session class to track per-player game state
     private static class GameSession {
         int currentRound = 1;
+        float multiplier = 1.25F;
         int zombiesPerRound = 5;
         boolean isReady = false;
         AtomicInteger zombiesKilled = new AtomicInteger(0);
@@ -202,7 +205,7 @@ public class StartGame implements CommandExecutor, Listener {
 
 
             // Add player to economy system
-            Economy.playerJoin(currentPlayer);
+            playerJoin(currentPlayer);
 
             // Clear player's inventory first
             currentPlayer.getInventory().clear();
@@ -337,7 +340,7 @@ public class StartGame implements CommandExecutor, Listener {
         playerSessions.remove(playerUUID);
         // Deletes player and their sword
         PlayerUpgrades.playerDelete(player);
-        Economy.playerLeave(player);
+        playerLeave(player);
 
         for (ItemStack item : player.getInventory().getContents()){
             if (item == null) {
@@ -395,6 +398,15 @@ public class StartGame implements CommandExecutor, Listener {
             session.spawnTask.cancel();
             session.spawnTask = null;
         }
+    }
+
+    public void roundEnd(Player player){
+        // finds the player's game session
+        GameSession session = playerSessions.get(player.getUniqueId());
+        // finds the player's created economy
+        Economy econ = getPlayerEconomies().get(player);
+        // gives a round bonus based upon what round they are on
+        econ.addMoneyOnRoundEnd(session.currentRound);
     }
 
 

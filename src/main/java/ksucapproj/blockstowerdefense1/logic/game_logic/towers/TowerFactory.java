@@ -55,7 +55,7 @@ public class TowerFactory {
                 towerType.getTowerClass().getConstructor(Location.class, Player.class, String.class, JavaPlugin.class).newInstance(placementLocation, player, mapId, plugin);
 
                 // Deduct coins
-                Economy.addPlayerMoney(player, -towerType.getCost());
+                Economy.spendMoney(player, towerType.getCost());
 
                 // Reduce item stack
                 item.setAmount(item.getAmount() - 1);

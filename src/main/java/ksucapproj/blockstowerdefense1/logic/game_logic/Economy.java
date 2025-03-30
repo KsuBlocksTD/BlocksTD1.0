@@ -33,7 +33,7 @@ public class Economy {
 
     public Economy(Player player){
         this.player = player;
-        this.currTotal = 0;
+        this.currTotal = 500;
         this.totalCoinsGained = 0;
         this.totalCoinsSpent = 0;
     }
@@ -97,6 +97,12 @@ public class Economy {
     public static void addPlayerMoney(Player player, int amt){
         Economy playerEconomy = playerEconomies.get(player);
         playerEconomy.currTotal += amt;
+    }
+
+    public void addMoneyOnRoundEnd(int roundNum){
+        int endRoundBonus = (100 + roundNum);
+        currTotal += endRoundBonus;
+        totalCoinsGained += endRoundBonus;
     }
 
 
