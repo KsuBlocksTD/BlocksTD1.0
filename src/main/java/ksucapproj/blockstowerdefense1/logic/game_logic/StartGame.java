@@ -70,7 +70,7 @@ public class StartGame implements CommandExecutor, Listener {
 
     public void setZombiesPerRound(UUID playerUUID) {
         GameSession session = playerSessions.get(playerUUID);
-        session.zombiesPerRound += (session.currentRound <= 10) ? 7 : 10;
+        session.zombiesPerRound += 5; // increases by 5 every round
     }
 
     public void setRoundInProgress(UUID playerUUID, boolean bool) {
@@ -159,6 +159,7 @@ public class StartGame implements CommandExecutor, Listener {
 
         return true;
     }
+
 
     private void handleStartGameCommand(Player player, String mapId) {
 
@@ -298,7 +299,7 @@ public class StartGame implements CommandExecutor, Listener {
                 }
 
                 // Spawn mob on main thread and track it
-                Zombie zombie = MobHandler.spawnMob(world, session.currentMapId);
+                Zombie zombie = MobHandler.spawnMob(world, session.currentMapId, session.currentRound);
                 if (zombie != null) {
                     // Tag the zombie with metadata to associate it with this game session
                     zombie.setMetadata("gameSession", new FixedMetadataValue(plugin, playerUUID.toString()));
@@ -308,6 +309,13 @@ public class StartGame implements CommandExecutor, Listener {
                 spawned++;
             }
         }.runTaskTimer(plugin, 0, 10); // 500ms interval (10 ticks)
+    }
+
+    // For determining the % chance of a special mob spawning
+    public float spawnSpecialMob(int currentRound) {
+
+
+        return 0;
     }
 
 

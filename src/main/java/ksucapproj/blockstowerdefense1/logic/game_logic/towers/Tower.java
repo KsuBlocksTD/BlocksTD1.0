@@ -1,5 +1,6 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -160,6 +161,24 @@ public abstract class Tower {
                 task.cancel();
             }
         }
+        for(Player player : Bukkit.getOnlinePlayers()){
+        for (Entity entity : player.getWorld().getEntities()) {
+            if (entity instanceof Villager &&
+                    entity.hasMetadata("tower") &&
+                    entity.hasMetadata("owner") &&
+                    entity.hasMetadata("mapId")) {
+
+                    UUID entityUUID = entity.getUniqueId();
+
+                    towerTasks.remove(entityUUID);
+                    towerOwners.remove(entityUUID);
+
+                    entity.remove();
+
+            }
+        }
+    }
+
 
         towerTasks.clear();
         towerOwners.clear();

@@ -5,10 +5,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.util.Tick;
-import ksucapproj.blockstowerdefense1.commands.ApplyUpgradeCommand;
-import ksucapproj.blockstowerdefense1.commands.MtdCommand;
-import ksucapproj.blockstowerdefense1.commands.SpawnCommand;
-import ksucapproj.blockstowerdefense1.commands.TestCommand;
+import ksucapproj.blockstowerdefense1.commands.*;
 import ksucapproj.blockstowerdefense1.logic.AsyncTest;
 import ksucapproj.blockstowerdefense1.logic.game_logic.*;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
@@ -80,6 +77,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             commands.registrar().register(TestCommand.addCoinsCommand());
             commands.registrar().register(TestCommand.giveCoinsCommand());
             commands.registrar().register(MtdCommand.register());
+            commands.registrar().register(MapCommand.mapCommand());
             commands.registrar().register(SpawnCommand.register());
             commands.registrar().register(ApplyUpgradeCommand.register());
 

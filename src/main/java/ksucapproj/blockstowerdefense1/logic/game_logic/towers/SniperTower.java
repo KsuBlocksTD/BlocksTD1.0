@@ -2,9 +2,7 @@ package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
@@ -32,7 +30,7 @@ public class SniperTower extends Tower {
 
         List<Entity> nearbyEntities = towerEntity.getNearbyEntities(scanRadius, scanRadius, scanRadius);
         for (Entity entity : nearbyEntities) {
-            if (entity instanceof Zombie) {
+            if (entity instanceof Mob & entity.getType() != EntityType.VILLAGER) {
                 if (entity.hasMetadata("gameSession") && towerEntity.hasMetadata("owner")) {
                     String zombieOwner = entity.getMetadata("gameSession").get(0).asString();
                     String towerOwner = towerEntity.getMetadata("owner").get(0).asString();
@@ -48,8 +46,8 @@ public class SniperTower extends Tower {
         if (!targetQueue.isEmpty()) {
             Entity target = targetQueue.poll();
             faceTarget(target);
-            if (target instanceof Zombie) {
-                Zombie zombie = (Zombie) target;
+            if (target instanceof Mob) {
+                Mob zombie = (Mob) target;
                 // Visual effect of a precise shot
                 zombie.getWorld().spawnParticle(Particle.EXPLOSION, zombie.getLocation(), 1);
                 // High damage but slow attack

@@ -33,7 +33,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.UUID;
 
 public class PlayerEventHandler implements Listener {
@@ -255,6 +257,16 @@ public class PlayerEventHandler implements Listener {
 
         EntityType mobType = event.getEntityType();
         Player killer = event.getEntity().getKiller();
+
+        // Handle null killer by assigning death to nearby player
+        if(killer == null) {
+            if (event.getEntity() instanceof Zombie){
+                Zombie zombie = (Zombie) event.getEntity();
+                @NotNull Collection<Player> kill = zombie.getLocation().getNearbyPlayers(50);
+                killer = kill.iterator().next();
+
+            }
+        }
         String playerID;
 
         if (event.getEntity() instanceof Zombie){
