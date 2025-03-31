@@ -14,6 +14,8 @@ import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerFactory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -62,11 +64,16 @@ public class PlayerEventHandler implements Listener {
         // checks if msg on join is enabled
         // if so, send player the specified message
         if (config.getMOTDOnPlayerJoin() != null){
-            player.sendMessage(config.getMOTDOnPlayerJoin());
+            player.sendRichMessage(config.getMOTDOnPlayerJoin());
+        }
+
+        if (config.getGreetOnPlayerJoin() != null){
+            player.sendRichMessage(config.getGreetOnPlayerJoin());
         }
 
         // this will eventually be the default greeting on player join
-        event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
+//        event.getPlayer().sendRichMessage("Welcome to the server, <gold><player></gold>!",
+//                Placeholder.component("player", Component.text(event.getPlayer().getName())));
 
         // this checks if a player is in the db already, if not, adds them to it
         DatabaseManager.checkPlayerInDB(player);

@@ -1,21 +1,35 @@
 package ksucapproj.blockstowerdefense1.logic;
 
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;
 
 public class DatabaseManager {
 
-    private static final String URL = BlocksTowerDefense1.getInstance().getConfig().getString("server.database.url"); // Change the path accordingly
+    private static ConfigOptions getConfigOptions() {
+        BlocksTowerDefense1 instance = BlocksTowerDefense1.getInstance();
+        if (instance == null) {
+            throw new IllegalStateException("[DatabaseManager] ERROR: BlocksTowerDefense1 instance is null!");
+        }
+        ConfigOptions config = instance.getBTDConfig();
+        if (config == null) {
+            throw new IllegalStateException("[DatabaseManager] ERROR: ConfigOptions is null!");
+        }
+        return config;
+    }
 
 
 
 
     public static Connection connect(){
         Connection conn = null;
+        String URL = getConfigOptions().getDatabaseURL(); // Change the path accordingly
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection(URL);

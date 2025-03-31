@@ -17,70 +17,112 @@ server:
 
 
   spawn:
-    world: world
-    x: 78
-    y: 108
-    z: -709
-    yaw: 179.81284
-    pitch: 5.829553
+    world: # world
+    x: # 78
+    y: # 108
+    z: # -709
+    yaw: # 179.81284
+    pitch: # 5.829553
 
   database:
-    url: jdbc:sqlite:F:\IntelliJ Projects\BlocksTD1.0\src\main\resources\test_db.db
+    url: # jdbc:sqlite:F:\IntelliJ Projects\BlocksTD1.0\src\main\resources\test_db.db
 
-  upgrades:
+  attributes:
 
-    #
-    #    //////////////////////// For Upgrades Related to Potion Effects /////////////////////////////
-    #    * If the maximum desired tier of an effect is n, use n as the default
-    #        - ex: if speed 5 is the desired maximum, choose 5 as the max default
-    #
+    upgrades:
 
-    universal:
-      max-level:
-      cost-multiplier:
+      #
+      #    //////////////////////// For Upgrades Related to Potion Effects /////////////////////////////
+      #    * If the maximum desired tier of an effect is n, use n as the default
+      #        - ex: if speed 5 is the desired maximum, choose 5 as the max default
+      #
 
-    player:
-      speed:
+      # these multipliers are not set up yet
+      universal:
         max-level:
-        cost:
+        cost-multiplier:
 
-      strength:
-        max-level:
-        cost:
-
-      sword:
-        material:
+      players:
+        speed:
           max-level:
           cost:
 
-        slowness:
-          max-level:
-          cost:
-          duration:
-            increase-duration-on-upgrade:
-
-        sweeping-edge:
+        strength:
           max-level:
           cost:
 
-    towers:
+        sword:
+          material:
+            max-level:
+            cost:
+
+          slowness:
+            max-level:
+            cost:
+            duration:
+              increase-duration-on-upgrade:
+
+          sweeping-edge:
+            max-level:
+            cost:
 
 
+      towers:
+
+        # these multipliers are not set up yet
+        universal:
+          upgrade-strength-multiplier:
+          cost-multiplier:
+
+        basic:
+          cost:
+          tier-one:
+
+        fast:
+          cost:
+          tier-one:
+
+        sniper:
+          cost:
+          tier-one:
+
+        splash:
+          cost:
+          tier-one:
+
+        slow:
+          cost:
+          tier-one:
 
 
-
-  economy:
     mobs:
-      health-multiplier:
-      reward-multiplier:
+
+      # these multipliers are not set up yet
+      universal:
+        health-multiplier:
+        reward-multiplier:
 
       zombie:
         reward:
 
-      skeleton:
+      iron-golem:
         reward:
 
+      witch:
+        reward:
+
+      enderman:
+        reward:
+
+      piglin:
+        reward:
+
+      blaze:
+        reward:
+
+
     players:
+      round-end-bonus:
       attribute-multipliers:
         attack:
           speed:
@@ -89,21 +131,9 @@ server:
 
         base-speed:
 
-    towers:
-      basic:
-        cost:
 
-      fast:
-        cost:
 
-      sniper:
-        cost:
 
-      splash:
-        cost:
-
-      slow:
-        cost:
 
 
 
