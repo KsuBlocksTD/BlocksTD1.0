@@ -82,7 +82,7 @@ public class HubCommand {
         FileConfiguration config = BlocksTowerDefense1.getInstance().getConfig();
         instance.reloadConfig();
 
-        String worldName = config.getString("server.spawn.world");
+        String worldName = config.getString("btd.spawn.world");
         if (worldName == null){
             instance.getLogger().warning("Cannot get world name from config.yml");
             return null;

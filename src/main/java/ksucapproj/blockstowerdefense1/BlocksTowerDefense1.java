@@ -48,7 +48,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         instance.saveDefaultConfig();  // Ensures the config is saved if it doesn't exist
         instance.reloadConfig();       // Ensures the latest config is loaded
 
-        // saveResource("config.yml", /* replace */ false);
+        saveResource("config.yml", /* replace */ false);
         config = new ConfigOptions(this);
 
         if (config == null) {
@@ -117,6 +117,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     @Override
     public void onDisable() {
+//        instance.reloadConfig();
         instance.saveConfig();
         MapData.saveMaps();
 

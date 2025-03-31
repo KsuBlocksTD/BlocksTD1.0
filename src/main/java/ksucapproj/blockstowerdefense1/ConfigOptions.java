@@ -40,7 +40,7 @@ public class ConfigOptions {
         return config.getInt("btd.attributes.upgrades.player.sword.slowness.cost", 400); // Default value is 400 if not set
     }
     public int getSlownessDuration() {
-        return config.getInt("btd.attributes.upgrades.player.sword.slowness.duration", 10); // Default value is 10 (ticks) if not set
+        return config.getInt("btd.attributes.upgrades.player.sword.slowness.duration.ticks", 10); // Default value is 10 (ticks) if not set
     }
 
     public boolean getSlownessDurationIncreaseOnUpgrade() {

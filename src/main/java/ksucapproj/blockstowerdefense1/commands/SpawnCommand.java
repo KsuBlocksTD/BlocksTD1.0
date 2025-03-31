@@ -48,7 +48,7 @@ public class SpawnCommand {
 //        player.sendMessage("Yaw set: " + location.getYaw());
 
         instance.saveConfig();
-//        instance.reloadConfig();
+        instance.reloadConfig();
 
         player.sendRichMessage("<gold>New spawn point set for the hub!");
 //        player.sendMessage("World name: " + config.getString("btd.spawn.world"));
