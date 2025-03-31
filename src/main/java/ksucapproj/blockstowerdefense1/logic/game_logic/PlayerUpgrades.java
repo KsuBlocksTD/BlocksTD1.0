@@ -98,7 +98,13 @@ public class PlayerUpgrades{
     public static void playerDelete(Player player){
         PlayerUpgrades leaver = playerUpgradesMap.get(player);
 
+        // Deletes player's tracked sword
         leaver.getSword().removeTrackedSword();
+        // Deletes player's potion effects
+        player.clearActivePotionEffects();
+        // Deletes player's economy
+        playerLeave(player);
+        // Deletes player from player upgrades map
         playerUpgradesMap.remove(player);
     }
 

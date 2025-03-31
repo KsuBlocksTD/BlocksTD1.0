@@ -156,6 +156,12 @@ public class Economy {
     public static void playerLeave(Player leaver){
         Bukkit.broadcastMessage(leaver.getName() + " has left the game! Reallocating coins..");
 
+        // if no other players are detected, leaver's coins are simply deleted
+        if (playerEconomies.isEmpty()){
+            Bukkit.broadcastMessage("No online players found, deleting all coins.");
+            return;
+        }
+
         final int leaverMoney = getPlayerEconomies().get(leaver).currTotal;
 
         getPlayerEconomies().get(leaver).currTotal = 0;
@@ -163,11 +169,6 @@ public class Economy {
 
         final int numPlayersOnline = playerEconomies.size();
 
-        // if no other players are detected, leaver's coins are simply deleted
-        if (playerEconomies.isEmpty()){
-            Bukkit.broadcastMessage("No online players found, deleting all coins.");
-            return;
-        }
 
         // if a player in the server is not the leaver, it gives them a portion of the coins
         for (Economy onlinePlayer : playerEconomies.values()){

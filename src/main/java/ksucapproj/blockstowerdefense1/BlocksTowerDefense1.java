@@ -44,11 +44,11 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         getLogger().info("BlocksTowerDefense1 has been enabled!");
         api = Parties.getApi(); // For static api getter
 
+
         saveDefaultConfig();  // Ensures the config is saved if it doesn't exist
         reloadConfig();       // Ensures the latest config is loaded
 
-        saveResource("config.yml", /* replace */ false);
-
+        // saveResource("config.yml", /* replace */ false);
         config = new ConfigOptions(this);
 
         if (config == null) {
@@ -56,6 +56,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         } else {
             getLogger().info("[BlocksTowerDefense1] ConfigOptions initialized successfully.");
         }
+
+
 
         gameManager = new StartGame(this, api);
 
@@ -75,7 +77,6 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MobHandler(this), this);
 
 
-        new Economy(); // Creating economy object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -83,6 +84,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         }
 
 
+        new Economy(); // Creating economy object
         // needed for instantiating proper mob killing & economy function
         // this is solely for recompiling the server and keeping a working economy while players are still online
         Economy.playerCountFix();

@@ -338,9 +338,8 @@ public class StartGame implements CommandExecutor, Listener {
 
         // Remove the session from our tracking
         playerSessions.remove(playerUUID);
-        // Deletes player and their sword
+        // Deletes player, their economy, and their sword
         PlayerUpgrades.playerDelete(player);
-        playerLeave(player);
 
         for (ItemStack item : player.getInventory().getContents()){
             if (item == null) {
