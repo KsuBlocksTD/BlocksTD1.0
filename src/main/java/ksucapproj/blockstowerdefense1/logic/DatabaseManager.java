@@ -12,6 +12,20 @@ import java.sql.*;
 
 public class DatabaseManager {
 
+    /*
+        -- TO-DO LIST FOR DATABASE
+    * Create database connection upon server loading (in onEnable() )
+        - Hopefully get to creating an async thread, create database connection on it, and move it back to main thread
+        - Save this creation to a getter (like the getInstance() functions below onDisable() ) to be grabbed later
+    * Create a createTable function that would create the table in case it doesn't exist
+        - all functions try, and then catch the error code of the table not existing, then create the table in the catch
+        - once created, retry the function that generated the error (potentially)
+
+    * scheduler.runTaskAsynchronously() might be the way to make the db connection asynchronously, and then come back
+    to main thread in the function itself?
+
+     */
+
     private static ConfigOptions getConfigOptions() {
         BlocksTowerDefense1 instance = BlocksTowerDefense1.getInstance();
         if (instance == null) {
@@ -26,10 +40,10 @@ public class DatabaseManager {
 
 
 
-
+    // eventually needs to be done once the server starts rather than being called when each function needs it
     public static Connection connect(){
         Connection conn = null;
-        String URL = getConfigOptions().getDatabaseURL(); // Change the path accordingly
+        String URL = "jdbc:sqlite:" + BlocksTowerDefense1.getInstance().getDataFolder().getPath()+"/test_db.db";
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection(URL);
@@ -51,6 +65,11 @@ public class DatabaseManager {
         }
 
         return conn;
+    }
+
+
+    public static void createDatabase(Connection conn) throws SQLException{
+
     }
 
 
@@ -105,7 +124,7 @@ public class DatabaseManager {
         }
 
         catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // getErrorCode, get error code for doesn't exist
         }
     }
 

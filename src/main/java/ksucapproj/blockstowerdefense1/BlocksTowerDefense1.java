@@ -47,7 +47,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         saveDefaultConfig();  // Ensures the config is saved if it doesn't exist
         reloadConfig();       // Ensures the latest config is loaded
 
-//        saveResource("config.yml", /* replace */ false);
+        saveResource("config.yml", /* replace */ false);
 
         config = new ConfigOptions(this);
 
@@ -101,6 +101,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         scheduler.runTaskTimerAsynchronously(this, new AsyncTest(this), 20, Tick.tick().fromDuration(Duration.ofMinutes(15)));
 
+        // This needs to go into a config/function at some point
         World world = Bukkit.getWorlds().get(0);
         if (world != null) {
             world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);

@@ -23,20 +23,6 @@ public class ConfigOptions {
      */
 
 
-    public String getDatabaseURL() {
-        String url = config.getString("server.database.url");
-
-        // Debugging Output
-        if (url == null || url.isEmpty()) {
-            Bukkit.getLogger().severe("[ConfigOptions] ERROR: Database URL is missing from config.yml!");
-        } else {
-            Bukkit.getLogger().info("[ConfigOptions] Loaded Database URL: " + url);
-        }
-
-        return url;
-    }
-
-
     // Getter for Speed level max upgrade
     public int getSpeedMaxLevel() {
         return config.getInt("server.attributes.upgrades.player.speed.max-level", 5);  // Default value is 5 if not set

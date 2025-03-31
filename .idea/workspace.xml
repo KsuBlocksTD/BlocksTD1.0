@@ -9,16 +9,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="3/30 Various changes to many classes:&#10;- added costs to player upgrades&#10;- potentially added tower lvl 1 upgrades&#10;- misc changes">
+    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="3/30 10:25 Still unresolved issue with config.yml and not reading from server's plugin's config.yml (rather than the one in resources)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/ConfigOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/ConfigOptions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/DatabaseManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/ConfigOptions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/ConfigOptions.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/DatabaseManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/DatabaseManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,21 +100,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;matthew-code&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/mtell/Desktop/MC Paper Server 1.21.4/plugins&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "matthew-code",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/mtell/Desktop/MC Paper Server 1.21.4/plugins",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15527344",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "settings.json.schema"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="ksucapproj.blockstowerdefence1.commands" />
@@ -323,7 +323,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743368931143</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="3/30 10:25 Still unresolved issue with config.yml and not reading from server's plugin's config.yml (rather than the one in resources)">
+      <option name="closed" value="true" />
+      <created>1743387966311</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1743387966311</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -371,6 +379,7 @@
     <MESSAGE value="3/29 12:10 Major bug fixes:&#10;-Fixed Sword tracking upon game start/join leave/exit&#10;-Players not being added properly to their upgrades&#10;-Game logic inv. deletion on quit/game-end&#10;-Misc" />
     <MESSAGE value="3/29 1:57 giving tower player ownership via metadata" />
     <MESSAGE value="3/30 Various changes to many classes:&#10;- added costs to player upgrades&#10;- potentially added tower lvl 1 upgrades&#10;- misc changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="3/30 Various changes to many classes:&#10;- added costs to player upgrades&#10;- potentially added tower lvl 1 upgrades&#10;- misc changes" />
+    <MESSAGE value="3/30 10:25 Still unresolved issue with config.yml and not reading from server's plugin's config.yml (rather than the one in resources)" />
+    <option name="LAST_COMMIT_MESSAGE" value="3/30 10:25 Still unresolved issue with config.yml and not reading from server's plugin's config.yml (rather than the one in resources)" />
   </component>
 </project>
