@@ -24,9 +24,6 @@ btd:
     yaw: # 179.81284
     pitch: # 5.829553
 
-#  database:
-#    url: # jdbc:sqlite:F:\IntelliJ Projects\BlocksTD1.0\src\main\resources\test_db.db
-
   attributes:
 
     upgrades:

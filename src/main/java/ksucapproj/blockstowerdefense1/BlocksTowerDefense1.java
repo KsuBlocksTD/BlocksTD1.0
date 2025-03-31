@@ -45,8 +45,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         api = Parties.getApi(); // For static api getter
 
 
-        saveDefaultConfig();  // Ensures the config is saved if it doesn't exist
-        reloadConfig();       // Ensures the latest config is loaded
+        instance.saveDefaultConfig();  // Ensures the config is saved if it doesn't exist
+        instance.reloadConfig();       // Ensures the latest config is loaded
 
         // saveResource("config.yml", /* replace */ false);
         config = new ConfigOptions(this);
@@ -56,7 +56,6 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         } else {
             getLogger().info("[BlocksTowerDefense1] ConfigOptions initialized successfully.");
         }
-
 
 
         gameManager = new StartGame(this, api);
@@ -118,7 +117,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        saveConfig();
+        instance.saveConfig();
         MapData.saveMaps();
 
         MobHandler.cleanupAll();

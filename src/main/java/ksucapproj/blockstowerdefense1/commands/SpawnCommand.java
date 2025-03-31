@@ -38,18 +38,21 @@ public class SpawnCommand {
 
         Location location = player.getLocation();
 
-        config.set("server.spawn.world", location.getWorld().getName());
-        config.set("server.spawn.x", location.getBlockX());
-        config.set("server.spawn.y", location.getBlockY());
-        config.set("server.spawn.z", location.getBlockZ());
-        config.set("server.spawn.yaw", location.getYaw());
-        config.set("server.spawn.pitch", location.getPitch());
+        config.set("btd.spawn.world", location.getWorld().getName());
+        config.set("btd.spawn.x", location.getBlockX());
+        config.set("btd.spawn.y", location.getBlockY());
+        config.set("btd.spawn.z", location.getBlockZ());
+        config.set("btd.spawn.yaw", location.getYaw());
+        config.set("btd.spawn.pitch", location.getPitch());
+//        player.sendMessage("World name: " + location.getWorld().getName());
+//        player.sendMessage("Yaw set: " + location.getYaw());
 
         instance.saveConfig();
-        instance.reloadConfig();
+//        instance.reloadConfig();
 
         player.sendRichMessage("<gold>New spawn point set for the hub!");
-//        player.sendMessage("Yaw set: " + config.getDouble("spawn.pitch"));
+//        player.sendMessage("World name: " + config.getString("btd.spawn.world"));
+//        player.sendMessage("Yaw set: " + config.getDouble("btd.spawn.yaw"));
 //        player.sendMessage("cuts to the end of the command"); // for testing
         return Command.SINGLE_SUCCESS;
     }
