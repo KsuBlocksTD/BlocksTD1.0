@@ -1,4 +1,4 @@
-server:
+btd:
   settings:
     daylight-cycle:
       default-time:
