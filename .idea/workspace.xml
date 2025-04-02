@@ -9,18 +9,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="Fixed broken /mtd hub and /setspawn commands">
+    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="Fixed broken /mtd hub and /setspawn commands, and updated config">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/ConfigOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/ConfigOptions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/HubCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/HubCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/SpawnCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/SpawnCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/ConfigOptions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/ConfigOptions.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/HubCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/HubCommand.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/SpawnCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/SpawnCommand.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,20 +95,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "matthew-code",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/mtell/Desktop/MC Paper Server 1.21.4/plugins",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.15527344",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "settings.json.schema"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;matthew-code&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/mtell/Desktop/MC Paper Server 1.21.4/plugins&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.json.schema&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="ksucapproj.blockstowerdefence1.commands" />
@@ -364,7 +358,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743458654395</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Fixed broken /mtd hub and /setspawn commands, and updated config">
+      <option name="closed" value="true" />
+      <created>1743461665888</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1743461665888</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -391,7 +393,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="3/12 Create party cmd implementation and InvitePC progress via PartiesAPI" />
     <MESSAGE value="3/14 additions of &#10;CreatePartyCommand&#10;DeletePartyCommand&#10;partial addition of InvitePartyCommand" />
     <MESSAGE value="3/14 3:27PM EST update" />
     <MESSAGE value="3/14 8:50PM EST update" />
@@ -416,6 +417,7 @@
     <MESSAGE value="Renamed server in config.yml to btd" />
     <MESSAGE value="Organizational changes and potential fix for economy on player deletion" />
     <MESSAGE value="Fixed broken /mtd hub and /setspawn commands" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed broken /mtd hub and /setspawn commands" />
+    <MESSAGE value="Fixed broken /mtd hub and /setspawn commands, and updated config" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed broken /mtd hub and /setspawn commands, and updated config" />
   </component>
 </project>

@@ -5,10 +5,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.util.Tick;
-import ksucapproj.blockstowerdefense1.commands.ApplyUpgradeCommand;
-import ksucapproj.blockstowerdefense1.commands.MtdCommand;
-import ksucapproj.blockstowerdefense1.commands.SpawnCommand;
-import ksucapproj.blockstowerdefense1.commands.TestCommand;
+import ksucapproj.blockstowerdefense1.commands.*;
 import ksucapproj.blockstowerdefense1.logic.AsyncTest;
 import ksucapproj.blockstowerdefense1.logic.game_logic.*;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
@@ -86,7 +83,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         new Economy(); // Creating economy object
         // needed for instantiating proper mob killing & economy function
         // this is solely for recompiling the server and keeping a working economy while players are still online
-        Economy.playerCountFix();
+//        Economy.playerCountFix();
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             // register main commands here
@@ -97,6 +94,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             commands.registrar().register(MtdCommand.register());
             commands.registrar().register(SpawnCommand.register());
             commands.registrar().register(ApplyUpgradeCommand.register());
+            commands.registrar().register(MapCommand.mapCommand());
 
         });
 
@@ -107,6 +105,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         if (world != null) {
             world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
             world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+            world.setGameRule(GameRule.DO_MOB_LOOT, false);
             world.setTime(1000);
             getLogger().info("Weather and daylight cycle auto-disabled.");
         }
