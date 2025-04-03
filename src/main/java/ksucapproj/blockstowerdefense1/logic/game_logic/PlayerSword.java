@@ -19,6 +19,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.UUID;
+
 import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.getPlayerEconomies;
 
 public class PlayerSword {
@@ -72,10 +73,10 @@ public class PlayerSword {
                 swordUpgradesBought += 1; // increments bought upgrades counter
                 return;
             }
-            sendMaxLevelMsg();
+            sendMaxLevelMsg(); // if player is already max level, notify and return
             return;
         }
-        sendCannotAffordMsg();
+        sendCannotAffordMsg(); // if player cannot afford the upgrade, notify and return
     }
 
 
@@ -93,14 +94,15 @@ public class PlayerSword {
                 swordUpgradesBought += 1; // increments bought upgrades counter
                 return;
             }
-            sendMaxLevelMsg();
+            sendMaxLevelMsg(); // if player is already max level, notify and return
             return;
         }
-        sendCannotAffordMsg();
+        sendCannotAffordMsg(); // if player cannot afford the upgrade, notify and return
     }
 
     public void applySlownessEffect(LivingEntity target){
 
+        // value is false by default
         if (config.getSlownessDurationIncreaseOnUpgrade()){ // enables longer duration on
 
             // applies slowness, 10 ticks + 2 per slownessLevel (0.5s), amplifier of player's slownessLevel
@@ -126,10 +128,10 @@ public class PlayerSword {
                 swordUpgradesBought += 1; // increments bought upgrades counter
                 return;
             }
-            sendMaxLevelMsg();
+            sendMaxLevelMsg(); // if player is already max level, notify and return
             return;
         }
-        sendCannotAffordMsg();
+        sendCannotAffordMsg(); // if player cannot afford the upgrade, notify and return
     }
 
 
@@ -163,10 +165,11 @@ public class PlayerSword {
 
         swordMeta = playerSword.getItemMeta(); // stores sword meta-data before sword's deletion
 
-        removeTrackedSword();
+        removeTrackedSword(); // deletes player's tracked sword
 
-        playerSword = new ItemStack(newSwordMaterial);
+        playerSword = new ItemStack(newSwordMaterial); // creates new sword for sword to track
 
+        // gives the newly given sword a tracked id to replace the old sword
         NamespacedKey key = new NamespacedKey(BlocksTowerDefense1.getInstance(), "sword_id");
         swordMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, swordUUID);
         playerSword.setItemMeta(swordMeta);

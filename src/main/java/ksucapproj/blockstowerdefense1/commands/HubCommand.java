@@ -82,18 +82,21 @@ public class HubCommand {
         FileConfiguration config = BlocksTowerDefense1.getInstance().getConfig();
         instance.reloadConfig();
 
+        // gets the world name from the config's world path
         String worldName = config.getString("btd.spawn.world");
-        if (worldName == null){
+        if (worldName == null){ // if null it returns and gives error msg
             instance.getLogger().warning("Cannot get world name from config.yml");
             return null;
         }
 
         World world = instance.getServer().getWorld(worldName);
 
-        if (world == null){
+        if (world == null){ // if null it returns and gives error message
             instance.getLogger().warning("Cannot resolve world: " + worldName);
+            return null;
         }
 
+        // creates the coordinates for the spawn location from the config
         int x = config.getInt("btd.spawn.x");
         int y = config.getInt("btd.spawn.y");
         int z = config.getInt("btd.spawn.z");

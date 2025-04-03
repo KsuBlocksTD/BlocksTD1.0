@@ -31,6 +31,8 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+
+// THIS IS MERELY A TEST CLASS, MOST COMMANDS IN THIS CLASS ARE UNUSED
 public class TestCommand {
 
 

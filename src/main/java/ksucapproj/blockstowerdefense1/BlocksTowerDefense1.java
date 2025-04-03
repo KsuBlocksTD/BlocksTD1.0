@@ -15,13 +15,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
-import java.util.EventListener;
 
 
 public class BlocksTowerDefense1 extends JavaPlugin {
@@ -47,8 +44,9 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         instance.reloadConfig();       // Ensures the latest config is loaded
 
         saveResource("config.yml", /* replace */ false);
-        config = new ConfigOptions(this);
+        config = new ConfigOptions(this); // initializes config object
 
+        // confirmation msgs if config is initialized as null ICE
         if (config == null) {
             getLogger().severe("[BlocksTowerDefense1] ERROR: ConfigOptions failed to initialize!");
         } else {
@@ -72,22 +70,25 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
+        // initializes PLaceholderAPI to be used in its class
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new PlaceholderAPIExpansion(this).register();
         }
 
-
-        new Economy(); // Creating economy object
+        // **** This might be better off moved to the game session creation ****
         // needed for instantiating proper mob killing & economy function
+        new Economy(); // Creating economy object
+
+
         // this is solely for recompiling the server and keeping a working economy while players are still online
 //        Economy.playerCountFix();
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             // register main commands here
-            commands.registrar().register(TestCommand.flightCommand());
-            commands.registrar().register(TestCommand.constructGiveItemCommand());
-            commands.registrar().register(TestCommand.addCoinsCommand());
-            commands.registrar().register(TestCommand.giveCoinsCommand());
+            commands.registrar().register(TestCommand.flightCommand()); // is a test cmd
+            commands.registrar().register(TestCommand.constructGiveItemCommand()); // is a test cmd
+            commands.registrar().register(TestCommand.addCoinsCommand()); // has btd functionality
+            commands.registrar().register(TestCommand.giveCoinsCommand()); // has btd functionality
             commands.registrar().register(MtdCommand.register());
             commands.registrar().register(SpawnCommand.register());
             commands.registrar().register(ApplyUpgradeCommand.register());
@@ -118,6 +119,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
 //        instance.reloadConfig();
         instance.saveConfig();
         MapData.saveMaps();

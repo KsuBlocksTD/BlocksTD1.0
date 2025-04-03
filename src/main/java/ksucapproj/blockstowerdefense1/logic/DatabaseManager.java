@@ -1,12 +1,9 @@
 package ksucapproj.blockstowerdefense1.logic;
 
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
-import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;
 
@@ -27,29 +24,35 @@ public class DatabaseManager {
 
      */
 
-    private static ConfigOptions getConfigOptions() {
-        BlocksTowerDefense1 instance = BlocksTowerDefense1.getInstance();
-        if (instance == null) {
-            throw new IllegalStateException("[DatabaseManager] ERROR: BlocksTowerDefense1 instance is null!");
-        }
-        ConfigOptions config = instance.getBTDConfig();
-        if (config == null) {
-            throw new IllegalStateException("[DatabaseManager] ERROR: ConfigOptions is null!");
-        }
-        return config;
-    }
+    // MIGHT BE USELESS, TEST IF NEEDED OR NOT
+//    private static ConfigOptions getConfigOptions() {
+//        BlocksTowerDefense1 instance = BlocksTowerDefense1.getInstance();
+//        if (instance == null) {
+//            throw new IllegalStateException("[DatabaseManager] ERROR: BlocksTowerDefense1 instance is null!");
+//        }
+//        ConfigOptions config = instance.getBTDConfig();
+//        if (config == null) {
+//            throw new IllegalStateException("[DatabaseManager] ERROR: ConfigOptions is null!");
+//        }
+//        return config;
+//    }
 
 
 
     // eventually needs to be done once the server starts rather than being called when each function needs it
     public static Connection connect(){
         Connection conn = null;
+
+        // this is the url for the db that is in plugins/btd1/test_db.db
+        // getDataFolder() = btd's plugins folder, getPath() = gets the path to wherever the btd folder is
         String URL = "jdbc:sqlite:" + BlocksTowerDefense1.getInstance().getDataFolder().getPath()+"/test_db.db";
         try {
             Class.forName("org.sqlite.JDBC");
+            // initializes the connection to the DB to the URL of the DB ^
             conn = DriverManager.getConnection(URL);
         }
 
+        // catches for the different type of errors
         catch (NullPointerException e){
             Bukkit.getLogger().warning("Database URL not located.");
             e.printStackTrace();
@@ -74,12 +77,16 @@ public class DatabaseManager {
     }
 
 
+    // this function is what inserts a new player into the server's DB, taking in their UUID, username, and time of joining
+    // if a player is to be modified but doesn't exist, this function is called to create them at that moment
     private static void insertPlayer(Connection conn, String uuidAsString, String name) throws SQLException{
         String sql = "INSERT INTO players (uuid, name, total_games_played, total_wins, total_coins_gained," +
                 " total_coins_spent, total_towers_bought, total_upgrades_bought) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
+        // uses prepared statements to avoid SQL injection
         PreparedStatement pstmt = conn.prepareStatement(sql);
 
+        // these are the parameters that are denoted as ? im the sql String above ^
         pstmt.setString(1, uuidAsString);
         pstmt.setString(2, name);
         pstmt.setInt(3, 0);
@@ -88,12 +95,15 @@ public class DatabaseManager {
         pstmt.setInt(6, 0);
         pstmt.setInt(7, 0);
         pstmt.setInt(8, 0);
+        // this actually runs the query
         pstmt.executeUpdate();
 
+        // confirmation message
         Bukkit.getLogger().info("Inserted: " + uuidAsString + " (username = " + name + ")"); // confirmation msg
     }
 
 
+    // this function checks against the database with the player's UUID to detect if they already exist or not
     private static boolean userExists(Connection conn, String uuidAsString) throws SQLException {
         String sql = "SELECT 1 FROM players WHERE uuid = ?";
 
@@ -104,16 +114,18 @@ public class DatabaseManager {
         }
     }
 
-
+    // this function will try insert a new player on join
+    // if they do exist, the function ends, if they do not, it calls insertPLayer() to insert them
     public static void checkPlayerInDB(Player player){ // has helper methods to create more concise code
 
+        // gets the argument player's username
         String uuidString = player.getUniqueId().toString();
 
         try (Connection conn = DatabaseManager.connect()){ // creates connection to the db
-            if (conn != null) { // if database connection works
-                Bukkit.getLogger().info("Connected to SQLite database.");
+            if (conn != null) { // if database connection works, continue
+                Bukkit.getLogger().info("Connected to SQLite database."); // confirmation msg
 
-                if (DatabaseManager.userExists(conn, uuidString)){
+                if (DatabaseManager.userExists(conn, uuidString)){ // if player exists, finish
                     Bukkit.getLogger().info("Player exists in database, returning.");// confirmation msg
                 }
 
@@ -130,14 +142,18 @@ public class DatabaseManager {
     }
 
 
+    // this function is designed to update a player's information in the db at the end of a game
     public static void updatePlayerData(PlayerUpgrades upgrades){
 
-        try (Connection conn = DatabaseManager.connect()){
-            if (conn != null){
-                Bukkit.getLogger().info("Connected to SQLite database.");
+        try (Connection conn = DatabaseManager.connect()){ // creates connection to the db
+            if (conn != null){ // if database connection works, continue
+                Bukkit.getLogger().info("Connected to SQLite database."); // confirmation msg
 
+                // if player exists, continue, if not, insert them into db before updating their attributes
+                // this check is only done in case the player somehow does not exist
                 checkPlayerInDB(upgrades.getPlayer());
 
+                // calls the function to total player values on game end
                 insertPlayerTotalsOnGameEnd(conn, upgrades);
             }
         }
@@ -149,6 +165,7 @@ public class DatabaseManager {
 
 
     // NEEDS
+    // this takes the player's totals from the game they played and updates their current db values
     private static void insertPlayerTotalsOnGameEnd(Connection conn, PlayerUpgrades upgrades) throws SQLException{
         String sql = """
             UPDATE players

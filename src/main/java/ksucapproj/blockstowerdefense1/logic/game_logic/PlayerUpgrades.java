@@ -8,7 +8,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
-import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.*;
+
+import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.getPlayerEconomies;
+import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.playerLeave;
 
 public class PlayerUpgrades{
 
@@ -35,10 +37,10 @@ public class PlayerUpgrades{
         * also tally the amount of playerSword upgrades bought
         * at the end of the game, call a function in databaseManager that adds the num of total upgrades
         to the currently stored total
+    */
 
 
-     */
-
+    // This is the constructor that creates a player and their sword upon game creation
     public PlayerUpgrades(Player player){
         this.player = player;
         this.swiftnessLevel = 0;
@@ -67,10 +69,10 @@ public class PlayerUpgrades{
                 playerUpgradesBought += 1;
                 return;
             }
-            sendMaxLevelMsg();
+            sendMaxLevelMsg(); // if player is already max level, notify and return
             return;
         }
-        sendCannotAffordMsg();
+        sendCannotAffordMsg(); // if player cannot afford the upgrade, notify and return
     }
 
 
@@ -86,23 +88,26 @@ public class PlayerUpgrades{
                 setStrengthLevel(++strengthLevel);
                 return;
             }
-            sendMaxLevelMsg();
+            sendMaxLevelMsg(); // if player is already max level, notify and return
             return;
         }
-        sendCannotAffordMsg();
+        sendCannotAffordMsg(); // if player cannot afford the upgrade, notify and return
     }
 
 
-    // deletes the playerUpgrades object along with their playerSword
+    // deletes the playerUpgrades object along with their playerSword and economy
     public static void playerDelete(Player player){
         PlayerUpgrades leaver = playerUpgradesMap.get(player);
 
         // Deletes player's tracked sword
         leaver.getSword().removeTrackedSword();
+
         // Deletes player's potion effects
         player.clearActivePotionEffects();
+
         // Deletes player's economy
         playerLeave(player);
+
         // Deletes player from player upgrades map
         playerUpgradesMap.remove(player);
     }

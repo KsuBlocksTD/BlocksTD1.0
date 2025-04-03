@@ -13,28 +13,34 @@ public class TeleportationLogic {
         this.plugin = plugin;
     }
 
+    // this attempts async teleportation up to 3 times
     public void teleportWithRetry(Player player, Location location, int maxRetries){
+
+        // if the teleport is out of attempts, the player must retry if it did not work
         if (maxRetries <=  0){
             player.sendMessage("Teleport failed with several retries, please try again.");
             return;
         }
 
         player.teleportAsync(location).thenAccept(success -> {
-            if (success){
+            if (success){ // if teleport is successful, confirmation msg
                 player.sendMessage("Teleport Successful!");
             }
             else{
-                player.sendMessage("Teleport failed, retrying.");
+                player.sendMessage("Teleport failed, retrying."); // confirmation msg upon failed attempt
                 Bukkit.getScheduler().runTaskLater(plugin,
-                        () -> teleportWithRetry(player, location, maxRetries - 1),
-                        20L //1-second delay before retrying
+                        () -> teleportWithRetry(player, location, maxRetries - 1), // tp attempt
+                        20L // 1-second delay before retrying
                 );
 
             }
-        }).exceptionally(ex -> {
+        }
+
+        ).exceptionally(ex -> {
             ex.printStackTrace();
             player.sendMessage("An error occurred during teleportation.");
             return null;
-        });
+        }
+        );
     }
 }

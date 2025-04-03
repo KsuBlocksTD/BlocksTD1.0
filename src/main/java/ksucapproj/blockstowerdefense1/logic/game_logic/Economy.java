@@ -34,6 +34,8 @@ public class Economy {
                 * manually upgrading player/sword stats via admin command
          */
 
+
+    // Economy object for a player to be placed into upon loading into a game
     public Economy(Player player){
         this.player = player;
         this.currTotal = 500;
@@ -41,6 +43,7 @@ public class Economy {
         this.totalCoinsSpent = 0;
     }
 
+    // Economy object that the server has to track all the mob types and their costs
     public Economy(){
         // add new mobs here, along with their coin reward amt
         mobKillRewards.put(EntityType.ZOMBIE, 10);
@@ -49,9 +52,10 @@ public class Economy {
         mobKillRewards.put(EntityType.ENDERMAN, 40);
         mobKillRewards.put(EntityType.PIGLIN, 50);
         mobKillRewards.put(EntityType.BLAZE, 60);
-    }///
+    }
 
 
+    // this function handles the earning of money when they or their tower kills a certain mob
     public static void earnMoney(Player killer, EntityType mobKilled) {
 
         // if the mob killed is not in the economy constructor
@@ -86,6 +90,8 @@ public class Economy {
 
         Economy spender = playerEconomies.get(player);
 
+        // if the player can buy the item, it reduces their money by that amt
+        // also increments their total spent by that same value
         if (spender.currTotal >= cost){
 
             spender.currTotal -= cost;
@@ -94,6 +100,7 @@ public class Economy {
             return true;
         }
 
+        // if the player doesn't have enough coins, function returns false
         return false;
     }
 
@@ -106,6 +113,7 @@ public class Economy {
         playerEconomy.currTotal += amt;
     }
 
+    // this is for giving each player their end of round bonus
     public void addMoneyOnRoundEnd(int roundNum){
         int endRoundBonus = (100 + roundNum);
         currTotal += endRoundBonus;
@@ -113,6 +121,7 @@ public class Economy {
     }
 
 
+    // function that handles the money sharing functionality with the sender's teammate
     public static void shareMoneyWithTeammate(Player sender, Player receiver, int amt){
 
         Economy senderEconomy = playerEconomies.get(sender);
@@ -123,6 +132,7 @@ public class Economy {
             amt = currSenderMoney;
         }
 
+        // takes the specified amount from the player's economy
         senderEconomy.setPlayerMoney(currSenderMoney -= amt);
 
         // send confirmation message for send coins transaction
@@ -133,6 +143,7 @@ public class Economy {
 
         Economy teammate = playerEconomies.get(receiver);
 
+        // gives the specified amt to the teammate's economy
         teammate.setPlayerMoney(teammate.currTotal + currSenderMoney);
 
         // send confirmation message for receive coins transaction
@@ -145,8 +156,6 @@ public class Economy {
 
 
     // simply adds the joining player to the current players eligible to kill and gain money
-    // will not need to be static upon StartGame change
-    // upon change requires deletion of join in EventListener
     public static void playerJoin(Player player){
         playerEconomies.put(player, new Economy(player));
     }
@@ -168,6 +177,7 @@ public class Economy {
 
         final int leaverMoney = getPlayerEconomies().get(leaver).currTotal;
 
+        // initializes leaver's economy total to zero and removes them from the tracked hashmap
         getPlayerEconomies().get(leaver).currTotal = 0;
         playerEconomies.remove(leaver);
 
@@ -186,10 +196,10 @@ public class Economy {
         return playerEconomies.get(player).currTotal;
     }
 
+
     // this is for a compilation fix bug that occurs when the # of players in the lobby does not match # of player in playerMoney
     // this executes on startup by default. if the server starts empty, nothing happens
-
-
+    // THIS HAS BEEN DISABLED and is only kept ICE
     public static void playerCountFix(){
         if (playerEconomies.size() != Bukkit.getOnlinePlayers().size()){
 

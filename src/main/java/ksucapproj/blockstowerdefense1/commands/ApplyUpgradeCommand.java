@@ -26,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ApplyUpgradeCommand {
 
+    // this is used to create all of the upgrade suggestions for the command
     private static final List<String> upgradeTypes = List.of("SWIFTNESS", "STRENGTH", "MATERIAL", "SLOWNESS", "SWEEPING-EDGE");
 
     @NullMarked
@@ -43,6 +44,7 @@ public class ApplyUpgradeCommand {
     }
 
 
+    // this creates the suggestions for the upgrade types from the list declared at the top of the class
     private static CompletableFuture<Suggestions> getUpgradeTypeSuggestions(final CommandContext<CommandSourceStack> ctx, final SuggestionsBuilder builder) {
 
         for (String word : upgradeTypes){
@@ -51,12 +53,13 @@ public class ApplyUpgradeCommand {
         return builder.buildFuture();
     }
 
-
+    // this function executes the logic once the command is completed
     private static int executeUpgradeCommandLogic(final CommandContext<CommandSourceStack> ctx){
         if (!(ctx.getSource().getExecutor() instanceof Player player)){
             return Command.SINGLE_SUCCESS;
         }
 
+        // if the player is NOT in a game, this command will NOT work
         if (PlayerUpgrades.getPlayerUpgradesMap().get(player) == null){
             player.sendRichMessage("<red>You must be in a game in order to use this command!");
 
@@ -68,9 +71,13 @@ public class ApplyUpgradeCommand {
             return Command.SINGLE_SUCCESS;
         }
 
+        // this takes in the first argument in the command as a variable for the switch
         final String upgradeType = StringArgumentType.getString(ctx, "upgrade-type");
+        // this takes in the second argument in the command as the tier for the specified upgrade type
         final int tier = IntegerArgumentType.getInteger(ctx, "tier");
 
+
+        // gets the player's upgrade object from PlayerUpgrades
         PlayerUpgrades playerUpgrades = PlayerUpgrades.getPlayerUpgradesMap().get(player);
 
 
