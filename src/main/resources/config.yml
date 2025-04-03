@@ -1,85 +1,156 @@
-server:
+# THIS IS THE BTD CONFIG FILE
+
+# If the value is blank or is the commented out value next to its input, it is default
+# If the value is blank and has no comment, it has no default value
+# -- Example --
+# default-time: 450 # 1000
+# This means the current default time is 450, but the default value is 1000
+
+
+
+
+btd:
   settings:
     daylight-cycle:
-      default-time:
+      enable: false # false
+      default-time: 1000 # 1000
 
     weather-cycle:
+      enable: false # false
       default-weather:
 
     natural-mob-spawn:
     motd:
-      enable:
+      enable: false # false
       message:
     greet-player:
-      enable:
+      enable: true # true
       message:
 
 
 
   spawn:
-    world: world
-    x: 78
-    y: 108
-    z: -709
-    yaw: 179.81284
-    pitch: 5.829553
+    world:
+    x:
+    y:
+    z:
+    yaw:
+    pitch:
 
-  database:
-    url: jdbc:sqlite:F:\IntelliJ Projects\BlocksTD1.0\src\main\resources\test_db.db
+  attributes:
 
-  upgrades:
+    upgrades:
 
-    #
-    #    //////////////////////// For Upgrades Related to Potion Effects /////////////////////////////
-    #    * If the maximum desired tier of an effect is n, use n as the default
-    #        - ex: if speed 5 is the desired maximum, choose 5 as the max default
-    #
+      #
+      #    //////////////////////// For Upgrades Related to Potion Effects /////////////////////////////
+      #    * If the maximum desired tier of an effect is n, use n as the default
+      #        - ex: if speed 5 is the desired maximum, choose 5 as the max default
+      #
 
-    universal:
-      max-level:
-      cost-multiplier:
-
-    player:
-      speed:
+      # these multipliers are not set up yet
+      universal:
         max-level:
-        cost:
+        cost-multiplier: 1 # 1 # this is not set up yet
 
-      strength:
-        max-level:
-        cost:
+      players:
+        speed:
+          max-level: 5 # 5
+          cost: 500 # 500
 
-      sword:
-        material:
-          max-level:
-          cost:
+        strength:
+          max-level: 5 # 5
+          cost: 750 # 750
 
-        slowness:
-          max-level:
-          cost:
-          duration:
-            increase-duration-on-upgrade:
+        sword:
+          material:
+            max-level: 5 # 5
+            cost: 400 # 400
 
-        sweeping-edge:
-          max-level:
-          cost:
+          slowness:
+            max-level: 5 # 5
+            cost: 400 # 400
+            duration:
+              ticks: 10 # 10
+              increase-duration-on-upgrade: false # false
+
+          sweeping-edge:
+            max-level: 5 # 5
+            cost: 400 # 400
 
 
-  economy:
+      towers:
+
+        # these multipliers are not set up yet
+        universal:
+          upgrade-strength-multiplier: 1 # 1 # this is not set up yet
+          cost-multiplier: 1 # 1 # this is not set up yet
+
+        basic:
+          cost: 500 # 500
+          tier-one:
+
+        fast:
+          cost: 300 # 300
+          tier-one:
+
+        sniper:
+          cost: 750 # 750
+          tier-one:
+
+        splash:
+          cost: 900 # 900
+          tier-one:
+
+        slow:
+          cost: 450 # 450
+          tier-one:
+
+
     mobs:
-      health-multiplier:
-      reward-multiplier:
+
+      # these multipliers are not set up yet
+      universal:
+        health-multiplier:
+        reward-multiplier:
 
       zombie:
         reward:
 
-      skeleton:
+      iron-golem:
         reward:
 
+      witch:
+        reward:
+
+      enderman:
+        reward:
+
+      piglin:
+        reward:
+
+      blaze:
+        reward:
+
+
     players:
+      round-end-bonus:
+        # the round-end bonus is calculated: (base-reward + (reward-per-round * round num))
+        # this means per round, the default round-end-bonus is: (100 + (1 * round num))
+        base-reward: 100 # 100
+        reward-per-round: 1 # 1
       attribute-multipliers:
+        # all values have a default of 1.0x multiplier
+        # this means if the multiplier for speed is 2, the player moves 2x speed than normal by default
         attack:
           speed:
           range:
           damage:
 
         base-speed:
+
+
+
+
+
+
+

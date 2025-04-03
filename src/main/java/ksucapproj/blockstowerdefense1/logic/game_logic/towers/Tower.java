@@ -28,8 +28,8 @@ public abstract class Tower {
     protected final String mapId;
     protected final Villager towerEntity;
 
-    protected int scanRadius;
-    protected long attackInterval;
+    protected double scanRadius;
+    protected double attackInterval;
 
     public UUID getTowerOwner(UUID towerUUID) {
         for (Map.Entry<UUID, UUID> entry : towerOwners.entrySet()) {
@@ -40,7 +40,7 @@ public abstract class Tower {
         return null;
     }
 
-    public Tower(Location location, Player owner, String mapId, int scanRadius, long attackInterval, JavaPlugin plugin) {
+    public Tower(Location location, Player owner, String mapId, double scanRadius, long attackInterval, JavaPlugin plugin) {
         this.plugin = plugin;
         this.location = location;
         this.owner = owner;
@@ -84,7 +84,7 @@ public abstract class Tower {
                 }
                 attack();
             }
-        }.runTaskTimer(plugin, 0L, attackInterval);
+        }.runTaskTimer(plugin, 0L,(long) attackInterval);
     }
 
     protected abstract String getTowerName();
@@ -182,5 +182,23 @@ public abstract class Tower {
 
         towerTasks.clear();
         towerOwners.clear();
+    }
+
+    public double getScanRadius() {
+        return scanRadius;
+    }
+    public void setScanRadius(double scanRadius) {
+        this.scanRadius = scanRadius;
+    }
+
+    public double getAttackInterval() {
+        return attackInterval;
+    }
+    public void setAttackInterval(double attackInterval) {
+        this.attackInterval = attackInterval;
+    }
+
+    public Boolean getUpgradeTierOne(boolean left){
+        return null;
     }
 }

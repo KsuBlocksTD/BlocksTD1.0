@@ -22,7 +22,7 @@ public class HubCommand {
     private static TeleportationLogic tpManager;
     private static final BlocksTowerDefense1 instance = BlocksTowerDefense1.getInstance();
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
-    private static Location hubSpawn = null;
+    private static Location hubSpawn = getHubFromConfig();
 
 
     public static LiteralCommandNode<CommandSourceStack> register() {
@@ -41,8 +41,6 @@ public class HubCommand {
         if (!(ctx.getSource().getExecutor() instanceof Player player)){
             return Command.SINGLE_SUCCESS;
         }
-
-        hubSpawn = getHubFromConfig();
 
         //sends player confirmation msg
         player.sendMessage("Teleporting to the hub...");
@@ -83,7 +81,9 @@ public class HubCommand {
     public static Location getHubFromConfig(){
         FileConfiguration config = BlocksTowerDefense1.getInstance().getConfig();
 
-        String worldName = config.getString("server.spawn.world");
+        instance.reloadConfig();
+
+        String worldName = config.getString("btd.spawn.world");
         if (worldName == null){
             instance.getLogger().warning("Cannot get world name from config.yml");
             return null;
@@ -95,11 +95,11 @@ public class HubCommand {
             instance.getLogger().warning("Cannot resolve world: " + worldName);
         }
 
-        int x = config.getInt("spawn.x");
-        int y = config.getInt("spawn.y");
-        int z = config.getInt("spawn.z");
-        float yaw = (float) config.getDouble("spawn.yaw");
-        float pitch = (float) config.getDouble("spawn.pitch");
+        int x = config.getInt("btd.spawn.x");
+        int y = config.getInt("btd.spawn.y");
+        int z = config.getInt("btd.spawn.z");
+        float yaw = (float) config.getDouble("btd.spawn.yaw");
+        float pitch = (float) config.getDouble("btd.spawn.pitch");
 
         return hubSpawn = new Location(world, x, y, z, yaw, pitch);
     }

@@ -19,6 +19,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.UUID;
+import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.getPlayerEconomies;
 
 public class PlayerSword {
 
@@ -31,7 +32,8 @@ public class PlayerSword {
     private ItemStack playerSword;
     private ItemMeta swordMeta;
     private final String swordUUID;
-
+    private int currTotal;
+    private int cost;
 
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
     private static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
@@ -52,30 +54,49 @@ public class PlayerSword {
         this.playerSword = new ItemStack(Material.WOODEN_SWORD);
         this.swordMeta = playerSword.getItemMeta();
         this.swordUUID = createPlayerSword(playerSword, swordMeta);
+
+        currTotal = getPlayerEconomies().get(player).getCurrTotal();
     }
 
 
 
 
     public void applySwordMaterialUpgrade(){
+        // base cost is 400 atm
+        cost = config.getSwordMaterialBaseCost() * swordLevel;
+        if (currTotal >= cost){
 
-        if (swordLevel < config.getSwordMaterialMaxLevel()){
+            if (swordLevel < config.getSwordMaterialMaxLevel()){
 
-            setSwordLevel(++swordLevel); // takes in the new material level and makes the new sword with it
-            swordUpgradesBought += 1; // increments bought upgrades counter
+                Economy.spendMoney(player, cost);
+                setSwordLevel(++swordLevel); // takes in the new material level and makes the new sword with it
+                swordUpgradesBought += 1; // increments bought upgrades counter
+                return;
+            }
+            sendMaxLevelMsg();
+            return;
         }
+        sendCannotAffordMsg();
     }
 
 
     public void applySlownessUpgrade() {
+        // base cost is 400 atm
+        cost = config.getSlownessBaseCost() * swordLevel;
+        if (currTotal >= cost){
 
-        // Apply slowness to the mob (target)
-        if (slownessLevel < config.getSlownessMaxLevel()){
+            // Apply slowness to the mob (target)
+            if (slownessLevel < config.getSlownessMaxLevel()){
 
-            ++slownessLevel; // increase the level
-            swordUpgradesBought += 1; // increments bought upgrades counter
+                Economy.spendMoney(player, cost);
+                ++slownessLevel; // increase the level
+                swordUpgradesBought += 1; // increments bought upgrades counter
+                return;
+            }
+            sendMaxLevelMsg();
+            return;
         }
-
+        sendCannotAffordMsg();
     }
 
     public void applySlownessEffect(LivingEntity target){
@@ -92,12 +113,21 @@ public class PlayerSword {
     }
 
     public void applySweepingEdgeUpgrade(){
+        // base cost is 400 atm
+        cost = config.getSweepingEdgeBaseCost() * swordLevel;
+        if (currTotal >= cost){
 
-        if (sweepingEdgeLevel < config.getSweepingEdgeMaxLevel()){
+            if (swordLevel < config.getSwordMaterialMaxLevel()){
 
-            setSweepingEdgeLevel(++sweepingEdgeLevel); // increase the level
-            swordUpgradesBought += 1;
+                Economy.spendMoney(player, cost);
+                setSweepingEdgeLevel(++sweepingEdgeLevel); // takes in new material level and replaces sword with it
+                swordUpgradesBought += 1; // increments bought upgrades counter
+                return;
+            }
+            sendMaxLevelMsg();
+            return;
         }
+        sendCannotAffordMsg();
     }
 
 
@@ -227,6 +257,14 @@ public class PlayerSword {
                 }
             }
         }
+    }
+
+    public void sendCannotAffordMsg(){
+        player.sendRichMessage("<red>You don't have enough coins for this upgrade!");
+    }
+
+    public void sendMaxLevelMsg(){
+        player.sendRichMessage("<red>You already have the maximum level for this upgrade!");
     }
 
 }

@@ -107,6 +107,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         if (world != null) {
             world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
             world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+            world.setGameRule(GameRule.DO_MOB_LOOT, false);
             world.setTime(1000);
             getLogger().info("Weather and daylight cycle auto-disabled.");
         }

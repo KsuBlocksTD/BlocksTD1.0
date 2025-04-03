@@ -33,7 +33,7 @@ public class Economy {
 
     public Economy(Player player){
         this.player = player;
-        this.currTotal = 0;
+        this.currTotal = 500;
         this.totalCoinsGained = 0;
         this.totalCoinsSpent = 0;
     }
@@ -103,6 +103,12 @@ public class Economy {
         playerEconomy.currTotal += amt;
     }
 
+    public void addMoneyOnRoundEnd(int roundNum){
+        int endRoundBonus = (100 + roundNum);
+        currTotal += endRoundBonus;
+        totalCoinsGained += endRoundBonus;
+    }
+
 
     public static void shareMoneyWithTeammate(Player sender, Player receiver, int amt){
 
@@ -151,6 +157,14 @@ public class Economy {
     public static void playerLeave(Player leaver){
         Bukkit.broadcastMessage(leaver.getName() + " has left the game! Reallocating coins..");
 
+
+
+        // if no other players are detected, leaver's coins are simply deleted
+        if (playerEconomies.isEmpty()){
+            Bukkit.broadcastMessage("No online players found, deleting all coins.");
+            return;
+        }
+
         final int leaverMoney = getPlayerEconomies().get(leaver).currTotal;
 
         getPlayerEconomies().get(leaver).currTotal = 0;
@@ -158,11 +172,6 @@ public class Economy {
 
         final int numPlayersOnline = playerEconomies.size();
 
-        // if no other players are detected, leaver's coins are simply deleted
-        if (playerEconomies.isEmpty()){
-            Bukkit.broadcastMessage("No online players found, deleting all coins.");
-            return;
-        }
 
         // if a player in the server is not the leaver, it gives them a portion of the coins
         for (Economy onlinePlayer : playerEconomies.values()){

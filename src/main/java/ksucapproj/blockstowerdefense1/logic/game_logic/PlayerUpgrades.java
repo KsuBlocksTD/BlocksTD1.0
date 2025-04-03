@@ -8,6 +8,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
+import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.*;
 
 public class PlayerUpgrades{
 
@@ -15,12 +16,13 @@ public class PlayerUpgrades{
     private static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
     private static final HashMap<Player, PlayerUpgrades> playerUpgradesMap = new HashMap<>();
 
-    public int swiftnessLevel;
-    public int strengthLevel;
+    private int playerUpgradesBought;
+    private int swiftnessLevel, strengthLevel;
     private final Player player;
     private final PlayerSword sword;
-    private final int playerUpgradesBought;
-    private final int totalUpgradesBought;
+    private int totalUpgradesBought;
+    private int currTotal;
+    private int cost;
 
 
     // all levels are initialized to 0, which is representative of their swiftness tier (0-5)
@@ -46,29 +48,48 @@ public class PlayerUpgrades{
         this.sword = new PlayerSword(player);
 
         this.totalUpgradesBought = playerUpgradesBought + getSword().getSwordUpgradesBought();
+        currTotal = getPlayerEconomies().get(player).getCurrTotal();
     }
 
     // if upgradeLevel is less than the maximum specified in the config
     // it will apply one last upgrade, and then on no longer apply
 
     public void applySwiftnessUpgrade() {
+        // base cost is 500 atm
+        cost = config.getSpeedBaseCost() * swiftnessLevel;
+        if (currTotal >= cost){
 
-        if (swiftnessLevel < config.getSpeedMaxLevel()){
+            if (swiftnessLevel < config.getSpeedMaxLevel()) {
 
-            // changes the current speed effect applied and applies the new level on top
-            setSwiftnessLevel(++swiftnessLevel);
+                Economy.spendMoney(player, cost);
+                // changes the current speed effect applied and applies the new level on top
+                setSwiftnessLevel(++swiftnessLevel);
+                playerUpgradesBought += 1;
+                return;
+            }
+            sendMaxLevelMsg();
+            return;
         }
+        sendCannotAffordMsg();
     }
 
 
     public void applyStrengthUpgrade() {
+        cost = config.getStrengthBaseCost() * strengthLevel;
+        // base cost is 750 atm
+        if (currTotal >= cost){
 
-        if (strengthLevel < config.getStrengthMaxLevel()){
+            if (strengthLevel < config.getStrengthMaxLevel()) {
 
-
-            // changes the current strength effect applied and applies the new level on top
-            setStrengthLevel(++strengthLevel);
+                Economy.spendMoney(player, cost);
+                // changes the current strength effect applied and applies the new level on top
+                setStrengthLevel(++strengthLevel);
+                return;
+            }
+            sendMaxLevelMsg();
+            return;
         }
+        sendCannotAffordMsg();
     }
 
 
@@ -76,13 +97,20 @@ public class PlayerUpgrades{
     public static void playerDelete(Player player){
         PlayerUpgrades leaver = playerUpgradesMap.get(player);
 
+        // Deletes player's tracked sword
         leaver.getSword().removeTrackedSword();
+        // Deletes player's potion effects
+        player.clearActivePotionEffects();
+        // Deletes player's economy
+        playerLeave(player);
+        // Deletes player from player upgrades map
         playerUpgradesMap.remove(player);
     }
 
 
 
-
+    // utilized by application of upgrade and for admin command
+    // gives the player a speed potion effect for their corresponding swiftness level
     public void setSwiftnessLevel(int swiftnessLevel) {
         this.swiftnessLevel = swiftnessLevel;
 //        player.sendMessage("swiftness level before removal of effect: " + swiftnessLevel);
@@ -96,7 +124,8 @@ public class PlayerUpgrades{
 
         player.sendMessage("Swiftness upgrade tier set to " + swiftnessLevel);
     }
-
+    // utilized by application of upgrade and for admin command
+    // gives the player a speed potion effect for their corresponding strength level
     public void setStrengthLevel(int strengthLevel) {
         this.strengthLevel = strengthLevel;
 
@@ -123,5 +152,13 @@ public class PlayerUpgrades{
 
     public static HashMap<Player, PlayerUpgrades> getPlayerUpgradesMap() {
         return playerUpgradesMap;
+    }
+
+    public void sendCannotAffordMsg(){
+        player.sendRichMessage("<red>You don't have enough coins for this upgrade!");
+    }
+
+    public void sendMaxLevelMsg(){
+        player.sendRichMessage("<red>You already have the maximum level for this upgrade!");
     }
 }

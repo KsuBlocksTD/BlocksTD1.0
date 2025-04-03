@@ -1,21 +1,49 @@
 package ksucapproj.blockstowerdefense1.logic;
 
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;
 
 public class DatabaseManager {
 
-    private static final String URL = BlocksTowerDefense1.getInstance().getConfig().getString("server.database.url"); // Change the path accordingly
+    /*
+        -- TO-DO LIST FOR DATABASE
+    * Create database connection upon server loading (in onEnable() )
+        - Hopefully get to creating an async thread, create database connection on it, and move it back to main thread
+        - Save this creation to a getter (like the getInstance() functions below onDisable() ) to be grabbed later
+    * Create a createTable function that would create the table in case it doesn't exist
+        - all functions try, and then catch the error code of the table not existing, then create the table in the catch
+        - once created, retry the function that generated the error (potentially)
+
+    * scheduler.runTaskAsynchronously() might be the way to make the db connection asynchronously, and then come back
+    to main thread in the function itself?
+
+     */
+
+    private static ConfigOptions getConfigOptions() {
+        BlocksTowerDefense1 instance = BlocksTowerDefense1.getInstance();
+        if (instance == null) {
+            throw new IllegalStateException("[DatabaseManager] ERROR: BlocksTowerDefense1 instance is null!");
+        }
+        ConfigOptions config = instance.getBTDConfig();
+        if (config == null) {
+            throw new IllegalStateException("[DatabaseManager] ERROR: ConfigOptions is null!");
+        }
+        return config;
+    }
 
 
 
-
+    // eventually needs to be done once the server starts rather than being called when each function needs it
     public static Connection connect(){
         Connection conn = null;
+        String URL = "jdbc:sqlite:" + BlocksTowerDefense1.getInstance().getDataFolder().getPath()+"/test_db.db";
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection(URL);
@@ -23,6 +51,7 @@ public class DatabaseManager {
 
         catch (NullPointerException e){
             Bukkit.getLogger().warning("Database URL not located.");
+            e.printStackTrace();
         }
 
         catch (ClassNotFoundException e) {
@@ -39,13 +68,25 @@ public class DatabaseManager {
     }
 
 
+    public static void createDatabase(Connection conn) throws SQLException{
+
+    }
+
+
     private static void insertPlayer(Connection conn, String uuidAsString, String name) throws SQLException{
-        String sql = "INSERT INTO players (uuid, name) VALUES (?, ?)";
+        String sql = "INSERT INTO players (uuid, name, total_games_played, total_wins, total_coins_gained," +
+                " total_coins_spent, total_towers_bought, total_upgrades_bought) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement pstmt = conn.prepareStatement(sql);
 
         pstmt.setString(1, uuidAsString);
         pstmt.setString(2, name);
+        pstmt.setInt(3, 0);
+        pstmt.setInt(4, 0);
+        pstmt.setInt(5, 0);
+        pstmt.setInt(6, 0);
+        pstmt.setInt(7, 0);
+        pstmt.setInt(8, 0);
         pstmt.executeUpdate();
 
         Bukkit.getLogger().info("Inserted: " + uuidAsString + " (username = " + name + ")"); // confirmation msg
@@ -61,6 +102,7 @@ public class DatabaseManager {
             return rs.next();  // if a result exists, the user is already in the database
         }
     }
+
 
     public static void checkPlayerInDB(Player player){ // has helper methods to create more concise code
 
@@ -82,9 +124,10 @@ public class DatabaseManager {
         }
 
         catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // getErrorCode, get error code for doesn't exist
         }
     }
+
 
     public static void updatePlayerData(PlayerUpgrades upgrades){
 

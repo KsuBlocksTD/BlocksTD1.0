@@ -57,4 +57,20 @@ public class BasicTower extends Tower {
             }
         }
     }
+    @Override
+    public Boolean getUpgradeTierOne(boolean left){
+        if (Boolean.TRUE.equals(left)){
+            // increase range upon upgrade by 50%
+            scanRadius = scanRadius * 1.5;
+            owner.sendRichMessage("<gold>Tower range increased by 50%!");
+            return true;
+        }
+        else if (Boolean.FALSE.equals(left)){
+            // increase attack speed by 25%
+            attackInterval = attackInterval * 0.75;
+            owner.sendRichMessage("<gold>Tower range increased by 50%!");
+            return false;
+        }
+        return null;
+    }
 }

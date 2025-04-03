@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI.giveCompass;
+import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.*;
 
 
 public class StartGame {
@@ -51,6 +52,7 @@ public class StartGame {
     // Game session class to track per-player game state
     private static class GameSession {
         int currentRound = 1;
+        float multiplier = 1.25F;
         int zombiesPerRound = 5;
         boolean isReady = false;
         AtomicInteger zombiesKilled = new AtomicInteger(0);
@@ -149,8 +151,6 @@ public class StartGame {
             api.createParty(player.getName(), partyPlayer);
         }
 
-        ;
-
         Party party = api.getParty(partyPlayer.getPartyId());
 
 
@@ -183,7 +183,7 @@ public class StartGame {
 
 
             // Add player to economy system
-            Economy.playerJoin(currentPlayer);
+            playerJoin(currentPlayer);
 
             // Clear player's inventory first
             currentPlayer.getInventory().clear();
@@ -379,6 +379,15 @@ public class StartGame {
             session.spawnTask.cancel();
             session.spawnTask = null;
         }
+    }
+
+    public void roundEnd(Player player){
+        // finds the player's game session
+        GameSession session = playerSessions.get(player.getUniqueId());
+        // finds the player's created economy
+        Economy econ = getPlayerEconomies().get(player);
+        // gives a round bonus based upon what round they are on
+        econ.addMoneyOnRoundEnd(session.currentRound);
     }
 
 
