@@ -36,7 +36,7 @@ public class TowerFactory {
         public Class<? extends Tower> getTowerClass() {
             return towerClass;
         }
-    }
+    }///
 
     public static void placeTower(TowerType towerType, Player player, Location placementLocation, String mapId, JavaPlugin plugin, ItemStack item) {
         // Check economy synchronously

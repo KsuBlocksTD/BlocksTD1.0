@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
@@ -57,19 +58,15 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         gameManager = new StartGame(this, api);
 
-        // Register commands with the same instance
-        getCommand("startgame").setExecutor(gameManager);
-        getCommand("readyup").setExecutor(gameManager);
-
-
 
         // Use the same gameManager instance for PlayerEventHandler
         new MobHandler(this);
         new PlayerEventHandler(this, gameManager);
+        TestCommand testCommand = new TestCommand(gameManager, this);
 
         MapData.loadMaps(this);
 
-        getServer().getPluginManager().registerEvents(new MobHandler(this), this);
+
         getServer().getPluginManager().registerEvents(new MobHandler(this), this);
 
 
@@ -95,6 +92,11 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             commands.registrar().register(SpawnCommand.register());
             commands.registrar().register(ApplyUpgradeCommand.register());
             commands.registrar().register(MapCommand.mapCommand());
+            // register gamemanager commands
+            commands.registrar().register(testCommand.setRoundCommand());
+            commands.registrar().register(testCommand.startGameCommand());
+            commands.registrar().register(testCommand.readyUpCommand());
+            commands.registrar().register(testCommand.quitGameCommand());
 
         });
 

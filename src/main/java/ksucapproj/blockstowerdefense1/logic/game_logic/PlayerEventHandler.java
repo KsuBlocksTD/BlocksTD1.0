@@ -12,6 +12,7 @@ import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
+import ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerFactory;
 import net.kyori.adventure.text.Component;
@@ -28,10 +29,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -72,8 +76,7 @@ public class PlayerEventHandler implements Listener {
         }
 
         // this will eventually be the default greeting on player join
-//        event.getPlayer().sendRichMessage("Welcome to the server, <gold><player></gold>!",
-//                Placeholder.component("player", Component.text(event.getPlayer().getName())));
+        event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
 
         // this checks if a player is in the db already, if not, adds them to it
         DatabaseManager.checkPlayerInDB(player);
@@ -125,6 +128,53 @@ public class PlayerEventHandler implements Listener {
 
             // Log the cleanup
             plugin.getLogger().info("Cleaned up game for player " + player.getName());
+        }
+    }
+
+    // Events for the GUI
+    UpgradeGUI openChestGUI = new UpgradeGUI();
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player)) return;
+        Player player = (Player) event.getWhoClicked();
+
+        Inventory clickedInventory = event.getInventory();
+        if (openChestGUI.openInventories.get(player) != clickedInventory) return;
+
+        event.setCancelled(true); // Prevent item movement
+        if (event.getCurrentItem() == null) return;
+
+        Material clickedMaterial = event.getCurrentItem().getType();
+        switch (clickedMaterial) {
+            case DIAMOND:
+                player.sendMessage(ChatColor.GREEN + "You have clicked on a Diamond!");
+                break;
+            case GOLD_INGOT:
+                player.sendMessage(ChatColor.YELLOW + "You have clicked on a Gold Ingot!");
+                break;
+            case EMERALD:
+                player.sendMessage(ChatColor.DARK_GREEN + "You have clicked on an Emerald!");
+                break;
+            default:
+                break;
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        openChestGUI.openInventories.remove(event.getPlayer());
+    }
+
+
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+        if (item != null && item.getType() == Material.COMPASS && item.getItemMeta() != null &&
+                ChatColor.stripColor(item.getItemMeta().getDisplayName()).equals("Upgrade Menu")) {
+            openChestGUI.openChestGUI(player);
         }
     }
 
@@ -267,7 +317,7 @@ public class PlayerEventHandler implements Listener {
 
         // Handle null killer by assigning death to nearby player
         if(killer == null) {
-            if (event.getEntity() instanceof Zombie) {
+            if (event.getEntity() instanceof Zombie){
                 Zombie zombie = (Zombie) event.getEntity();
                 @NotNull Collection<Player> kill = zombie.getLocation().getNearbyPlayers(50);
                 killer = kill.iterator().next();
@@ -290,6 +340,7 @@ public class PlayerEventHandler implements Listener {
 
         }
     }
+
 
     @EventHandler
     public void onInvClick(PlayerDropItemEvent event) {

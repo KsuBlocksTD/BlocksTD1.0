@@ -27,10 +27,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI.giveCompass;
 import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.*;
 
 
-public class StartGame implements CommandExecutor, Listener {
+public class StartGame {
 
 
     private static PartiesAPI api;
@@ -66,6 +67,12 @@ public class StartGame implements CommandExecutor, Listener {
         }
     }
 
+    public void setCurrentRound(UUID playerUUID, int newRound) {
+        GameSession session = playerSessions.get(playerUUID);
+        session.currentRound = newRound;
+    }
+
+
     public void removeZombie(UUID zombieId, UUID playerUUID) {
         GameSession session = playerSessions.get(playerUUID);
         session.activeZombies.remove(zombieId);
@@ -73,7 +80,7 @@ public class StartGame implements CommandExecutor, Listener {
 
     public void setZombiesPerRound(UUID playerUUID) {
         GameSession session = playerSessions.get(playerUUID);
-        session.zombiesPerRound += (session.currentRound <= 10) ? 7 : 10;
+        session.zombiesPerRound = session.currentRound * 5; // increases by 5 every round
     }
 
     public void setRoundInProgress(UUID playerUUID, boolean bool) {
@@ -109,33 +116,10 @@ public class StartGame implements CommandExecutor, Listener {
     public StartGame(JavaPlugin plugin, PartiesAPI api) {
         this.plugin = plugin;
         StartGame.api = api;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can use this command!");
-            return true;
-        }
 
-
-        if (command.getName().equalsIgnoreCase("startgame")) {
-            // Handle map lookup asynchronously but game setup on main thread
-            if (args.length == 0) {
-                player.sendMessage(ChatColor.RED + "You must specify a map!");
-                player.sendMessage(ChatColor.YELLOW + "Usage: /startgame <map>");
-
-                // Get available maps asynchronously
-                CompletableFuture.supplyAsync(MapData::getAvailableMaps)
-                        .thenAccept(maps -> Bukkit.getScheduler().runTask(plugin, () ->
-                                player.sendMessage(ChatColor.YELLOW + "Available maps: " + String.join(", ", maps))));
-                return true;
-            }
-
-            // Get the specified map
-            String mapId = args[0];
-
+    public void startGames(Player player, String mapId) {
             // Verify the map exists asynchronously
             CompletableFuture.supplyAsync(() -> MapData.mapExists(mapId))
                     .thenAccept(exists -> {
@@ -154,14 +138,8 @@ public class StartGame implements CommandExecutor, Listener {
                             handleStartGameCommand(player, mapId);
                         });
                     });
-        }
-        else if (command.getName().equalsIgnoreCase("readyup")) {
-            // Handle readyup entirely on the main thread
-            handleReadyUpCommand(player);
-        }
-
-        return true;
     }
+
 
     private void handleStartGameCommand(Player player, String mapId) {
 
@@ -172,9 +150,6 @@ public class StartGame implements CommandExecutor, Listener {
 
             api.createParty(player.getName(), partyPlayer);
         }
-
-//        PlayerUpgrades Player1;
-//        PlayerUpgrades Player2;
 
         Party party = api.getParty(partyPlayer.getPartyId());
 
@@ -197,6 +172,7 @@ public class StartGame implements CommandExecutor, Listener {
         //player.sendMessage(party.getOnlineMembers().toString());
         int count = party.getOnlineMembers().size();
 
+
         for (PartyPlayer partyMember : party.getOnlineMembers()){
             Player currentPlayer = Bukkit.getPlayer(partyMember.getPlayerUUID());
 
@@ -204,11 +180,15 @@ public class StartGame implements CommandExecutor, Listener {
             playerSessions.put(currentPlayer.getUniqueId(), session);
 
 
+
+
             // Add player to economy system
             playerJoin(currentPlayer);
 
             // Clear player's inventory first
             currentPlayer.getInventory().clear();
+
+
 
             // Add items for gameplay
             if(count == 0) {
@@ -233,7 +213,7 @@ public class StartGame implements CommandExecutor, Listener {
             currentPlayer.getInventory().addItem(CreateEgg.SNIPER.createTowerEgg(CreateEgg.SNIPER));
             currentPlayer.getInventory().addItem(CreateEgg.FAST.createTowerEgg(CreateEgg.FAST));
 
-
+            giveCompass(currentPlayer);
 
             currentPlayer.sendMessage(ChatColor.GREEN + "Game started on map: " + ChatColor.YELLOW + mapId);
             currentPlayer.sendMessage(ChatColor.GREEN + "Type /readyup to start the first round!");
@@ -243,7 +223,7 @@ public class StartGame implements CommandExecutor, Listener {
     }
 
 
-    private void handleReadyUpCommand(Player player) {
+    public void handleReadyUpCommand(Player player) {
         UUID playerUUID = player.getUniqueId();
 
         if (!playerSessions.containsKey(playerUUID)) {
@@ -301,7 +281,7 @@ public class StartGame implements CommandExecutor, Listener {
                 }
 
                 // Spawn mob on main thread and track it
-                Zombie zombie = MobHandler.spawnMob(world, session.currentMapId);
+                Zombie zombie = MobHandler.spawnMob(world, session.currentMapId, session.currentRound);
                 if (zombie != null) {
                     // Tag the zombie with metadata to associate it with this game session
                     zombie.setMetadata("gameSession", new FixedMetadataValue(plugin, playerUUID.toString()));
@@ -312,6 +292,7 @@ public class StartGame implements CommandExecutor, Listener {
             }
         }.runTaskTimer(plugin, 0, 10); // 500ms interval (10 ticks)
     }
+
 
 
     /**
