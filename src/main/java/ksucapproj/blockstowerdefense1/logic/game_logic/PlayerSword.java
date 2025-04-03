@@ -22,7 +22,9 @@ import java.util.UUID;
 
 public class PlayerSword {
 
-    private int swordLevel, slownessLevel, sweepingEdgeLevel;
+    public int swordLevel;
+    public int slownessLevel;
+    public int sweepingEdgeLevel;
     private int swordUpgradesBought;
 
     private final Player player;

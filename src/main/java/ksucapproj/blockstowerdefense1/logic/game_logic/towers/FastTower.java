@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Comparator;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.PriorityQueue;
 public class FastTower extends Tower {
     public FastTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
         // Small scan radius, very fast attack interval, low damage
-        super(location, owner, mapId, 4, 5L, plugin);
+        super(location, owner, mapId, 4, 5L, plugin);///
     }
 
     @Override
@@ -50,7 +51,9 @@ public class FastTower extends Tower {
                 // Particle effect for fast attacks
                 zombie.getWorld().spawnParticle(Particle.SMOKE, zombie.getLocation(), 10);
                 // Low damage but rapid attacks
-                zombie.damage(3.0);
+                if(zombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
+                    zombie.damage(0.0);
+                } else {zombie.damage(5.0);}///
                 //                 this is the code for setting ownership for a tower:
                 target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
             }

@@ -15,7 +15,8 @@ public class PlayerUpgrades{
     private static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
     private static final HashMap<Player, PlayerUpgrades> playerUpgradesMap = new HashMap<>();
 
-    private int swiftnessLevel, strengthLevel;
+    public int swiftnessLevel;
+    public int strengthLevel;
     private final Player player;
     private final PlayerSword sword;
     private final int playerUpgradesBought;

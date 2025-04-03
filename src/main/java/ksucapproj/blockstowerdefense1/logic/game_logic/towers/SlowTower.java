@@ -16,7 +16,7 @@ import java.util.PriorityQueue;
 public class SlowTower extends Tower {
     public SlowTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
         // Medium scan radius, medium attack interval, apply slowness
-        super(location, owner, mapId, 7, 25L, plugin);
+        super(location, owner, mapId, 7, 25L, plugin);///
     }
 
     @Override
@@ -50,7 +50,9 @@ public class SlowTower extends Tower {
             faceTarget(target);
             if (target instanceof Mob zombie) {
                 // Minimal direct damage
-                zombie.damage(2.0);
+                if(zombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
+                    zombie.damage(0.0);
+                } else {zombie.damage(2.0);}///
                 target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
 
                 // Apply slowness effect

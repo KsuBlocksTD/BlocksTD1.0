@@ -41,8 +41,12 @@ public class Economy {
     public Economy(){
         // add new mobs here, along with their coin reward amt
         mobKillRewards.put(EntityType.ZOMBIE, 10);
-        mobKillRewards.put(EntityType.SKELETON, 15);
-    }
+        mobKillRewards.put(EntityType.IRON_GOLEM, 20);
+        mobKillRewards.put(EntityType.WITCH, 30);
+        mobKillRewards.put(EntityType.ENDERMAN, 40);
+        mobKillRewards.put(EntityType.PIGLIN, 50);
+        mobKillRewards.put(EntityType.BLAZE, 60);
+    }///
 
 
     public static void earnMoney(Player killer, EntityType mobKilled) {

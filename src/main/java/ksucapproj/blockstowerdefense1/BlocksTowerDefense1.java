@@ -15,8 +15,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.EventListener;
@@ -30,35 +32,44 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     private ConfigOptions config;
 
 
+    public BlocksTowerDefense1() {
+        instance = this; // Ensure instance is assigned immediately
+    }
+
+
     @Override
     public void onEnable() {
         getLogger().info("BlocksTowerDefense1 has been enabled!");
-
         api = Parties.getApi(); // For static api getter
-        instance = this;
 
+
+        instance.saveDefaultConfig();  // Ensures the config is saved if it doesn't exist
+        instance.reloadConfig();       // Ensures the latest config is loaded
+
+        saveResource("config.yml", /* replace */ false);
         config = new ConfigOptions(this);
-        this.saveDefaultConfig();
+
+        if (config == null) {
+            getLogger().severe("[BlocksTowerDefense1] ERROR: ConfigOptions failed to initialize!");
+        } else {
+            getLogger().info("[BlocksTowerDefense1] ConfigOptions initialized successfully.");
+        }
+
 
         gameManager = new StartGame(this, api);
-
-        // Register commands with the same instance
-        getCommand("startgame").setExecutor(gameManager);
-        getCommand("readyup").setExecutor(gameManager);
-
 
 
         // Use the same gameManager instance for PlayerEventHandler
         new MobHandler(this);
         new PlayerEventHandler(this, gameManager);
+        TestCommand testCommand = new TestCommand(gameManager, this);
 
         MapData.loadMaps(this);
 
-        getServer().getPluginManager().registerEvents(new MobHandler(this), this);
+
         getServer().getPluginManager().registerEvents(new MobHandler(this), this);
 
 
-        new Economy(); // Creating economy object
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -66,6 +77,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         }
 
 
+        new Economy(); // Creating economy object
         // needed for instantiating proper mob killing & economy function
         // this is solely for recompiling the server and keeping a working economy while players are still online
         Economy.playerCountFix();
@@ -77,15 +89,20 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             commands.registrar().register(TestCommand.addCoinsCommand());
             commands.registrar().register(TestCommand.giveCoinsCommand());
             commands.registrar().register(MtdCommand.register());
-            commands.registrar().register(MapCommand.mapCommand());
             commands.registrar().register(SpawnCommand.register());
             commands.registrar().register(ApplyUpgradeCommand.register());
+            commands.registrar().register(MapCommand.mapCommand());
+            // register gamemanager commands
+            commands.registrar().register(testCommand.setRoundCommand());
+            commands.registrar().register(testCommand.startGameCommand());
+            commands.registrar().register(testCommand.readyUpCommand());
+            commands.registrar().register(testCommand.quitGameCommand());
 
         });
 
         scheduler.runTaskTimerAsynchronously(this, new AsyncTest(this), 20, Tick.tick().fromDuration(Duration.ofMinutes(15)));
 
-
+        // This needs to go into a config/function at some point
         World world = Bukkit.getWorlds().get(0);
         if (world != null) {
             world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
@@ -100,7 +117,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     @Override
     public void onDisable() {
-//        saveConfig();
+//        instance.reloadConfig();
+        instance.saveConfig();
         MapData.saveMaps();
 
         MobHandler.cleanupAll();
@@ -127,6 +145,10 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     }
 
     public static BlocksTowerDefense1 getInstance() {
+        if (instance == null) {
+            Bukkit.getLogger().severe("[BlocksTowerDefense1] ERROR: getInstance() was called before initialization!");
+            throw new IllegalStateException("BlocksTowerDefense1 instance is not yet initialized!");
+        }
         return instance;
     }
 

@@ -24,7 +24,7 @@ public class MapData {
     }
     // Store maps with their associated waypoints
     private static final Map<String, MapDetails> maps = new HashMap<>();
-    private static String defaultMap = "map1"; // Default map to use
+    private static String defaultMap; // Default map to use
     private static File configFile;
     private static JavaPlugin plugin;
 
