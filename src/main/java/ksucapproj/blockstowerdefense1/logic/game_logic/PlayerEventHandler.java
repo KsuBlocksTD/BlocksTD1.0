@@ -9,6 +9,7 @@ import com.alessiodp.parties.api.events.bukkit.player.BukkitPartiesPlayerPreInvi
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
+import io.papermc.paper.text.PaperComponents;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
@@ -16,6 +17,7 @@ import ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerFactory;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -148,13 +150,13 @@ public class PlayerEventHandler implements Listener {
         Material clickedMaterial = event.getCurrentItem().getType();
         switch (clickedMaterial) {
             case DIAMOND:
-                player.sendMessage(ChatColor.GREEN + "You have clicked on a Diamond!");
+                player.sendRichMessage("<green>You have clicked on a Diamond!");
                 break;
             case GOLD_INGOT:
-                player.sendMessage(ChatColor.YELLOW + "You have clicked on a Gold Ingot!");
+                player.sendRichMessage("<yellow>You have clicked on a Gold Ingot!");
                 break;
             case EMERALD:
-                player.sendMessage(ChatColor.DARK_GREEN + "You have clicked on an Emerald!");
+                player.sendRichMessage("<dark_green>You have clicked on an Emerald!");
                 break;
             default:
                 break;
@@ -197,7 +199,7 @@ public class PlayerEventHandler implements Listener {
                 // Check if player is in a game
                 UUID playerUUID = player.getUniqueId();
                 if (!gameManager.isInplayerSessions(playerUUID)) {
-                    player.sendMessage(ChatColor.RED + "You must start a game first!");
+                    player.sendRichMessage("<red>You must start a game first!");
                     return;
                 }
 
@@ -302,8 +304,18 @@ public class PlayerEventHandler implements Listener {
                 // Set round as no longer in progress
                 gameManager.setRoundInProgress(playerUUID, false);
 
-                Bukkit.broadcastMessage(ChatColor.GOLD + "Round " + (currentRound - 1) + " completed!");
-                Bukkit.broadcastMessage(ChatColor.GREEN + "Type /readyup for Round " + currentRound);
+//                Bukkit.broadcastMessage(ChatColor.GOLD + "Round " + (currentRound - 1) + " completed!");
+//                Bukkit.broadcastMessage(ChatColor.GREEN + "Type /readyup for Round " + currentRound);
+                for (Player p : Bukkit.getOnlinePlayers()){
+                    p.sendRichMessage("<gold>Round <current_round> completed!",
+                            Placeholder.component("current_round", Component.text(currentRound-1))
+                    );
+
+                    p.sendRichMessage("<green> Type /readyup for Round + <current_round>",
+                            Placeholder.component("current_round", Component.text(currentRound)));
+                }
+
+
             }
         }
     }

@@ -20,6 +20,7 @@ public class DatabaseManager {
     * Create a createTable function that would create the table in case it doesn't exist
         - all functions try, and then catch the error code of the table not existing, then create the table in the catch
         - once created, retry the function that generated the error (potentially)
+        - also might have to create a .db file to store this created table in
 
     * scheduler.runTaskAsynchronously() might be the way to make the db connection asynchronously, and then come back
     to main thread in the function itself?
