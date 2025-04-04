@@ -1,5 +1,6 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -55,7 +56,7 @@ public abstract class Tower {
     }
 
     protected Villager spawnTowerEntity() {
-        Location towerLocation = location.clone().add(0.5, 0, 0.5);
+        Location towerLocation = location.clone().toCenterLocation().add(0, -.5, 0);
         Villager tower = (Villager) towerLocation.getWorld().spawnEntity(towerLocation, EntityType.VILLAGER);
         tower.setAI(false);
         tower.setInvulnerable(true);

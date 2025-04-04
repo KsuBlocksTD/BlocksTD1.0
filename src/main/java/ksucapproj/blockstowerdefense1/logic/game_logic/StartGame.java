@@ -10,10 +10,7 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -45,7 +42,7 @@ public class StartGame {
     }
 
 
-
+    // future class for quick-restarts upon loss
     public void resetPlayerGame(Player player, String mapId) {
     }
 
@@ -67,9 +64,12 @@ public class StartGame {
         }
     }
 
+    // various getters and setters
+
     public void setCurrentRound(UUID playerUUID, int newRound) {
         GameSession session = playerSessions.get(playerUUID);
         session.currentRound = newRound;
+        setZombiesPerRound(playerUUID);
     }
 
 
@@ -118,7 +118,7 @@ public class StartGame {
         StartGame.api = api;
     }
 
-
+    // public access for starting game and ensuring map and player exist
     public void startGames(Player player, String mapId) {
             // Verify the map exists asynchronously
             CompletableFuture.supplyAsync(() -> MapData.mapExists(mapId))
@@ -140,8 +140,9 @@ public class StartGame {
                     });
     }
 
-
+    // main method call for starting a game
     private void handleStartGameCommand(Player player, String mapId) {
+        new Economy();
 
         PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 
@@ -156,7 +157,7 @@ public class StartGame {
 
         // Clean up any existing game session first
         if (playerSessions.containsKey(player.getUniqueId())) {
-            handlePlayerQuit(player);
+            cleanupPlayer(player.getUniqueId());
         }
 
         // Initialize game session
@@ -178,8 +179,6 @@ public class StartGame {
 
 
             playerSessions.put(currentPlayer.getUniqueId(), session);
-
-
 
 
             // Add player to economy system
@@ -281,7 +280,7 @@ public class StartGame {
                 }
 
                 // Spawn mob on main thread and track it
-                Zombie zombie = MobHandler.spawnMob(world, session.currentMapId, session.currentRound);
+                Mob zombie = MobHandler.spawnMob(world, session.currentMapId, session.currentRound);
                 if (zombie != null) {
                     // Tag the zombie with metadata to associate it with this game session
                     zombie.setMetadata("gameSession", new FixedMetadataValue(plugin, playerUUID.toString()));
@@ -294,50 +293,10 @@ public class StartGame {
     }
 
 
+      //Removes all zombies that are part of a specific game session.
 
-    /**
-     * Method to clean up resources when a player quits.
-     * This includes canceling tasks and removing all entities associated with the game.
-     */
-    public void handlePlayerQuit(Player player) {
-        UUID playerUUID = player.getUniqueId();
-        GameSession session = playerSessions.get(playerUUID);
-
-
-        if (session == null) {
-            return; // No cleanup needed
-        }
-
-        // Cancel any ongoing spawn task
-        if (session.spawnTask != null && !session.spawnTask.isCancelled()) {
-            session.spawnTask.cancel();
-        }
-
-        // Remove any zombies/towers that are part of this game session
-        removeGameZombies(player.getWorld(), session, playerUUID);
-        Tower.removeTowersForPlayer(player, getPlayerMapId(playerUUID));
-
-        // Remove the session from our tracking
-        playerSessions.remove(playerUUID);
-        // Deletes player and their sword
-        PlayerUpgrades.playerDelete(player);
-        Economy.playerLeave(player);
-
-        for (ItemStack item : player.getInventory().getContents()){
-            if (item == null) {
-                continue;
-            }
-            player.getInventory().remove(item);
-        }
-
-        plugin.getLogger().info("Game session cleaned up for player " + player.getName());
-    }
-
-    /**
-     * Removes all zombies that are part of a specific game session.
-     */
     private void removeGameZombies(World world, GameSession session, UUID playerUUID) {
-
+        // Remove zombies tracked in the session
         for (UUID zombieUUID : session.activeZombies) {
             Entity entity = Bukkit.getEntity(zombieUUID);
             if (entity != null) {
@@ -345,47 +304,72 @@ public class StartGame {
             }
         }
 
-
+        // Ensure we catch any zombies that might not be in the tracking set
         for (Entity entity : world.getEntities()) {
-            if (entity instanceof Zombie && entity.hasMetadata("gameSession")) {
-                String sessionId = entity.getMetadata("gameSession").get(0).asString();
+            if (entity instanceof Mob && entity.hasMetadata("gameSession")) {
+                String sessionId = entity.getMetadata("gameSession").getFirst().asString();
                 if (sessionId.equals(playerUUID.toString())) {
                     entity.remove();
                 }
             }
         }
-
         // Clear our tracking set
         session.activeZombies.clear();
+    }
+
+    // cleans up player data
+    public void cleanupPlayer(UUID playerUUID) {
+        Player player = Bukkit.getPlayer(playerUUID);
+        if (player == null || !playerSessions.containsKey(playerUUID)) {
+            return; // No cleanup needed
+        }
+
+        GameSession session = playerSessions.get(playerUUID);
+        String mapId = getPlayerMapId(playerUUID);
+
+        // Cancel all scheduled tasks
+        if (session.spawnTask != null) {
+            session.spawnTask.cancel();
+            session.spawnTask = null;
+        }
+        MobHandler.cancelTasksForPlayer(playerUUID);
+        Tower.cancelTasksForPlayer(playerUUID);
+
+        // Remove all entities
+        removeGameZombies(player.getWorld(), session, playerUUID);
+        Tower.removeTowersForPlayer(player, mapId);
+
+        // Clean up player data
+        PlayerUpgrades.playerDelete(player); // This also removes from PlayerUpgrades map
+
+        // Clear inventory
+        player.getInventory().clear();
+
+        // Remove session tracking
+        playerSessions.remove(playerUUID);
+
+        plugin.getLogger().info("Game session cleaned up for player " + player.getName());
     }
 
     public boolean isPlayerInGame(UUID playerUUID) {
         return playerSessions.containsKey(playerUUID);
     }
 
-    /**
-     * Gets the map ID for a player's current game session.
-     * Used by the cleanup process to identify which zombies to remove.
-     */
+
+//      Gets the map ID for a player's current game session.
+//      Used by the cleanup process to identify which zombies to remove.
+
     public String getPlayerMapId(UUID playerUUID) {
         GameSession session = playerSessions.get(playerUUID);
         return session != null ? session.currentMapId : null;
     }
 
 
-    public void cancelTasks(UUID playerUUID) {
-        GameSession session = playerSessions.get(playerUUID);
-        if (session != null && session.spawnTask != null) {
-            session.spawnTask.cancel();
-            session.spawnTask = null;
-        }
-    }
-
-    public void roundEnd(Player player){
+    public void roundEndMoney(UUID playerUUID){
         // finds the player's game session
-        GameSession session = playerSessions.get(player.getUniqueId());
+        GameSession session = playerSessions.get(playerUUID);
         // finds the player's created economy
-        Economy econ = getPlayerEconomies().get(player);
+        Economy econ = getPlayerEconomies().get(Bukkit.getPlayer(playerUUID));
         // gives a round bonus based upon what round they are on
         econ.addMoneyOnRoundEnd(session.currentRound);
     }

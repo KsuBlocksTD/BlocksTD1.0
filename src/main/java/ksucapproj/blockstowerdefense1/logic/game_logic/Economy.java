@@ -63,7 +63,7 @@ public class Economy {
 
 
         // notifies all players in the server of who killed what mob (if it is coin eligible)
-       // Bukkit.broadcastMessage(killer.getName() + " just killed " + mobKilled + " for " + killReward + " coins!");
+        Bukkit.broadcastMessage(killer.getName() + " just killed " + mobKilled + " for " + killReward + " coins!");
 
         // is incorrectly printing both coin amounts for each player to one player (happens to be the killer in one case)
         // this is likely fixed

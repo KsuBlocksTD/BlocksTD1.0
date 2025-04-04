@@ -15,14 +15,14 @@ import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
 import ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerFactory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -40,6 +40,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerEventHandler implements Listener {
@@ -55,13 +56,12 @@ public class PlayerEventHandler implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-
+    // This event is for actions when the player joins the server
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         // activates the player join event for economy
         Player player = event.getPlayer();
 
-        int playerCount = Bukkit.getOnlinePlayers().size();
 
         // checks if msg on join is enabled
         // if so, send player the specified message
@@ -77,61 +77,40 @@ public class PlayerEventHandler implements Listener {
 
     }
 
+    // This event handles players leaving mid-game
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 
-        if (partyPlayer.isInParty()){
+        // Handle party system
+        PartyPlayer partyPlayer = api.getPartyPlayer(playerUUID);
+        if (partyPlayer != null && partyPlayer.isInParty()) {
             Party party = api.getParty(partyPlayer.getPartyId());
-            if (party.getLeader() == partyPlayer.getPlayerUUID()){
-                party.delete();
-            }
-            else {
-                party.removeMember(partyPlayer);
+            if (party != null) {
+                if (party.getLeader() == playerUUID) {
+                    party.delete();
+                } else {
+                    party.removeMember(partyPlayer);
+                }
             }
         }
 
-        // Check if the player is in a game
+        // Clean up game data if player was in a game
         if (gameManager.isPlayerInGame(playerUUID)) {
-            // Get the player's game data before cleanup
-            String mapId = gameManager.getPlayerMapId(playerUUID);
-
-
-            // Cancel zombie spawning tasks
-            gameManager.cancelTasks(playerUUID);
-
-            // Cancel end-point detection tasks
-            MobHandler.cancelTasksForPlayer(playerUUID);
-
-            // Cancel tower attack tasks if you have them
-            Tower.cancelTasksForPlayer(playerUUID);
-
-            // Remove all zombies associated with this player's game
-            MobHandler.removeZombiesForPlayer(player);
-
-            // Remove all towers
-            Tower.removeTowersForPlayer(player, mapId);
-
-            // Clean up game resources and data structures
-            gameManager.handlePlayerQuit(player);
-
-            Economy.playerLeave(player);
-            PlayerUpgrades.getPlayerUpgradesMap().remove(player);
-
-            // Log the cleanup
-            plugin.getLogger().info("Cleaned up game for player " + player.getName());
+            gameManager.cleanupPlayer(playerUUID);
         }
     }
 
     // Events for the GUI
     UpgradeGUI openChestGUI = new UpgradeGUI();
 
+
+
+    // This event checks what the player clicked in the GUI
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) return;
-        Player player = (Player) event.getWhoClicked();
+        if (!(event.getWhoClicked() instanceof Player player)) return;
 
         Inventory clickedInventory = event.getInventory();
         if (openChestGUI.openInventories.get(player) != clickedInventory) return;
@@ -139,39 +118,75 @@ public class PlayerEventHandler implements Listener {
         event.setCancelled(true); // Prevent item movement
         if (event.getCurrentItem() == null) return;
 
-        Material clickedMaterial = event.getCurrentItem().getType();
-        switch (clickedMaterial) {
-            case DIAMOND:
-                player.sendMessage(ChatColor.GREEN + "You have clicked on a Diamond!");
-                break;
-            case GOLD_INGOT:
-                player.sendMessage(ChatColor.YELLOW + "You have clicked on a Gold Ingot!");
-                break;
-            case EMERALD:
-                player.sendMessage(ChatColor.DARK_GREEN + "You have clicked on an Emerald!");
-                break;
-            default:
-                break;
+        ItemStack clickedItem = event.getCurrentItem();
+
+
+        // If statement for checking which item was clicked, repeated for every item
+        if (Objects.equals(clickedItem.getItemMeta().displayName(),
+                Component.text("Upgrade Sword Level").color(TextColor.color(0, 255, 0)))) {
+
+            // getting playersword and/or player upgrades object to update the object
+            PlayerSword playerSword = PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword();
+
+            // applying upgrade and spending coins
+            playerSword.applySwordMaterialUpgrade();
+
+            // returning new level of upgrade selected
+                player.sendRichMessage("Your Sword Level Is Now <s_material>",
+                        Placeholder.component("s_material", Component.text(String.valueOf(playerSword.swordLevel))));
+        }
+        if (Objects.equals(clickedItem.getItemMeta().displayName(),
+                Component.text("Upgrade Strength Level").color(TextColor.color(100, 255, 255)))) {
+            PlayerUpgrades playerUpgrades = PlayerUpgrades.getPlayerUpgradesMap().get(player);
+            playerUpgrades.applyStrengthUpgrade();
+            player.sendRichMessage("Your Strength Level Is Now <s_lvl>",
+                    Placeholder.component("s_lvl", Component.text(String.valueOf(PlayerUpgrades.getPlayerUpgradesMap().get(player).getStrengthLevel()))));
+        }
+        if (Objects.equals(clickedItem.getItemMeta().displayName(),
+                Component.text("Upgrade Speed Level").color(TextColor.color(155, 255, 155)))) {
+            PlayerUpgrades playerUpgrades = PlayerUpgrades.getPlayerUpgradesMap().get(player);
+            playerUpgrades.applySwiftnessUpgrade();
+            player.sendRichMessage("Your Speed Level Is Now <s_lvl>",
+                    Placeholder.component("s_lvl", Component.text(String.valueOf(PlayerUpgrades.getPlayerUpgradesMap().get(player).getSwiftnessLevel()))));
+        }
+        if (Objects.equals(clickedItem.getItemMeta().displayName(),
+                Component.text("Upgrade Sweeping edge Level").color(TextColor.color(255, 50, 50)))) {
+            PlayerSword playerSword = PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword();
+            playerSword.applySweepingEdgeUpgrade();
+            player.sendRichMessage("Your Sweeping edge Level Is Now <s_lvl>",
+                    Placeholder.component("s_lvl", Component.text(String.valueOf(PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword().getSweepingEdgeLevel()))));
+        }
+        if (Objects.equals(clickedItem.getItemMeta().displayName(),
+                Component.text("Upgrade Slowness Level").color(TextColor.color(5, 50, 250)))) {
+            PlayerSword playerSword = PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword();
+            playerSword.applySlownessUpgrade();
+            player.sendRichMessage("Your Slowness Level Is Now <s_lvl>",
+                    Placeholder.component("s_lvl", Component.text(String.valueOf(PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword().getSlownessLevel()))));
         }
     }
 
+    /// can maybe be removed?
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         openChestGUI.openInventories.remove(event.getPlayer());
     }
 
 
-
+    // This event is for opening GUI when compass is used
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
-        if (item != null && item.getType() == Material.COMPASS && item.getItemMeta() != null &&
-                ChatColor.stripColor(item.getItemMeta().getDisplayName()).equals("Upgrade Menu")) {
+        // debug
+        //player.sendMessage(item.getItemMeta().displayName());
+        if (item != null && item.getType() == Material.COMPASS &&
+                Objects.equals(item.getItemMeta().displayName(), Component.text("Upgrade Menu").color(TextColor.color(0, 255, 255)))) {
             openChestGUI.openChestGUI(player);
         }
     }
 
+
+    // This event is for placing the towers with the spawn eggs
     @EventHandler
     public void onPlayerUseEgg(PlayerInteractEvent event) {
 
@@ -181,17 +196,20 @@ public class PlayerEventHandler implements Listener {
 
         // Check if this is a valid tower placement attempt
         if (item != null && item.getType() == Material.ZOMBIE_SPAWN_EGG && item.getItemMeta() != null) {
-            String itemName = item.getItemMeta().getDisplayName();
+            String itemName = String.valueOf(item.getItemMeta().displayName());
+
 
             // Check if it's one of our tower spawn eggs
-            if (itemName.startsWith("§")) {  // Check for color codes
+            if (itemName.contains("Tower")) {  // Check for color codes
                 // Cancel the event to prevent default zombie spawning
                 event.setCancelled(true);
+                //debug
+                //player.sendMessage(itemName);
 
                 // Check if player is in a game
                 UUID playerUUID = player.getUniqueId();
                 if (!gameManager.isInplayerSessions(playerUUID)) {
-                    player.sendMessage(ChatColor.RED + "You must start a game first!");
+                    player.sendRichMessage("<red>You must start a game first!");
                     return;
                 }
 
@@ -200,7 +218,7 @@ public class PlayerEventHandler implements Listener {
 
 
                 // Check which egg was used
-                if (itemName.equals("§aFast Tower")) {
+                if (itemName.contains("Fast Tower")) {
                     TowerFactory.placeTower(
                             TowerFactory.TowerType.FAST,
                             player,
@@ -210,7 +228,7 @@ public class PlayerEventHandler implements Listener {
                             item
                     );
                 }
-                if (itemName.equals("§bBasic Tower")) {
+                if (itemName.contains("Basic Tower")) {
                     TowerFactory.placeTower(
                             TowerFactory.TowerType.BASIC,
                             player,
@@ -220,7 +238,7 @@ public class PlayerEventHandler implements Listener {
                             item
                     );
                 }
-                if (itemName.equals("§cSniper Tower")) {
+                if (itemName.contains("Sniper Tower")) {
                     TowerFactory.placeTower(
                             TowerFactory.TowerType.SNIPER,
                             player,
@@ -230,7 +248,7 @@ public class PlayerEventHandler implements Listener {
                             item
                     );
                 }
-                if (itemName.equals("§eSplash Tower")) {
+                if (itemName.contains("Splash Tower")) {
                     TowerFactory.placeTower(
                             TowerFactory.TowerType.SPLASH,
                             player,
@@ -240,7 +258,7 @@ public class PlayerEventHandler implements Listener {
                             item
                     );
                 }
-                if (itemName.equals("§9Slow Tower")) {
+                if (itemName.contains("Slow Tower")) {
                     TowerFactory.placeTower(
                             TowerFactory.TowerType.SLOW,
                             player,
@@ -255,20 +273,20 @@ public class PlayerEventHandler implements Listener {
         }
     }
 
+
+    // This event is for game logic when a zombie or special mob is killed
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        if (!(event.getEntity() instanceof Zombie)) {
+        if (!(event.getEntity() instanceof Mob zombie)) {
             return;
         }
-
-        Zombie zombie = (Zombie) event.getEntity();
 
 
         if (!zombie.hasMetadata("gameSession")) {
             return;
         }
 
-        String gameSessionId = zombie.getMetadata("gameSession").get(0).asString();
+        String gameSessionId = zombie.getMetadata("gameSession").getFirst().asString();
         UUID playerUUID = UUID.fromString(gameSessionId);
 
         // Make sure this player still has an active session
@@ -295,6 +313,8 @@ public class PlayerEventHandler implements Listener {
 
                 // Set round as no longer in progress
                 gameManager.setRoundInProgress(playerUUID, false);
+                gameManager.roundEndMoney(playerUUID);
+
 
                 Bukkit.broadcastMessage(ChatColor.GOLD + "Round " + (currentRound - 1) + " completed!");
                 Bukkit.broadcastMessage(ChatColor.GREEN + "Type /readyup for Round " + currentRound);
@@ -302,6 +322,8 @@ public class PlayerEventHandler implements Listener {
         }
     }
 
+    // This event is for economy logic when a mob is killed
+    /// can maybe be merged with the event above
     @EventHandler
     public void onMobKill(EntityDeathEvent event){
         // activates the entity death event for economy
@@ -311,8 +333,7 @@ public class PlayerEventHandler implements Listener {
 
         // Handle null killer by assigning death to nearby player
         if(killer == null) {
-            if (event.getEntity() instanceof Zombie){
-                Zombie zombie = (Zombie) event.getEntity();
+            if (event.getEntity() instanceof Mob zombie){
                 @NotNull Collection<Player> kill = zombie.getLocation().getNearbyPlayers(50);
                 killer = kill.iterator().next();
 
@@ -320,11 +341,10 @@ public class PlayerEventHandler implements Listener {
         }
         String playerID;
 
-        if (event.getEntity() instanceof Zombie){
-            Zombie zomb = (Zombie) event.getEntity();
+        if (event.getEntity() instanceof Mob zomb){
 
             if (zomb.hasMetadata("attacker")){
-                playerID = zomb.getMetadata("attacker").get(0).asString();
+                playerID = zomb.getMetadata("attacker").getFirst().asString();
                 killer = Bukkit.getPlayer(playerID);
                 Economy.earnMoney(killer, mobType);
                 return;
@@ -336,6 +356,7 @@ public class PlayerEventHandler implements Listener {
     }
 
 
+    // This event is for disallowing item drops
     @EventHandler
     public void onInvClick(PlayerDropItemEvent event) {
 
@@ -351,7 +372,7 @@ public class PlayerEventHandler implements Listener {
         }
     }
 
-
+    // This event is for applying slowness when you have the slowness upgrade
     @EventHandler
     public void onPlayerHit(EntityDamageByEntityEvent event){
         if (event.getDamager() instanceof Player){
@@ -368,13 +389,13 @@ public class PlayerEventHandler implements Listener {
 
 
 
-
+    // The following events are for simple party actions
     @EventHandler
     public void onPartyCreatePre(BukkitPartiesPartyPreCreateEvent event) {
         Bukkit.getLogger().info("[PartiesExample] This event is called when a party is being created");
 
-        if (false)
-            event.setCancelled(true); // You can cancel it
+        //if (false)
+          //  event.setCancelled(true); // You can cancel it
     }
 
     @EventHandler

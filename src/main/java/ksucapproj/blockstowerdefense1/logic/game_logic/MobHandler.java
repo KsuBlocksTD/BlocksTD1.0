@@ -71,30 +71,73 @@ public class MobHandler implements Listener {
             }
         }
 
+        if(count > 2) {
+            // Full armor
+            Material boots = getArmorForRound(currentRound, "boots");
+            if (boots != null) {
+                zombie.getEquipment().setBoots(new ItemStack(boots));
+            }
+            Material helm = getArmorForRound(currentRound, "helmet");
+            if (helm != null) {
+                zombie.getEquipment().setHelmet(new ItemStack(helm));
+            }
+        }
+
 
     }
 
+    // Get the armor level available
     private static Material getArmorForRound(int currentRound, String armorType) {
-        if (armorType.equals("chestplate")) {
-            if (currentRound < 10) {
-                return Material.GOLDEN_CHESTPLATE;
-            } else if (currentRound < 20) {
-                return Material.IRON_CHESTPLATE;
-            } else if (currentRound < 30) {
-                return Material.DIAMOND_CHESTPLATE;
+        switch (armorType) {
+            case "chestplate" -> {
+                if (currentRound < 10) {
+                    return Material.GOLDEN_CHESTPLATE;
+                } else if (currentRound < 20) {
+                    return Material.IRON_CHESTPLATE;
+                } else if (currentRound < 30) {
+                    return Material.DIAMOND_CHESTPLATE;
+                }else if (currentRound < 40) {
+                    return Material.NETHERITE_CHESTPLATE;
+                }
             }
-        } else if (armorType.equals("leggings")) {
-            if (currentRound < 10) {
-                return Material.GOLDEN_LEGGINGS;
-            } else if (currentRound < 20) {
-                return Material.IRON_LEGGINGS;
-            } else if (currentRound < 30) {
-                return Material.DIAMOND_LEGGINGS;
+            case "leggings" -> {
+                if (currentRound < 10) {
+                    return Material.GOLDEN_LEGGINGS;
+                } else if (currentRound < 20) {
+                    return Material.IRON_LEGGINGS;
+                } else if (currentRound < 30) {
+                    return Material.DIAMOND_LEGGINGS;
+                }else if (currentRound < 40) {
+                    return Material.NETHERITE_LEGGINGS;
+                }
+            }
+            case "boots" -> {
+                if (currentRound < 10) {
+                    return Material.GOLDEN_BOOTS;
+                } else if (currentRound < 20) {
+                    return Material.IRON_BOOTS;
+                } else if (currentRound < 30) {
+                    return Material.DIAMOND_BOOTS;
+                }else if (currentRound < 40) {
+                    return Material.NETHERITE_BOOTS;
+                }
+            }
+            case "helmet" -> {
+                if (currentRound < 10) {
+                    return Material.GOLDEN_HELMET;
+                } else if (currentRound < 20) {
+                    return Material.IRON_HELMET;
+                } else if (currentRound < 30) {
+                    return Material.DIAMOND_HELMET;
+                }else if (currentRound < 40) {
+                    return Material.NETHERITE_HELMET;
+                }
             }
         }
         return null; // Return null if no armor should be equipped for that round
-    }
+    }///
 
+    // Get the mob types available
     public static EntityType getMob(int currentRound) {
         List<EntityType> availableMobs = new ArrayList<>();
 
@@ -107,8 +150,10 @@ public class MobHandler implements Listener {
 
         // Select a random mob from the available ones
         return availableMobs.get(random.nextInt(availableMobs.size()));
-    }
+    }///
 
+
+    // apply the buffs the special zombies provide based on radius
     private static void applyEffectBasedOnNearbyMob(Zombie zombie) {
         Location zombieLocation = zombie.getLocation();
         double radius = 5.0;
@@ -118,7 +163,7 @@ public class MobHandler implements Listener {
                 zombie.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 10, 3));
                 return;
             } else if (entity instanceof Witch) {
-                zombie.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 10, 3));
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.INSTANT_DAMAGE, 1, 1));
                 return;
             } else if (entity instanceof Enderman) {
                 zombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 1));
@@ -131,10 +176,10 @@ public class MobHandler implements Listener {
                 return;
             }
         }
-    }
+    }///
 
 
-    public static Zombie spawnMob(World world, String mapId, int currentRound) {
+    public static Mob spawnMob(World world, String mapId, int currentRound) {
         // Count for random buffs loop
         int count = 0;
 
@@ -149,35 +194,45 @@ public class MobHandler implements Listener {
             Entity entity = world.spawnEntity(spawnPoint, type);
 
             if (entity instanceof Mob mob) {
+                // Set spawn restrictions
                 mob.setAI(false);
+                mob.setCustomNameVisible(true);
+                if (mob instanceof Ageable ageable) {
+                    ageable.setAdult();
+                }
 
+                // Start health bar display
                 BukkitTask healthTask = displayHealthBar(mob);
                 healthBarTasks.put(mob.getUniqueId(), healthTask);
 
-
+                // Start path following
                 BukkitTask movementTask = followPath(mob, world, mapId);
                 zombieMovementTasks.put(mob.getUniqueId(), movementTask);
+                return mob;
 
             }
         }
 
-
+        // Spawn zombie
         Zombie zombie = (Zombie) world.spawnEntity(spawnPoint, EntityType.ZOMBIE);
+
 
         // Loop to add buffs on the current zombie that scales with the current round
         while(checkIfBuffed(currentRound)) {
-            if(count > 2) {break;}
+            if(count > 3) {break;}
             count++;
             zombieEquip(count, currentRound, zombie);
             checkIfBuffed(currentRound);
         }
 
 
-
+        // Set spawn restrictions
         zombie.setShouldBurnInDay(false);
-        zombie.setBaby(false);
+        zombie.setAdult();
         zombie.setAI(false);
         zombie.setCustomNameVisible(true);
+
+
 
         // Start health bar display
         BukkitTask healthTask = displayHealthBar(zombie);
@@ -206,7 +261,8 @@ public class MobHandler implements Listener {
             int waypointIndex = 0;
             final double baseStepDistance = 0.2;
             final double slownessMultiplier = 0.5; // Reduces speed by half when slowed
-            final  double speedMultiplier = 2.0;  // Doubles speed when applied
+            final  double speedMultiplier = 2.0;// Doubles speed when applied
+            private int tickcounter = 0; // Used to execute some logic at a different rate than the rate of run()
 
             @Override
             public void run() {
@@ -217,9 +273,10 @@ public class MobHandler implements Listener {
                     return;
                 }
 
-                // Checking if zombie is near special zombie and applying buff
-                if(zombie.getType() == EntityType.ZOMBIE) {
+                // Checking if zombie is near special zombie and applying buff every 10 ticks
+                if(zombie.getType() == EntityType.ZOMBIE & tickcounter % 20 == 0) {
                     applyEffectBasedOnNearbyMob((Zombie) zombie);
+                    tickcounter = 0;
                 }
 
 
@@ -228,16 +285,16 @@ public class MobHandler implements Listener {
                 stepDistance = stepDistance * (zombie.hasPotionEffect(PotionEffectType.SPEED) ? speedMultiplier : 1.0);
 
                 // Game end check - zombie reached endpoint
-                if (endLocation != null && zombie.getLocation().distance(endLocation) < 1.5) {
+                if (endLocation != null && zombie.getLocation().distance(endLocation) < .2) {
                     // Get the player UUID from zombie metadata
                     if (zombie.hasMetadata("gameSession")) {
-                        String playerUuidString = zombie.getMetadata("gameSession").get(0).asString();
+                        String playerUuidString = zombie.getMetadata("gameSession").getFirst().asString();
                         UUID playerUUID = UUID.fromString(playerUuidString);
                         Player player = Bukkit.getPlayer(playerUUID);
 
                         if (player != null && player.isOnline()) {
                             // Handle game end for this player
-                            handleGameEnd((Zombie) zombie, player, mapId);
+                            handleGameEnd(zombie, player, mapId);
                         }
                     }
 
@@ -285,14 +342,14 @@ public class MobHandler implements Listener {
                             Player player = Bukkit.getPlayer(playerUUID);
 
                             if (player != null && player.isOnline()) {
-                                handleGameEnd((Zombie) zombie, player, mapId);
+                                handleGameEnd(zombie, player, mapId);
                             }
                         }
                         cancel();
                         zombieMovementTasks.remove(zombie.getUniqueId());
                         zombie.remove();
                     }
-                }
+                }tickcounter++;
             }
         }.runTaskTimer(plugin, 0, 2);
     }
@@ -333,7 +390,7 @@ public class MobHandler implements Listener {
         }.runTaskTimer(plugin, 0, 5); // Update every 1/4 second (5 ticks)
     }
 
-    private static void handleGameEnd(Zombie zombie, Player player, String mapId) {
+    private static void handleGameEnd(Mob zombie, Player player, String mapId) {
         // Get the StartGame instance
         StartGame gameManager = BlocksTowerDefense1.getInstance().getGameManager();
 
@@ -365,7 +422,7 @@ public class MobHandler implements Listener {
         UUID playerUUID = player.getUniqueId();
 
         for (Entity entity : player.getWorld().getEntities()) {
-            if (entity instanceof Zombie && entity.hasMetadata("gameSession")) {
+            if (entity instanceof Mob && entity.hasMetadata("gameSession")) {
                 String sessionId = entity.getMetadata("gameSession").get(0).asString();
                 if (sessionId.equals(playerUUID.toString())) {
                     // Cancel any tasks for this zombie
@@ -417,18 +474,10 @@ public class MobHandler implements Listener {
                     }
 
                     // Remove from tracking
-                    zombieMovementTasks.remove(zombieUUID);
+                    zombieMovementTasks.clear();
                     healthBarTasks.remove(zombieUUID);
                 }
             }
-        }
-    }
-
-    @EventHandler
-    public void onEntityDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Zombie) {
-            // Slightly reduce damage to make the game more challenging
-            event.setDamage(event.getDamage() * 0.9);
         }
     }
 

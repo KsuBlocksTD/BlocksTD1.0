@@ -178,8 +178,8 @@ public class TestCommand {
 
     public LiteralCommandNode<CommandSourceStack> quitGameCommand() {
         return Commands.literal("quitgame")
-                .requires(ctx -> ctx.getExecutor() instanceof Player)
-                .executes(ctx -> this.executeQuitGame(ctx))
+                .requires(ctx -> ctx.getSender() instanceof Player)
+                .executes(this::executeQuitGame)
                 .build();
     }
 
@@ -188,8 +188,8 @@ public class TestCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        // Call the handlePlayerQuit method
-        this.gameManager.handlePlayerQuit(sender);
+        // Clean game session
+        this.gameManager.cleanupPlayer(sender.getUniqueId());
 
         sender.sendMessage(ChatColor.RED + "You have quit the game.");
         return Command.SINGLE_SUCCESS;

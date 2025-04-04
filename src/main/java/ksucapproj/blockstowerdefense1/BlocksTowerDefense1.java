@@ -77,7 +77,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         }
 
 
-        new Economy(); // Creating economy object
+
         // needed for instantiating proper mob killing & economy function
         // this is solely for recompiling the server and keeping a working economy while players are still online
         Economy.playerCountFix();
@@ -103,7 +103,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         scheduler.runTaskTimerAsynchronously(this, new AsyncTest(this), 20, Tick.tick().fromDuration(Duration.ofMinutes(15)));
 
         // This needs to go into a config/function at some point
-        World world = Bukkit.getWorlds().get(0);
+        World world = Bukkit.getWorlds().getFirst();
         if (world != null) {
             world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
             world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);

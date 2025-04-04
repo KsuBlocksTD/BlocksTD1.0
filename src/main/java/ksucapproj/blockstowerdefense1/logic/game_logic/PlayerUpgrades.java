@@ -35,8 +35,6 @@ public class PlayerUpgrades{
         * also tally the amount of playerSword upgrades bought
         * at the end of the game, call a function in databaseManager that adds the num of total upgrades
         to the currently stored total
-
-
      */
 
     public PlayerUpgrades(Player player){
@@ -55,8 +53,9 @@ public class PlayerUpgrades{
     // it will apply one last upgrade, and then on no longer apply
 
     public void applySwiftnessUpgrade() {
+        currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 500 atm
-        cost = config.getSpeedBaseCost() * swiftnessLevel;
+        cost = config.getSpeedBaseCost() * (swiftnessLevel +1);
         if (currTotal >= cost){
 
             if (swiftnessLevel < config.getSpeedMaxLevel()) {
@@ -75,7 +74,8 @@ public class PlayerUpgrades{
 
 
     public void applyStrengthUpgrade() {
-        cost = config.getStrengthBaseCost() * strengthLevel;
+        currTotal = getPlayerEconomies().get(player).getCurrTotal();
+        cost = config.getStrengthBaseCost() * (strengthLevel +1);
         // base cost is 750 atm
         if (currTotal >= cost){
 
@@ -108,7 +108,6 @@ public class PlayerUpgrades{
     }
 
 
-
     // utilized by application of upgrade and for admin command
     // gives the player a speed potion effect for their corresponding swiftness level
     public void setSwiftnessLevel(int swiftnessLevel) {
@@ -135,7 +134,15 @@ public class PlayerUpgrades{
             player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, -1, (strengthLevel-1), false, false));
         }
 
-        player.sendMessage("Swiftness upgrade tier set to " + strengthLevel);
+        //player.sendMessage("Swiftness upgrade tier set to " + strengthLevel);
+    }
+
+    public int getStrengthLevel() {
+        return this.strengthLevel;
+    }
+
+    public int getSwiftnessLevel() {
+        return this.swiftnessLevel;
     }
 
     public PlayerSword getSword() {

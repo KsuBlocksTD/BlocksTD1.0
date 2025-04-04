@@ -7,6 +7,8 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
 import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -15,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class TowerFactory {
     public enum TowerType {
+        // All the different towers, their cost and class
         BASIC(500, BasicTower.class),
         FAST(300, FastTower.class),
         SNIPER(750, SniperTower.class),
@@ -47,7 +50,8 @@ public class TowerFactory {
 
             // Use default location if placement location is null
             if (placementLocation == null) {
-                placementLocation = player.getLocation();
+                player.sendRichMessage("<red>Invalid Tower location");
+                return;
             }
 
             try {
@@ -61,16 +65,18 @@ public class TowerFactory {
                 item.setAmount(item.getAmount() - 1);
 
                 // Send success message
-                player.sendMessage(ChatColor.GREEN + towerType.name() + " Tower placed successfully!");
+                player.sendRichMessage("<green><tower_type> Tower placed successfully!",
+                        Placeholder.component("tower_type", Component.text(towerType.name()))
+);
 
 
             } catch (Exception e) {
-                player.sendMessage(ChatColor.RED + "Error placing tower: " + e.getMessage());
-                e.printStackTrace();
+                player.sendRichMessage("<red>Error placing tower: <e_message>", Placeholder.component("e_message", Component.text(e.getMessage())));
+                //e.printStackTrace();
 
             }
         } else {
-            player.sendMessage(ChatColor.RED + "You need at least " + towerType.getCost() + " coins to place a " + towerType.name() + " Tower.");
+            player.sendRichMessage("<red>You need at least <t_cost> coins to place a <t_type> Tower.", Placeholder.component("t_type", Component.text(towerType.name())), Placeholder.component("t_cost", Component.text(towerType.getCost())));
 
         }
     }

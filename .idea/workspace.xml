@@ -9,21 +9,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="things i changed: &#10;-zombies per round is linear, starting at 5 and +=5 every round FOR NOW &#10;-zombies randomly have a chance of spawning with chest and legs, tier depends on the round you are on, gold for 1-10 iron for 11-20 ect,&#10;-added 5 new mob types, a new one for every 10 rounds iron golem, witch, enderman, piglin, and blaze, They currently do nothing but will add effects later. &#10;-fixed some bugs with splash tower not crediting kills&#10;-DID NOT add new mobs to economy this must be done to earn coins from them&#10;-fixed bug where towers would not dissapear onDisable&#10;-Didnt get to do &quot;im also gonna make you start with 500 coins, add a finish round coin bonus, and have it tell you the total you earned for the round&quot; but its bedtime">
-      <change afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/TowerUpgrades.java" afterDir="false" />
+    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="merged with matthew code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/ConfigOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/ConfigOptions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/HubCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/HubCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/SpawnCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/SpawnCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/DatabaseManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/TestCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/commands/TestCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/GUI/UpgradeGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/GUI/UpgradeGUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/BasicTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/BasicTower.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/Tower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/Tower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/TowerFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/TowerFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/BlocksTowerDefense1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/ConfigOptions.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/ConfigOptions.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/HubCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/HubCommand.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/SpawnCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/SpawnCommand.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/TestCommand.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/commands/TestCommand.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/DatabaseManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/DatabaseManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/Economy.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerSword.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerUpgrades.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$GameSession.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$GameSession.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/maps/MapData.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/maps/MapData.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -320,8 +336,20 @@
       <option name="project" value="LOCAL" />
       <updated>1743317062140</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="merged with matthew code">
+      <option name="closed" value="true" />
+      <created>1743655385792</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1743655385792</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="dependencySupport" implementationName="java:net.kyori:adventure-api" />
+    <option featureType="dependencySupport" implementationName="java:io.papermc.paper:paper-api" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="OPEN_GENERIC_TABS">
@@ -377,6 +405,7 @@
     <MESSAGE value="3/28  1:11 &#10;&#10;config.yml from src/resources not copying to server's plugins folder" />
     <MESSAGE value="3/29 12:10 Major bug fixes:&#10;-Fixed Sword tracking upon game start/join leave/exit&#10;-Players not being added properly to their upgrades&#10;-Game logic inv. deletion on quit/game-end&#10;-Misc" />
     <MESSAGE value="things i changed: &#10;-zombies per round is linear, starting at 5 and +=5 every round FOR NOW &#10;-zombies randomly have a chance of spawning with chest and legs, tier depends on the round you are on, gold for 1-10 iron for 11-20 ect,&#10;-added 5 new mob types, a new one for every 10 rounds iron golem, witch, enderman, piglin, and blaze, They currently do nothing but will add effects later. &#10;-fixed some bugs with splash tower not crediting kills&#10;-DID NOT add new mobs to economy this must be done to earn coins from them&#10;-fixed bug where towers would not dissapear onDisable&#10;-Didnt get to do &quot;im also gonna make you start with 500 coins, add a finish round coin bonus, and have it tell you the total you earned for the round&quot; but its bedtime" />
-    <option name="LAST_COMMIT_MESSAGE" value="things i changed: &#10;-zombies per round is linear, starting at 5 and +=5 every round FOR NOW &#10;-zombies randomly have a chance of spawning with chest and legs, tier depends on the round you are on, gold for 1-10 iron for 11-20 ect,&#10;-added 5 new mob types, a new one for every 10 rounds iron golem, witch, enderman, piglin, and blaze, They currently do nothing but will add effects later. &#10;-fixed some bugs with splash tower not crediting kills&#10;-DID NOT add new mobs to economy this must be done to earn coins from them&#10;-fixed bug where towers would not dissapear onDisable&#10;-Didnt get to do &quot;im also gonna make you start with 500 coins, add a finish round coin bonus, and have it tell you the total you earned for the round&quot; but its bedtime" />
+    <MESSAGE value="merged with matthew code" />
+    <option name="LAST_COMMIT_MESSAGE" value="merged with matthew code" />
   </component>
 </project>

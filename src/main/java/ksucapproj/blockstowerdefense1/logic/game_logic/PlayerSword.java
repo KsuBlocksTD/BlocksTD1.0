@@ -62,6 +62,7 @@ public class PlayerSword {
 
 
     public void applySwordMaterialUpgrade(){
+        currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 400 atm
         cost = config.getSwordMaterialBaseCost() * swordLevel;
         if (currTotal >= cost){
@@ -81,6 +82,7 @@ public class PlayerSword {
 
 
     public void applySlownessUpgrade() {
+        currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 400 atm
         cost = config.getSlownessBaseCost() * swordLevel;
         if (currTotal >= cost){
@@ -113,6 +115,7 @@ public class PlayerSword {
     }
 
     public void applySweepingEdgeUpgrade(){
+        currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 400 atm
         cost = config.getSweepingEdgeBaseCost() * swordLevel;
         if (currTotal >= cost){
@@ -157,7 +160,7 @@ public class PlayerSword {
             case 4 -> Material.DIAMOND_SWORD;
             case 5 -> Material.NETHERITE_SWORD;
             default -> Material.GOLDEN_SWORD;
-        };
+        };this.swordLevel = swordLevel;
 
         swordMeta = playerSword.getItemMeta(); // stores sword meta-data before sword's deletion
 
@@ -169,7 +172,9 @@ public class PlayerSword {
         swordMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, swordUUID);
         playerSword.setItemMeta(swordMeta);
 
+
         player.getInventory().addItem(playerSword);
+
     }
 
 
