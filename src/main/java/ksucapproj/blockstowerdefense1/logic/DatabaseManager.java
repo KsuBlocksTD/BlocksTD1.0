@@ -1,13 +1,23 @@
 package ksucapproj.blockstowerdefense1.logic;
 
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.sql.*;
 
 public class DatabaseManager {
+
+    private static Connection conn;
+    private static boolean tableCreated;
+
+    public DatabaseManager(){
+        conn = BlocksTowerDefense1.getInstance().getDBConnection();
+        tableCreated = false;
+    }
 
     /*
         -- TO-DO LIST FOR DATABASE
@@ -24,56 +34,82 @@ public class DatabaseManager {
 
      */
 
-    // MIGHT BE USELESS, TEST IF NEEDED OR NOT
-//    private static ConfigOptions getConfigOptions() {
-//        BlocksTowerDefense1 instance = BlocksTowerDefense1.getInstance();
-//        if (instance == null) {
-//            throw new IllegalStateException("[DatabaseManager] ERROR: BlocksTowerDefense1 instance is null!");
-//        }
-//        ConfigOptions config = instance.getBTDConfig();
-//        if (config == null) {
-//            throw new IllegalStateException("[DatabaseManager] ERROR: ConfigOptions is null!");
-//        }
-//        return config;
-//    }
-
+    // getDataFolder() = btd's plugins folder, getPath() = gets the path to wherever the btd folder/file is
 
 
     // eventually needs to be done once the server starts rather than being called when each function needs it
     public static Connection connect(){
-        Connection conn = null;
+
+        File dbFile = new File(BlocksTowerDefense1.getInstance().getDataFolder(), "btd_db.db");
+        boolean isNew = !dbFile.exists();
 
         // this is the url for the db that is in plugins/btd1/test_db.db
-        // getDataFolder() = btd's plugins folder, getPath() = gets the path to wherever the btd folder is
-        String URL = "jdbc:sqlite:" + BlocksTowerDefense1.getInstance().getDataFolder().getPath()+"/test_db.db";
+        String URL = "jdbc:sqlite:" + dbFile.getPath();
+
         try {
             Class.forName("org.sqlite.JDBC");
             // initializes the connection to the DB to the URL of the DB ^
             conn = DriverManager.getConnection(URL);
+
+            // just a confirmation msg
+            if (isNew) { // if the db file does not already exist
+                Bukkit.getLogger().severe("[BlocksTowerDefense1.0] Database file does not exist! Creating new file.");
+            } else { // if db file previously exists
+                Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Using existing database file.");
+            }
+
+            // if not already created, attempts to create the database table
+            if (!tableCreated){
+                createPlayersTable(conn);
+            }
         }
 
-        // catches for the different type of errors
-        catch (NullPointerException e){
-            Bukkit.getLogger().warning("Database URL not located.");
-            e.printStackTrace();
-        }
+        // catches: JDBC driver DNE or SQL Exception
 
         catch (ClassNotFoundException e) {
-            Bukkit.getLogger().warning("SQLite JDBC driver not found.");
+            Bukkit.getLogger().severe("[BlocksTowerDefense1.0] SQLite JDBC driver not found.");
             e.printStackTrace();
         }
-
         catch (SQLException e) {
-            Bukkit.getLogger().warning("Database connection error.");
-            e.printStackTrace();
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL error: " + e.getMessage());
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Error code: " + e.getErrorCode());
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL state: " + e.getSQLState());
         }
 
         return conn;
     }
 
 
-    public static void createDatabase(Connection conn) throws SQLException{
+    public static void createPlayersTable(Connection conn) throws SQLException{
 
+        String sql = """
+        CREATE TABLE IF NOT EXISTS players (
+            uuid VARCHAR(36) NOT NULL UNIQUE,
+            name VARCHAR(16) NOT NULL UNIQUE,
+            total_games_played INTEGER NOT NULL,
+            total_wins INTEGER NOT NULL,
+            fastest_win_in_seconds INTEGER,
+            total_coins_gained INTEGER NOT NULL,
+            total_coins_spent INTEGER NOT NULL,
+            total_towers_bought INTEGER NOT NULL,
+            total_upgrades_bought INTEGER NOT NULL,
+            first_join_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY(uuid)
+        );
+        """;
+
+        try{
+            Statement createTable = conn.createStatement();
+            createTable.execute(sql);
+        }
+
+        catch (SQLException e){
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL error: " + e.getMessage());
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Error code: " + e.getErrorCode());
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL state: " + e.getSQLState());
+        }
+
+        tableCreated = true;
     }
 
 
@@ -86,7 +122,7 @@ public class DatabaseManager {
         // uses prepared statements to avoid SQL injection
         PreparedStatement pstmt = conn.prepareStatement(sql);
 
-        // these are the parameters that are denoted as ? im the sql String above ^
+        // these are the parameters that are denoted as ? in the sql String above ^
         pstmt.setString(1, uuidAsString);
         pstmt.setString(2, name);
         pstmt.setInt(3, 0);
@@ -95,11 +131,11 @@ public class DatabaseManager {
         pstmt.setInt(6, 0);
         pstmt.setInt(7, 0);
         pstmt.setInt(8, 0);
-        // this actually runs the query
+        // this actually runs the insert
         pstmt.executeUpdate();
 
         // confirmation message
-        Bukkit.getLogger().info("Inserted: " + uuidAsString + " (username = " + name + ")"); // confirmation msg
+        Bukkit.getLogger().info("[BlocksTowerDefense1.0] Inserted: " + uuidAsString + " (username = " + name + ")"); // confirmation msg
     }
 
 
@@ -112,54 +148,84 @@ public class DatabaseManager {
             ResultSet rs = pstmt.executeQuery();
             return rs.next();  // if a result exists, the user is already in the database
         }
+
     }
+
+
 
     // this function will try insert a new player on join
     // if they do exist, the function ends, if they do not, it calls insertPLayer() to insert them
-    public static void checkPlayerInDB(Player player){ // has helper methods to create more concise code
+    public static void checkPlayerInDB(Player player, int maxRetries){
+
+        if (maxRetries <= 0){
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Check if " + player.getName() + " is in database failed.");
+            return;
+        }
 
         // gets the argument player's username
         String uuidString = player.getUniqueId().toString();
 
-        try (Connection conn = DatabaseManager.connect()){ // creates connection to the db
+        try {
             if (conn != null) { // if database connection works, continue
-                Bukkit.getLogger().info("Connected to SQLite database."); // confirmation msg
+                Bukkit.getLogger().info("[BlocksTowerDefense1.0] Connected to SQLite database."); // confirmation msg
 
+                // helper method
                 if (DatabaseManager.userExists(conn, uuidString)){ // if player exists, finish
-                    Bukkit.getLogger().info("Player exists in database, returning.");// confirmation msg
+                    Bukkit.getLogger().info("[BlocksTowerDefense1.0] Player exists in database, returning.");// confirmation msg
                 }
 
+                // helper method
                 else { // if player does not exist, add them to db
                     DatabaseManager.insertPlayer(conn, uuidString, player.getName() ); // adds their uuid and username
                 }
 
             }
+
+            else { // if conn is null, attempt 3 tries to establish and retry database call
+                conn = connect();
+                checkPlayerInDB(player, maxRetries - 1);
+            }
         }
 
-        catch (SQLException e) {
-            e.printStackTrace(); // getErrorCode, get error code for doesn't exist
+        catch (SQLException e){
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL error: " + e.getMessage());
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Error code: " + e.getErrorCode());
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL state: " + e.getSQLState());
         }
     }
 
 
-    // this function is designed to update a player's information in the db at the end of a game
-    public static void updatePlayerData(PlayerUpgrades upgrades){
 
-        try (Connection conn = DatabaseManager.connect()){ // creates connection to the db
+    // this function is designed to update a player's information in the db at the end of a game
+    public static void updatePlayerData(PlayerUpgrades upgrades, int maxRetries){
+
+        if (maxRetries <= 0){
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Update to " + upgrades.getPlayer().getName() + "'s data failed.");
+            return;
+        }
+
+        try {
             if (conn != null){ // if database connection works, continue
-                Bukkit.getLogger().info("Connected to SQLite database."); // confirmation msg
+                Bukkit.getLogger().info("[BlocksTowerDefense1.0] Connected to SQLite database."); // confirmation msg
 
                 // if player exists, continue, if not, insert them into db before updating their attributes
                 // this check is only done in case the player somehow does not exist
-                checkPlayerInDB(upgrades.getPlayer());
+                checkPlayerInDB(upgrades.getPlayer(), maxRetries);
 
-                // calls the function to total player values on game end
+                // calls the method to total player values on game end
                 insertPlayerTotalsOnGameEnd(conn, upgrades);
+            }
+
+            else { // if conn is null, attempt 3 tries to establish and retry database call
+                conn = connect();
+                updatePlayerData(upgrades, maxRetries - 1);
             }
         }
 
         catch (SQLException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL error: " + e.getMessage());
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Error code: " + e.getErrorCode());
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL state: " + e.getSQLState());
         }
     }
 
@@ -180,20 +246,39 @@ public class DatabaseManager {
             """;
 
         String uuidString = upgrades.getPlayer().getUniqueId().toString();
+        Player player = upgrades.getPlayer();
+        Economy playerEcon = Economy.getPlayerEconomies().get(player);
 
         PreparedStatement pstmt = conn.prepareStatement(sql);
 
+
+
         /*
+
+        -- ALREADY ADDED --
+        * 1, total games played
+        * 2, total coins gained
+        * 3, total coins spent
+        * 6, total upgrades bought
+        * 7, uuid
+
+        -- NEEDS --
+        * 4, total towers bought
+        * 5, total wins
+
+
+
+
         pstmt.setInt(1, 1);
-        pstmt.setInt(2, );
-        pstmt.setInt(3, );
+        pstmt.setInt(2, playerEcon.getTotalCoinsGained());
+        pstmt.setInt(3, playerEcon.getTotalCoinsSpent());
         pstmt.setInt(4, );
         pstmt.setInt(5, );
         pstmt.setInt(6, upgrades.getTotalUpgradesBought());
         pstmt.setString(7, uuidString);
         pstmt.executeUpdate();
 
-         */
+        */
 
 
 

@@ -162,6 +162,7 @@ public class PlayerSword {
             case 5 -> Material.NETHERITE_SWORD;
             default -> Material.GOLDEN_SWORD;
         };
+        this.swordLevel = swordLevel;
 
         swordMeta = playerSword.getItemMeta(); // stores sword meta-data before sword's deletion
 

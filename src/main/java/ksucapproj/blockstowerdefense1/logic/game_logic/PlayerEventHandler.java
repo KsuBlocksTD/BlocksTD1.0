@@ -43,6 +43,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Connection;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -62,13 +63,23 @@ public class PlayerEventHandler implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
-        // activates the player join event for economy
-        Player player = event.getPlayer();
 
-        int playerCount = Bukkit.getOnlinePlayers().size();
+        // Ensures the player does not join too quickly before the DB is correctly connected
+        // Will delay the player join event until conn != null
+        Connection conn = BlocksTowerDefense1.getInstance().getDBConnection();
+        if (conn == null) {
+            // DB not ready — reschedule this task after a short delay
+            Bukkit.getScheduler().runTaskLater(BlocksTowerDefense1.getInstance(), () -> onPlayerJoin(event), 20L); // 20 ticks = 1 second
+            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Database not ready, retrying player DB check...");
+            return;
+        }
+
+
+        Player player = event.getPlayer();
 
         // checks if msg on join is enabled
         // if so, send player the specified message
+        // not yet FULLY implemented
         if (config.getMOTDOnPlayerJoin() != null){
             player.sendRichMessage(config.getMOTDOnPlayerJoin());
         }
@@ -80,9 +91,9 @@ public class PlayerEventHandler implements Listener {
         // this will eventually be the default greeting on player join
         event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
 
-        // this checks if a player is in the db already, if not, adds them to it
-        DatabaseManager.checkPlayerInDB(player);
 
+        // this checks if a player is in the db already, if not, adds them to it
+        DatabaseManager.checkPlayerInDB(player, 3);
     }
 
     @EventHandler
@@ -129,7 +140,7 @@ public class PlayerEventHandler implements Listener {
             PlayerUpgrades.getPlayerUpgradesMap().remove(player);
 
             // Log the cleanup
-            plugin.getLogger().info("Cleaned up game for player " + player.getName());
+            plugin.getLogger().info("[BlocksTowerDefense1.0] Cleaned up game for player " + player.getName());
         }
     }
 
