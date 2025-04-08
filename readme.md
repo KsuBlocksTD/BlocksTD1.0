@@ -27,7 +27,7 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
   * __[Milestone 3]()__ - 13 April 2025
 
 ## Requirements 
-* [Requirements Introduction](https://kennesawedu-my.sharepoint.com/:w:/g/personal/bnguye61_students_kennesaw_edu/ESRKsDVl-k9Ln7mFK63PyE8Bqanx54lYlbpumb_134vkFg?e=grHinA)
+* __[Requirements Introduction](https://kennesawedu-my.sharepoint.com/:w:/g/personal/bnguye61_students_kennesaw_edu/ESRKsDVl-k9Ln7mFK63PyE8Bqanx54lYlbpumb_134vkFg?e=grHinA)__
 
 ## Project Design
 * __[Project Design Document]()__
