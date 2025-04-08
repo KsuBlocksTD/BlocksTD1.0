@@ -11,9 +11,9 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * __[Matthew Elledge](https://github.com/mthyuu)__
 * __[Logan Slicker](https://github.com/SlickerLogan)__ 
 ### Documentation
-* __[Bryan Nguyen]()__
+* __[Bryan Nguyen](https://github.com/BunnyCatCat)__
 ### Design
-* __[Ashley Ahn]()__
+* __[Ashley Ahn](https://github.com/ashjuno)__
 * __[AnnaGrace Gwee]()__
 
 ## Project Plan
