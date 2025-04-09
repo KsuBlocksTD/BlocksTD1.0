@@ -52,7 +52,7 @@ btd:
         max-level:
         cost-multiplier: 1 # 1 # this is not set up yet
 
-      players:
+      player:
         speed:
           max-level: 5 # 5
           cost: 500 # 500
@@ -86,22 +86,38 @@ btd:
           cost-multiplier: 1 # 1 # this is not set up yet
 
         basic:
+          radius: 5
+          attacksp: 20
+          damage: 10
           cost: 500 # 500
           tier-one:
 
         fast:
+          radius: 4
+          attacksp: 5
+          damage: 5
           cost: 300 # 300
           tier-one:
 
         sniper:
+          radius: 15
+          attacksp: 60
+          damage: 25
           cost: 750 # 750
           tier-one:
 
         splash:
+          radius: 6
+          attacksp: 30
+          damage: 10
+          damageAOE: 5
           cost: 900 # 900
           tier-one:
 
         slow:
+          radius: 7
+          attacksp: 25
+          damage: 2
           cost: 450 # 450
           tier-one:
 
@@ -112,24 +128,25 @@ btd:
       universal:
         health-multiplier:
         reward-multiplier:
+        effect-radius: 5.0
 
       zombie:
-        reward:
+        reward: 15
 
       iron-golem:
-        reward:
+        reward: 30
 
       witch:
-        reward:
+        reward: 40
 
       enderman:
-        reward:
+        reward: 50
 
       piglin:
-        reward:
+        reward: 60
 
       blaze:
-        reward:
+        reward: 70
 
 
     players:

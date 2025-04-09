@@ -5,11 +5,7 @@ import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -20,7 +16,9 @@ import org.bukkit.util.Vector;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MobHandler implements Listener {
+import static ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion.config;
+
+public class MobHandler {
 
     private static JavaPlugin plugin;
     // Track zombie movement tasks for cleanup
@@ -28,11 +26,12 @@ public class MobHandler implements Listener {
     private static final Map<UUID, BukkitTask> healthBarTasks = new ConcurrentHashMap<>();
     private static final double K = 0.059; // Growth rate factor
     private static final Random random = new Random();
+    private static StartGame gameManager;
     //private static final Map<UUID, UUID> zombieOwners = new ConcurrentHashMap<>();
 
-    public MobHandler(JavaPlugin plugin) {
+    public MobHandler(StartGame gameManager, JavaPlugin plugin) {
         MobHandler.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+        this.gameManager = gameManager;
     }
 
 
@@ -96,7 +95,7 @@ public class MobHandler implements Listener {
                     return Material.IRON_CHESTPLATE;
                 } else if (currentRound < 30) {
                     return Material.DIAMOND_CHESTPLATE;
-                }else if (currentRound < 40) {
+                }else  {
                     return Material.NETHERITE_CHESTPLATE;
                 }
             }
@@ -107,7 +106,7 @@ public class MobHandler implements Listener {
                     return Material.IRON_LEGGINGS;
                 } else if (currentRound < 30) {
                     return Material.DIAMOND_LEGGINGS;
-                }else if (currentRound < 40) {
+                }else  {
                     return Material.NETHERITE_LEGGINGS;
                 }
             }
@@ -118,7 +117,7 @@ public class MobHandler implements Listener {
                     return Material.IRON_BOOTS;
                 } else if (currentRound < 30) {
                     return Material.DIAMOND_BOOTS;
-                }else if (currentRound < 40) {
+                }else  {
                     return Material.NETHERITE_BOOTS;
                 }
             }
@@ -129,20 +128,20 @@ public class MobHandler implements Listener {
                     return Material.IRON_HELMET;
                 } else if (currentRound < 30) {
                     return Material.DIAMOND_HELMET;
-                }else if (currentRound < 40) {
+                }else  {
                     return Material.NETHERITE_HELMET;
                 }
             }
         }
         return null; // Return null if no armor should be equipped for that round
-    }///
+    }
 
     // Get the mob types available
     public static EntityType getMob(int currentRound) {
         List<EntityType> availableMobs = new ArrayList<>();
 
         // Determine available mobs based on round
-        if (currentRound >= 1) availableMobs.add(EntityType.IRON_GOLEM);
+        if (currentRound >= 2) availableMobs.add(EntityType.IRON_GOLEM);
         if (currentRound >= 11) availableMobs.add(EntityType.WITCH);
         if (currentRound >= 21) availableMobs.add(EntityType.ENDERMAN);
         if (currentRound >= 31) availableMobs.add(EntityType.PIGLIN);
@@ -150,13 +149,13 @@ public class MobHandler implements Listener {
 
         // Select a random mob from the available ones
         return availableMobs.get(random.nextInt(availableMobs.size()));
-    }///
+    }
 
 
     // apply the buffs the special zombies provide based on radius
     private static void applyEffectBasedOnNearbyMob(Zombie zombie) {
         Location zombieLocation = zombie.getLocation();
-        double radius = 5.0;
+        double radius = config.getZombieEffectRadius();
 
         for (Entity entity : zombieLocation.getWorld().getNearbyEntities(zombieLocation, radius, radius, radius)) {
             if (entity instanceof IronGolem) {
@@ -166,17 +165,17 @@ public class MobHandler implements Listener {
                 zombie.addPotionEffect(new PotionEffect(PotionEffectType.INSTANT_DAMAGE, 1, 1));
                 return;
             } else if (entity instanceof Enderman) {
-                zombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10, 1));
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
                 return;
             } else if (entity instanceof Piglin) {
-                zombie.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 10, 3));
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 1000, 2));
                 return;
             } else if (entity instanceof Blaze) {
-                zombie.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 4, 1)); // make them invulnerable until blaze is killed
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 18, 1)); // make them invulnerable until blaze is killed
                 return;
             }
         }
-    }///
+    }
 
 
     public static Mob spawnMob(World world, String mapId, int currentRound) {
@@ -273,7 +272,7 @@ public class MobHandler implements Listener {
                     return;
                 }
 
-                // Checking if zombie is near special zombie and applying buff every 10 ticks
+                // Checking if zombie is near special zombie and applying buff every 20 ticks
                 if(zombie.getType() == EntityType.ZOMBIE & tickcounter % 20 == 0) {
                     applyEffectBasedOnNearbyMob((Zombie) zombie);
                     tickcounter = 0;
@@ -285,24 +284,20 @@ public class MobHandler implements Listener {
                 stepDistance = stepDistance * (zombie.hasPotionEffect(PotionEffectType.SPEED) ? speedMultiplier : 1.0);
 
                 // Game end check - zombie reached endpoint
-                if (endLocation != null && zombie.getLocation().distance(endLocation) < .2) {
-                    // Get the player UUID from zombie metadata
-                    if (zombie.hasMetadata("gameSession")) {
-                        String playerUuidString = zombie.getMetadata("gameSession").getFirst().asString();
-                        UUID playerUUID = UUID.fromString(playerUuidString);
-                        Player player = Bukkit.getPlayer(playerUUID);
-
-                        if (player != null && player.isOnline()) {
-                            // Handle game end for this player
-                            handleGameEnd(zombie, player, mapId);
-                        }
-                    }
-
-                    cancel();
-                    zombieMovementTasks.remove(zombie.getUniqueId());
-                    zombie.remove();
-                    return;
-                }
+//                if (endLocation != null && zombie.getLocation().distance(endLocation) < .1) {
+//                    // Get the player UUID from zombie metadata
+//                    if (zombie.hasMetadata("gameSession")) {
+//                        String playerUuidString = zombie.getMetadata("gameSession").getFirst().asString();
+//                        UUID playerUUID = UUID.fromString(playerUuidString);
+//                        Player player = Bukkit.getPlayer(playerUUID);
+//
+//                        if (player != null && player.isOnline()) {
+//                            // Handle game end for this player
+//                            gameManager.cleanupPlayer(playerUUID);
+//                        }
+//                    }
+//                    return;
+//                }
 
                 // Path completion check
                 if (waypointIndex >= waypoints.size()) {
@@ -337,17 +332,18 @@ public class MobHandler implements Listener {
                     if (waypointIndex == waypoints.size()) {
                         // Check if we have the player information to handle game end
                         if (zombie.hasMetadata("gameSession")) {
-                            String playerUuidString = zombie.getMetadata("gameSession").get(0).asString();
+                            String playerUuidString = zombie.getMetadata("gameSession").getFirst().asString();
                             UUID playerUUID = UUID.fromString(playerUuidString);
                             Player player = Bukkit.getPlayer(playerUUID);
 
                             if (player != null && player.isOnline()) {
                                 handleGameEnd(zombie, player, mapId);
+                                gameManager.cleanupPlayer(playerUUID);
                             }
                         }
-                        cancel();
                         zombieMovementTasks.remove(zombie.getUniqueId());
                         zombie.remove();
+                        cancel();
                     }
                 }tickcounter++;
             }

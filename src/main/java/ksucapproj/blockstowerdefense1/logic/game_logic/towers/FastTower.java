@@ -11,10 +11,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import static ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion.config;
+
 public class FastTower extends Tower {
     public FastTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
         // Small scan radius, very fast attack interval, low damage
-        super(location, owner, mapId, 4, 5L, plugin);///
+        super(location, owner, mapId, config.getFastTowerRadius(), config.getFastTowerAttacksp(), plugin);
     }
 
     @Override
@@ -32,8 +34,8 @@ public class FastTower extends Tower {
         for (Entity entity : nearbyEntities) {
             if (entity instanceof Mob & entity.getType() != EntityType.VILLAGER) {
                 if (entity.hasMetadata("gameSession") && towerEntity.hasMetadata("owner")) {
-                    String zombieOwner = entity.getMetadata("gameSession").get(0).asString();
-                    String towerOwner = towerEntity.getMetadata("owner").get(0).asString();
+                    String zombieOwner = entity.getMetadata("gameSession").getFirst().asString();
+                    String towerOwner = towerEntity.getMetadata("owner").getFirst().asString();
                     if (zombieOwner.equals(towerOwner)) {
                         targetQueue.add(entity);
                     }
@@ -46,14 +48,13 @@ public class FastTower extends Tower {
         if (!targetQueue.isEmpty()) {
             Entity target = targetQueue.poll();
             faceTarget(target);
-            if (target instanceof Mob) {
-                Mob zombie = (Mob) target;
+            if (target instanceof Mob zombie) {
                 // Particle effect for fast attacks
                 zombie.getWorld().spawnParticle(Particle.SMOKE, zombie.getLocation(), 10);
                 // Low damage but rapid attacks
                 if(zombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
                     zombie.damage(0.0);
-                } else {zombie.damage(5.0);}///
+                } else {zombie.damage(config.getFastTowerDamage());}
                 //                 this is the code for setting ownership for a tower:
                 target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
             }

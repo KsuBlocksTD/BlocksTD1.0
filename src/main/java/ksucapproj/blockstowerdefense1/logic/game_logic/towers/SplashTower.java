@@ -13,10 +13,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import static ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion.config;
+
 public class SplashTower extends Tower {
     public SplashTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
         // Medium scan radius, medium attack interval, area of effect damage
-        super(location, owner, mapId, 6, 30L, plugin);///
+        super(location, owner, mapId, config.getSplashTowerRadius(), config.getSplashTowerAttacksp(), plugin);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class SplashTower extends Tower {
                 // Damage primary target
                 if(primaryZombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
                     primaryZombie.damage(0.0);
-                } else {primaryZombie.damage(10.0);}///
+                } else {primaryZombie.damage(config.getSplashTowerDamage());}
 
                 primaryZombie.getWorld().spawnParticle(Particle.EXPLOSION, primaryZombie.getLocation(), 10);
                 primaryZombie.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
@@ -64,7 +66,7 @@ public class SplashTower extends Tower {
 
                         if(nearbyZombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
                             nearbyZombie.damage(0.0);
-                        } else {nearbyZombie.damage(5.0);}///
+                        } else {nearbyZombie.damage(config.getSplashTowerAOEDamage());}
                         nearbyZombie.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
                         // Slight slow for each zombie
                         nearbyZombie.addPotionEffect(new PotionEffect(

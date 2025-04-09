@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
+import static ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion.config;
+
 
 public class Economy {
 
@@ -40,13 +42,13 @@ public class Economy {
 
     public Economy(){
         // add new mobs here, along with their coin reward amt
-        mobKillRewards.put(EntityType.ZOMBIE, 10);
-        mobKillRewards.put(EntityType.IRON_GOLEM, 20);
-        mobKillRewards.put(EntityType.WITCH, 30);
-        mobKillRewards.put(EntityType.ENDERMAN, 40);
-        mobKillRewards.put(EntityType.PIGLIN, 50);
-        mobKillRewards.put(EntityType.BLAZE, 60);
-    }///
+        mobKillRewards.put(EntityType.ZOMBIE, config.getZombieReward());
+        mobKillRewards.put(EntityType.IRON_GOLEM, config.getGolemReward());
+        mobKillRewards.put(EntityType.WITCH, config.getWitchReward());
+        mobKillRewards.put(EntityType.ENDERMAN, config.getEmanReward());
+        mobKillRewards.put(EntityType.PIGLIN, config.getPiglinReward());
+        mobKillRewards.put(EntityType.BLAZE, config.getBlazeReward());
+    }
 
 
     public static void earnMoney(Player killer, EntityType mobKilled) {
@@ -63,7 +65,7 @@ public class Economy {
 
 
         // notifies all players in the server of who killed what mob (if it is coin eligible)
-        Bukkit.broadcastMessage(killer.getName() + " just killed " + mobKilled + " for " + killReward + " coins!");
+//        Bukkit.broadcastMessage(killer.getName() + " just killed " + mobKilled + " for " + killReward + " coins!");
 
         // is incorrectly printing both coin amounts for each player to one player (happens to be the killer in one case)
         // this is likely fixed

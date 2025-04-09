@@ -66,6 +66,7 @@ public class StartGame {
 
     // various getters and setters
 
+
     public void setCurrentRound(UUID playerUUID, int newRound) {
         GameSession session = playerSessions.get(playerUUID);
         session.currentRound = newRound;
@@ -205,12 +206,13 @@ public class StartGame {
 
             currentPlayer.teleport(startLocation);
 
-            // Give player tower items
-            currentPlayer.getInventory().addItem(CreateEgg.BASIC.createTowerEgg(CreateEgg.BASIC));
-            currentPlayer.getInventory().addItem(CreateEgg.SPLASH.createTowerEgg(CreateEgg.SPLASH));
-            currentPlayer.getInventory().addItem(CreateEgg.SLOW.createTowerEgg(CreateEgg.SLOW));
-            currentPlayer.getInventory().addItem(CreateEgg.SNIPER.createTowerEgg(CreateEgg.SNIPER));
-            currentPlayer.getInventory().addItem(CreateEgg.FAST.createTowerEgg(CreateEgg.FAST));
+//            // Give player tower items
+//            depricated for the gui system
+//            currentPlayer.getInventory().addItem(CreateEgg.BASIC.createTowerEgg(CreateEgg.BASIC));
+//            currentPlayer.getInventory().addItem(CreateEgg.SPLASH.createTowerEgg(CreateEgg.SPLASH));
+//            currentPlayer.getInventory().addItem(CreateEgg.SLOW.createTowerEgg(CreateEgg.SLOW));
+//            currentPlayer.getInventory().addItem(CreateEgg.SNIPER.createTowerEgg(CreateEgg.SNIPER));
+//            currentPlayer.getInventory().addItem(CreateEgg.FAST.createTowerEgg(CreateEgg.FAST));
 
             giveCompass(currentPlayer);
 

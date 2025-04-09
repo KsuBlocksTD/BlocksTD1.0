@@ -13,15 +13,14 @@ import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
 import ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Items.CreateEgg;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
+import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerEggPurchase;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,6 +34,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -61,6 +61,10 @@ public class PlayerEventHandler implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event){
         // activates the player join event for economy
         Player player = event.getPlayer();
+
+        player.setSaturation(999999999);
+        player.setGameMode(GameMode.ADVENTURE);
+        player.setInvulnerable(true);
 
 
         // checks if msg on join is enabled
@@ -119,6 +123,9 @@ public class PlayerEventHandler implements Listener {
         if (event.getCurrentItem() == null) return;
 
         ItemStack clickedItem = event.getCurrentItem();
+        //debug
+//        player.sendMessage(clickedItem.displayName());
+
 
 
         // If statement for checking which item was clicked, repeated for every item
@@ -163,6 +170,11 @@ public class PlayerEventHandler implements Listener {
             player.sendRichMessage("Your Slowness Level Is Now <s_lvl>",
                     Placeholder.component("s_lvl", Component.text(String.valueOf(PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword().getSlownessLevel()))));
         }
+        if(clickedItem.getType() == Material.ZOMBIE_SPAWN_EGG){
+            boolean tf = TowerEggPurchase.processPurchase(player, clickedItem);
+           // if (tf) {player.sendMessage("Purchased " + clickedItem.displayName());} else {player.sendMessage("Purchased failed for " + clickedItem.displayName());}
+        }
+        openChestGUI.openInventories.remove(player); player.closeInventory();
     }
 
     /// can maybe be removed?
@@ -228,7 +240,7 @@ public class PlayerEventHandler implements Listener {
                             item
                     );
                 }
-                if (itemName.contains("Basic Tower")) {
+                if (itemName.contains("Wizard Tower")) {
                     TowerFactory.placeTower(
                             TowerFactory.TowerType.BASIC,
                             player,

@@ -14,7 +14,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     private final JavaPlugin plugin;
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
-    private static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
+    public static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
 
     public PlaceholderAPIExpansion(JavaPlugin plugin) {
         this.plugin = plugin;

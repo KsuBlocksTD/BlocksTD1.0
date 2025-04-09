@@ -12,14 +12,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import static ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion.config;
+
 public class BasicTower extends Tower {
     public BasicTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
-        super(location, owner, mapId, 5, 20L, plugin);///
+        super(location, owner, mapId, config.getBasicTowerRadius(), config.getBasicTowerAttacksp(), plugin);
     }
 
     @Override
     protected String getTowerName() {
-        return "Basic Tower";
+        return "Wizard Tower";
     }
 
     @Override
@@ -32,8 +34,8 @@ public class BasicTower extends Tower {
         for (Entity entity : nearbyEntities) {
             if (entity instanceof Mob & entity.getType() != EntityType.VILLAGER) {
                 if (entity.hasMetadata("gameSession") && towerEntity.hasMetadata("owner")) {
-                    String zombieOwner = entity.getMetadata("gameSession").get(0).asString();
-                    String towerOwner = towerEntity.getMetadata("owner").get(0).asString();
+                    String zombieOwner = entity.getMetadata("gameSession").getFirst().asString();
+                    String towerOwner = towerEntity.getMetadata("owner").getFirst().asString();
                     if (zombieOwner.equals(towerOwner)) {
                         targetQueue.add(entity);
                     }
@@ -46,12 +48,11 @@ public class BasicTower extends Tower {
         if (!targetQueue.isEmpty()) {
             Entity target = targetQueue.poll();
             faceTarget(target);
-            if (target instanceof Mob) {
-                Mob zombie = (Mob) target;
+            if (target instanceof Mob zombie) {
                 towerEntity.getWorld().strikeLightningEffect(zombie.getLocation());
                 if(zombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
                     zombie.damage(0.0);
-                } else {zombie.damage(10.0);}///
+                } else {zombie.damage(config.getBasicTowerDamage());}
                 target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
 
             }

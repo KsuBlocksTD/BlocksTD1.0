@@ -8,6 +8,7 @@ import io.papermc.paper.util.Tick;
 import ksucapproj.blockstowerdefense1.commands.*;
 import ksucapproj.blockstowerdefense1.logic.AsyncTest;
 import ksucapproj.blockstowerdefense1.logic.game_logic.*;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Items.CreateEgg;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
@@ -16,6 +17,7 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
@@ -60,14 +62,12 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
 
         // Use the same gameManager instance for PlayerEventHandler
-        new MobHandler(this);
+        new MobHandler(gameManager, this);
         new PlayerEventHandler(this, gameManager);
         TestCommand testCommand = new TestCommand(gameManager, this);
 
         MapData.loadMaps(this);
 
-
-        getServer().getPluginManager().registerEvents(new MobHandler(this), this);
 
 
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
@@ -114,6 +114,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         getLogger().warning("Plugin injected");
     }
+
 
 
     @Override

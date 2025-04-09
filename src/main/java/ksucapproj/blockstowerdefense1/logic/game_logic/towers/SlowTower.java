@@ -13,10 +13,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import static ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion.config;
+
 public class SlowTower extends Tower {
     public SlowTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
         // Medium scan radius, medium attack interval, apply slowness
-        super(location, owner, mapId, 7, 25L, plugin);///
+        super(location, owner, mapId, config.getSlowTowerRadius(), config.getSlowTowerAttacksp(), plugin);
     }
 
     @Override
@@ -34,8 +36,8 @@ public class SlowTower extends Tower {
         for (Entity entity : nearbyEntities) {
             if (entity instanceof Mob & entity.getType() != EntityType.VILLAGER) {
                 if (entity.hasMetadata("gameSession") && towerEntity.hasMetadata("owner")) {
-                    String zombieOwner = entity.getMetadata("gameSession").get(0).asString();
-                    String towerOwner = towerEntity.getMetadata("owner").get(0).asString();
+                    String zombieOwner = entity.getMetadata("gameSession").getFirst().asString();
+                    String towerOwner = towerEntity.getMetadata("owner").getFirst().asString();
                     if (zombieOwner.equals(towerOwner)) {
                         targetQueue.add(entity);
                     }
@@ -52,7 +54,7 @@ public class SlowTower extends Tower {
                 // Minimal direct damage
                 if(zombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
                     zombie.damage(0.0);
-                } else {zombie.damage(2.0);}///
+                } else {zombie.damage(config.getSlowTowerDamage());}
                 target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
 
                 // Apply slowness effect
@@ -66,8 +68,8 @@ public class SlowTower extends Tower {
                 zombie.getWorld().spawnParticle(
                         Particle.DRIPPING_HONEY,
                         zombie.getLocation(),
-                        20,
-                        0.5, 0.5, 0.5,
+                        40,
+                        0, 0, 0,
                         0.1
                 );
             }

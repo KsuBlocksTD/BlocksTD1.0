@@ -117,10 +117,10 @@ public class PlayerSword {
     public void applySweepingEdgeUpgrade(){
         currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 400 atm
-        cost = config.getSweepingEdgeBaseCost() * swordLevel;
+        cost = config.getSweepingEdgeBaseCost() * sweepingEdgeLevel;
         if (currTotal >= cost){
 
-            if (swordLevel < config.getSwordMaterialMaxLevel()){
+            if (sweepingEdgeLevel < config.getSweepingEdgeMaxLevel()){
 
                 Economy.spendMoney(player, cost);
                 setSweepingEdgeLevel(++sweepingEdgeLevel); // takes in new material level and replaces sword with it
@@ -175,6 +175,10 @@ public class PlayerSword {
 
         player.getInventory().addItem(playerSword);
 
+    }
+
+    public int getSwordLevel () {
+        return this.swordLevel;
     }
 
 
