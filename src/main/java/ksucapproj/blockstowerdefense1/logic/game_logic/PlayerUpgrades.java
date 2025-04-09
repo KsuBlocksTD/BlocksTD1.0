@@ -37,6 +37,8 @@ public class PlayerUpgrades{
         to the currently stored total
      */
 
+
+    // This is the constructor that creates a player and their sword upon game creation
     public PlayerUpgrades(Player player){
         this.player = player;
         this.swiftnessLevel = 0;
@@ -66,10 +68,10 @@ public class PlayerUpgrades{
                 playerUpgradesBought += 1;
                 return;
             }
-            sendMaxLevelMsg();
+            sendMaxLevelMsg(); // if player is already max level, notify and return
             return;
         }
-        sendCannotAffordMsg();
+        sendCannotAffordMsg(); // if player cannot afford the upgrade, notify and return
     }
 
 
@@ -86,14 +88,14 @@ public class PlayerUpgrades{
                 setStrengthLevel(++strengthLevel);
                 return;
             }
-            sendMaxLevelMsg();
+            sendMaxLevelMsg(); // if player is already max level, notify and return
             return;
         }
-        sendCannotAffordMsg();
+        sendCannotAffordMsg(); // if player cannot afford the upgrade, notify and return
     }
 
 
-    // deletes the playerUpgrades object along with their playerSword
+    // deletes the playerUpgrades object along with their playerSword and economy
     public static void playerDelete(Player player){
         PlayerUpgrades leaver = playerUpgradesMap.get(player);
 

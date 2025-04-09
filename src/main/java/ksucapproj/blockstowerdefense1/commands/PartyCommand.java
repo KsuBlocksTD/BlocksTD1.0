@@ -58,6 +58,7 @@ public class PartyCommand {
                 .build();
     }
 
+    // gets the suggestions for party's subcommands based upon the strings in the list at the top of the class
     private static CompletableFuture<Suggestions> getPartySuggestions(final CommandContext<CommandSourceStack> ctx, final SuggestionsBuilder builder){
 
         for (String word : subcommands){
@@ -89,6 +90,7 @@ public class PartyCommand {
             return Command.SINGLE_SUCCESS;
         }
 
+        //  reroutes the command from /mtd party help -> /party help
         Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> sender.performCommand("party help "));
 
 
@@ -109,6 +111,7 @@ public class PartyCommand {
             return Command.SINGLE_SUCCESS;
         }
 
+        //  reroutes the command from /mtd party info -> /party info
         Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> sender.performCommand("party info "));
 
         return Command.SINGLE_SUCCESS;

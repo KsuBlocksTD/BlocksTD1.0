@@ -7,8 +7,8 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.util.Tick;
 import ksucapproj.blockstowerdefense1.commands.*;
 import ksucapproj.blockstowerdefense1.logic.AsyncTest;
+import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
 import ksucapproj.blockstowerdefense1.logic.game_logic.*;
-import ksucapproj.blockstowerdefense1.logic.game_logic.Items.CreateEgg;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion;
@@ -16,14 +16,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.scheduler.BukkitTask;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.Duration;
-import java.util.EventListener;
+import java.util.concurrent.CompletableFuture;
 
 
 public class BlocksTowerDefense1 extends JavaPlugin {
@@ -32,6 +32,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     private static BlocksTowerDefense1 instance;
     private StartGame gameManager;
     private ConfigOptions config;
+    private Connection dbConnection;
 
 
     public BlocksTowerDefense1() {
@@ -41,7 +42,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("BlocksTowerDefense1 has been enabled!");
+        getLogger().info("[BlocksTowerDefense1.0] Initializing BlocksTowerDefense1");
         api = Parties.getApi(); // For static api getter
 
 
@@ -49,8 +50,9 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         instance.reloadConfig();       // Ensures the latest config is loaded
 
         saveResource("config.yml", /* replace */ false);
-        config = new ConfigOptions(this);
+        config = new ConfigOptions(this); // initializes config object
 
+        // confirmation msgs if config is initialized as null ICE
         if (config == null) {
             getLogger().severe("[BlocksTowerDefense1] ERROR: ConfigOptions failed to initialize!");
         } else {
@@ -70,24 +72,35 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
 
 
+
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
+        // initializes PLaceholderAPI to be used in its class
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new PlaceholderAPIExpansion(this).register();
         }
 
 
+        // Creates connection to the DB asynchronously
+        CompletableFuture.supplyAsync(DatabaseManager::connect)
+                .thenAccept(conn -> {
+                    // sets DBconnection as the initialized conn value
+                    BlocksTowerDefense1.getInstance().setDBConnection(conn);
+                    Bukkit.getLogger().info("[BlocksTowerDefense1.0] DB connection established!");
+                });
 
+
+        // **** This might be better off moved to the game session creation ****
         // needed for instantiating proper mob killing & economy function
         // this is solely for recompiling the server and keeping a working economy while players are still online
-        Economy.playerCountFix();
+        //Economy.playerCountFix();
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             // register main commands here
-            commands.registrar().register(TestCommand.flightCommand());
-            commands.registrar().register(TestCommand.constructGiveItemCommand());
-            commands.registrar().register(TestCommand.addCoinsCommand());
-            commands.registrar().register(TestCommand.giveCoinsCommand());
+            commands.registrar().register(TestCommand.flightCommand()); // is a test cmd
+            commands.registrar().register(TestCommand.constructGiveItemCommand()); // is a test cmd
+            commands.registrar().register(TestCommand.addCoinsCommand()); // has btd functionality
+            commands.registrar().register(TestCommand.giveCoinsCommand()); // has btd functionality
             commands.registrar().register(MtdCommand.register());
             commands.registrar().register(SpawnCommand.register());
             commands.registrar().register(ApplyUpgradeCommand.register());
@@ -109,19 +122,25 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
             world.setGameRule(GameRule.DO_MOB_LOOT, false);
             world.setTime(1000);
-            getLogger().info("Weather and daylight cycle auto-disabled.");
+            getLogger().info("[BlocksTowerDefense1.0] Weather and daylight cycle auto-disabled.");
         }
 
-        getLogger().warning("Plugin injected");
+        getLogger().warning("[BlocksTowerDefense1.0] Plugin injected");
     }
-
 
 
     @Override
     public void onDisable() {
+
 //        instance.reloadConfig();
         instance.saveConfig();
         MapData.saveMaps();
+
+        try {
+            dbConnection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         MobHandler.cleanupAll();
         Tower.removeAllTowers();
@@ -134,7 +153,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             PlayerUpgrades.getPlayerUpgradesMap().remove(player);
         }
 
-        getLogger().info("BlocksTowerDefence1 has been disabled!");
+        getLogger().info("[BlocksTowerDefense1.0] Disabled BlocksTowerDefense1");
     }
 
 
@@ -157,4 +176,9 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     public ConfigOptions getBTDConfig() {
         return config;
     }
+
+    private void setDBConnection(Connection conn) {
+        dbConnection = conn;
+    }
+    public Connection getDBConnection() { return dbConnection;}
 }

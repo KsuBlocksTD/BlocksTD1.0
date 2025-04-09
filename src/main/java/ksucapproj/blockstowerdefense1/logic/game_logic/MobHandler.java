@@ -283,22 +283,6 @@ public class MobHandler {
                 double stepDistance = baseStepDistance * (zombie.hasPotionEffect(PotionEffectType.SLOWNESS) ? slownessMultiplier : 1.0);
                 stepDistance = stepDistance * (zombie.hasPotionEffect(PotionEffectType.SPEED) ? speedMultiplier : 1.0);
 
-                // Game end check - zombie reached endpoint
-//                if (endLocation != null && zombie.getLocation().distance(endLocation) < .1) {
-//                    // Get the player UUID from zombie metadata
-//                    if (zombie.hasMetadata("gameSession")) {
-//                        String playerUuidString = zombie.getMetadata("gameSession").getFirst().asString();
-//                        UUID playerUUID = UUID.fromString(playerUuidString);
-//                        Player player = Bukkit.getPlayer(playerUUID);
-//
-//                        if (player != null && player.isOnline()) {
-//                            // Handle game end for this player
-//                            gameManager.cleanupPlayer(playerUUID);
-//                        }
-//                    }
-//                    return;
-//                }
-
                 // Path completion check
                 if (waypointIndex >= waypoints.size()) {
                     cancel();
@@ -391,8 +375,8 @@ public class MobHandler {
         StartGame gameManager = BlocksTowerDefense1.getInstance().getGameManager();
 
         // Notify the player
-        player.sendMessage(ChatColor.RED + "GAME OVER! A zombie reached the endpoint!");
-        player.sendMessage(ChatColor.RED + "All your progress has been reset!");
+        player.sendRichMessage("<red>GAME OVER! A zombie reached the endpoint!");
+        player.sendRichMessage("<red>All your progress has been reset!");
 
         // Reset player's economy to 0
         Economy.setPlayerMoney(player, 0);

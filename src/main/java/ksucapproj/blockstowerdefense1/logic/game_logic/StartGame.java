@@ -3,17 +3,10 @@ package ksucapproj.blockstowerdefense1.logic.game_logic;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
-import ksucapproj.blockstowerdefense1.logic.game_logic.Items.CreateEgg;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
-import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -174,7 +167,6 @@ public class StartGame {
         //player.sendMessage(party.getOnlineMembers().toString());
         int count = party.getOnlineMembers().size();
 
-
         for (PartyPlayer partyMember : party.getOnlineMembers()){
             Player currentPlayer = Bukkit.getPlayer(partyMember.getPlayerUUID());
 
@@ -187,8 +179,6 @@ public class StartGame {
 
             // Clear player's inventory first
             currentPlayer.getInventory().clear();
-
-
 
             // Add items for gameplay
             if(count == 0) {
@@ -206,13 +196,6 @@ public class StartGame {
 
             currentPlayer.teleport(startLocation);
 
-//            // Give player tower items
-//            depricated for the gui system
-//            currentPlayer.getInventory().addItem(CreateEgg.BASIC.createTowerEgg(CreateEgg.BASIC));
-//            currentPlayer.getInventory().addItem(CreateEgg.SPLASH.createTowerEgg(CreateEgg.SPLASH));
-//            currentPlayer.getInventory().addItem(CreateEgg.SLOW.createTowerEgg(CreateEgg.SLOW));
-//            currentPlayer.getInventory().addItem(CreateEgg.SNIPER.createTowerEgg(CreateEgg.SNIPER));
-//            currentPlayer.getInventory().addItem(CreateEgg.FAST.createTowerEgg(CreateEgg.FAST));
 
             giveCompass(currentPlayer);
 

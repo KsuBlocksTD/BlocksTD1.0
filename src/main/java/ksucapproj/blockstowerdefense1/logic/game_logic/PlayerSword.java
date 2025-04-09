@@ -23,9 +23,7 @@ import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.getPlayerE
 
 public class PlayerSword {
 
-    public int swordLevel;
-    public int slownessLevel;
-    public int sweepingEdgeLevel;
+    private int swordLevel, slownessLevel, sweepingEdgeLevel;
     private int swordUpgradesBought;
 
     private final Player player;
@@ -60,7 +58,7 @@ public class PlayerSword {
 
 
 
-
+    // SWORD MATERIAL
     public void applySwordMaterialUpgrade(){
         currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 400 atm
@@ -74,13 +72,14 @@ public class PlayerSword {
                 swordUpgradesBought += 1; // increments bought upgrades counter
                 return;
             }
-            sendMaxLevelMsg();
+            sendMaxLevelMsg(); // if player is already max level, notify and return
             return;
         }
-        sendCannotAffordMsg();
+        sendCannotAffordMsg(); // if player cannot afford the upgrade, notify and return
     }
 
 
+    // SLOWNESS
     public void applySlownessUpgrade() {
         currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 400 atm
@@ -95,14 +94,15 @@ public class PlayerSword {
                 swordUpgradesBought += 1; // increments bought upgrades counter
                 return;
             }
-            sendMaxLevelMsg();
+            sendMaxLevelMsg(); // if player is already max level, notify and return
             return;
         }
-        sendCannotAffordMsg();
+        sendCannotAffordMsg(); // if player cannot afford the upgrade, notify and return
     }
 
     public void applySlownessEffect(LivingEntity target){
 
+        // value is false by default
         if (config.getSlownessDurationIncreaseOnUpgrade()){ // enables longer duration on
 
             // applies slowness, 10 ticks + 2 per slownessLevel (0.5s), amplifier of player's slownessLevel
@@ -114,6 +114,8 @@ public class PlayerSword {
         target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, config.getSlownessDuration(), slownessLevel, false, true));
     }
 
+
+    // SWEEPING EDGE
     public void applySweepingEdgeUpgrade(){
         currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 400 atm
@@ -127,10 +129,10 @@ public class PlayerSword {
                 swordUpgradesBought += 1; // increments bought upgrades counter
                 return;
             }
-            sendMaxLevelMsg();
+            sendMaxLevelMsg(); // if player is already max level, notify and return
             return;
         }
-        sendCannotAffordMsg();
+        sendCannotAffordMsg(); // if player cannot afford the upgrade, notify and return
     }
 
 
@@ -164,10 +166,11 @@ public class PlayerSword {
 
         swordMeta = playerSword.getItemMeta(); // stores sword meta-data before sword's deletion
 
-        removeTrackedSword();
+        removeTrackedSword(); // deletes player's tracked sword
 
-        playerSword = new ItemStack(newSwordMaterial);
+        playerSword = new ItemStack(newSwordMaterial); // creates new sword for sword to track
 
+        // gives the newly given sword a tracked id to replace the old sword
         NamespacedKey key = new NamespacedKey(BlocksTowerDefense1.getInstance(), "sword_id");
         swordMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, swordUUID);
         playerSword.setItemMeta(swordMeta);
@@ -203,7 +206,7 @@ public class PlayerSword {
 
         removeTrackedSword(); // deletes old sword
 
-        player.getInventory().addItem(playerSword);
+        player.getInventory().addItem(playerSword); // adds new sword to player's inventory
     }
 
 
@@ -219,8 +222,10 @@ public class PlayerSword {
         // this is the key to later identify the sword by later
         NamespacedKey key = new NamespacedKey(BlocksTowerDefense1.getInstance(), "sword_id");
         NamespacedKey notDroppableKey = new NamespacedKey(BlocksTowerDefense1.getInstance(), "not_droppable");
+
         PersistentDataContainer data = swordMeta.getPersistentDataContainer();
         String swordUUID = player.getUniqueId() + "-" + UUID.randomUUID(); // creates a random UUID for the sword when created
+
         data.set(key, PersistentDataType.STRING, swordUUID); // stores the swordUUID into the sword's persistent meta-data
         data.set(notDroppableKey, PersistentDataType.BOOLEAN, false); // creates a key to disable the player from dropping the item
 
@@ -267,6 +272,7 @@ public class PlayerSword {
             }
         }
     }
+
 
     public void sendCannotAffordMsg(){
         player.sendRichMessage("<red>You don't have enough coins for this upgrade!");

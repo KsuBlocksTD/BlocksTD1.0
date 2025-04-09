@@ -3,31 +3,22 @@ package ksucapproj.blockstowerdefense1.logic.GUI;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.game_logic.Items.CreateEgg;
-import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerSword;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.ObjectInputFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-
-
 
 
 public class UpgradeGUI implements Listener {
@@ -43,7 +34,7 @@ public class UpgradeGUI implements Listener {
     public void openChestGUI(Player player) {
         Inventory gui = Bukkit.createInventory(null, 27, Component.text("Upgrade Menu").color(TextColor.color(0, 255, 255)));
 
-        this.swordLevel = PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword().swordLevel;
+        this.swordLevel = PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword().getSwordLevel();
         //debug
         //player.sendMessage(String.valueOf(swordLevel));
 

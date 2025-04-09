@@ -34,6 +34,7 @@ public class MtdCommand {
                 .build();
     }
 
+    // gives the suggestions of the subcommands for mtd base command
     private static CompletableFuture<Suggestions> getMtdSuggestions(final CommandContext<CommandSourceStack> ctx, final SuggestionsBuilder builder){
 
         for (String word : subcommands){

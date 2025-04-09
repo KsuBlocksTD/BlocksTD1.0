@@ -13,8 +13,6 @@ import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
 import ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI;
-import ksucapproj.blockstowerdefense1.logic.game_logic.Items.CreateEgg;
-import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerEggPurchase;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerFactory;
 import net.kyori.adventure.text.Component;
@@ -34,7 +32,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -77,7 +74,7 @@ public class PlayerEventHandler implements Listener {
         event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
 
         // this checks if a player is in the db already, if not, adds them to it
-        DatabaseManager.checkPlayerInDB(player);
+        DatabaseManager.checkPlayerInDB(player, 2);
 
     }
 
@@ -140,7 +137,7 @@ public class PlayerEventHandler implements Listener {
 
             // returning new level of upgrade selected
                 player.sendRichMessage("Your Sword Level Is Now <s_material>",
-                        Placeholder.component("s_material", Component.text(String.valueOf(playerSword.swordLevel))));
+                        Placeholder.component("s_material", Component.text(String.valueOf(playerSword.getSwordLevel()))));
         }
         if (Objects.equals(clickedItem.getItemMeta().displayName(),
                 Component.text("Upgrade Strength Level").color(TextColor.color(100, 255, 255)))) {

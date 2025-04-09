@@ -28,6 +28,7 @@ public class SpawnCommand {
     }
 
 
+    // executes the logic for setting the spawn for HubCommand
     private static int executeSpawnLogic(final CommandContext<CommandSourceStack> ctx){
         if (!(ctx.getSource().getExecutor() instanceof Player player)){
             return Command.SINGLE_SUCCESS;
@@ -35,7 +36,7 @@ public class SpawnCommand {
 
         FileConfiguration config = instance.getConfig();
 
-
+        // gets the player's location, yaw, and pitch at time of setting command
         Location location = player.getLocation();
 
         config.set("btd.spawn.world", location.getWorld().getName());
@@ -44,12 +45,17 @@ public class SpawnCommand {
         config.set("btd.spawn.z", location.getBlockZ());
         config.set("btd.spawn.yaw", location.getYaw());
         config.set("btd.spawn.pitch", location.getPitch());
+//        player.sendMessage("World name: " + location.getWorld().getName());
+//        player.sendMessage("Yaw set: " + location.getYaw());
 
+
+        // saves the config with these values and reloads the plugin with the update just in case
         instance.saveConfig();
         instance.reloadConfig();
 
         player.sendRichMessage("<gold>New spawn point set for the hub!");
-//        player.sendMessage("Yaw set: " + config.getDouble("spawn.pitch"));
+//        player.sendMessage("World name: " + config.getString("btd.spawn.world"));
+//        player.sendMessage("Yaw set: " + config.getDouble("btd.spawn.yaw"));
 //        player.sendMessage("cuts to the end of the command"); // for testing
         return Command.SINGLE_SUCCESS;
     }

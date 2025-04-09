@@ -51,7 +51,8 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             return "";
         }
 
-        // Define your custom placeholder
+        // Placeholders all in the format: mtd_<placeholder>
+        // Exs: mtd_coins, mtd_db_Url, mtd_speedMaxLevel
         if (identifier.equalsIgnoreCase("coins")) {
 
             if (Economy.getPlayerEconomies().get(player) == null){
