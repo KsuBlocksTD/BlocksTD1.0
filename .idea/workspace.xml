@@ -9,29 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="--zombie chickens still spawn&#10;--special zombies dont dissapear on loss or quit and dont count for loss&#10;--zombies continue to spawn even when you lose&#10;--baby biglins spawn&#10;--taking damage from regen - make harming&#10;--the player getting moved by the splash tower and taking damage&#10;--deleting the players game items and related info in both the eventhandler and in start game&#10;--towerplacement jank&#10;--added boots and netherite to armor loops&#10;&#10;--special mobs coin drop no work&#10;--round didnt end after setting round&#10;--broke gui somehow&#10;--still doesnt stop new spawns, or remove special mobs&#10;--towers can spawn inside blocks&#10;--get rid of &quot;compass has been given&quot; message&#10;&#10;--impliment gui&#10;--strength and speed not checking money">
-      <change afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/GUI/TowerGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/GUI/UpgradeGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/GUI/UpgradeGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/BasicTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/BasicTower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/FastTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/FastTower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SlowTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SlowTower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SniperTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SniperTower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SplashTower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/SplashTower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/Tower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/Tower.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/TowerFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/TowerFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/TowerUpgrades.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ksucapproj/blockstowerdefense1/logic/game_logic/towers/TowerUpgrades.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/MobHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/PlayerEventHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$GameSession.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame$GameSession.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ksucapproj/blockstowerdefense1/logic/game_logic/StartGame.class" afterDir="false" />
-    </list>
+    <list default="true" id="633ba447-c829-43f2-ad43-485af5e1a622" name="Changes" comment="--tower upgrades&#10;--modify honey visuals&#10;--merge changes&#10;--can break out of the maps&#10;--mtd hub doesnt work&#10;--add health system 10 hearts player hearts" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -343,7 +321,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743730350903</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="--tower upgrades&#10;--modify honey visuals&#10;--merge changes&#10;--can break out of the maps&#10;--mtd hub doesnt work&#10;--add health system 10 hearts player hearts">
+      <option name="closed" value="true" />
+      <created>1744303300681</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1744303300681</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -406,6 +392,7 @@
     <MESSAGE value="things i changed: &#10;-zombies per round is linear, starting at 5 and +=5 every round FOR NOW &#10;-zombies randomly have a chance of spawning with chest and legs, tier depends on the round you are on, gold for 1-10 iron for 11-20 ect,&#10;-added 5 new mob types, a new one for every 10 rounds iron golem, witch, enderman, piglin, and blaze, They currently do nothing but will add effects later. &#10;-fixed some bugs with splash tower not crediting kills&#10;-DID NOT add new mobs to economy this must be done to earn coins from them&#10;-fixed bug where towers would not dissapear onDisable&#10;-Didnt get to do &quot;im also gonna make you start with 500 coins, add a finish round coin bonus, and have it tell you the total you earned for the round&quot; but its bedtime" />
     <MESSAGE value="merged with matthew code" />
     <MESSAGE value="--zombie chickens still spawn&#10;--special zombies dont dissapear on loss or quit and dont count for loss&#10;--zombies continue to spawn even when you lose&#10;--baby biglins spawn&#10;--taking damage from regen - make harming&#10;--the player getting moved by the splash tower and taking damage&#10;--deleting the players game items and related info in both the eventhandler and in start game&#10;--towerplacement jank&#10;--added boots and netherite to armor loops&#10;&#10;--special mobs coin drop no work&#10;--round didnt end after setting round&#10;--broke gui somehow&#10;--still doesnt stop new spawns, or remove special mobs&#10;--towers can spawn inside blocks&#10;--get rid of &quot;compass has been given&quot; message&#10;&#10;--impliment gui&#10;--strength and speed not checking money" />
-    <option name="LAST_COMMIT_MESSAGE" value="--zombie chickens still spawn&#10;--special zombies dont dissapear on loss or quit and dont count for loss&#10;--zombies continue to spawn even when you lose&#10;--baby biglins spawn&#10;--taking damage from regen - make harming&#10;--the player getting moved by the splash tower and taking damage&#10;--deleting the players game items and related info in both the eventhandler and in start game&#10;--towerplacement jank&#10;--added boots and netherite to armor loops&#10;&#10;--special mobs coin drop no work&#10;--round didnt end after setting round&#10;--broke gui somehow&#10;--still doesnt stop new spawns, or remove special mobs&#10;--towers can spawn inside blocks&#10;--get rid of &quot;compass has been given&quot; message&#10;&#10;--impliment gui&#10;--strength and speed not checking money" />
+    <MESSAGE value="--tower upgrades&#10;--modify honey visuals&#10;--merge changes&#10;--can break out of the maps&#10;--mtd hub doesnt work&#10;--add health system 10 hearts player hearts" />
+    <option name="LAST_COMMIT_MESSAGE" value="--tower upgrades&#10;--modify honey visuals&#10;--merge changes&#10;--can break out of the maps&#10;--mtd hub doesnt work&#10;--add health system 10 hearts player hearts" />
   </component>
 </project>
