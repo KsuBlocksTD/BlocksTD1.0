@@ -182,12 +182,18 @@ public class MobHandler {
         // Count for random buffs loop
         int count = 0;
 
-        // Get the start location for the specified map
-        Location spawnPoint = MapData.getStartLocation(world, mapId);
+        // First select a random path ID that the mob will follow
+        String randomPathId = MapData.getRandomPathId(mapId);
 
+        // Get the starting location for this specific path
+        Location spawnPoint = MapData.getWaypoints(world, mapId, randomPathId).get(0);
+        // If there are no waypoints, fall back to default start location
+        if (spawnPoint == null) {
+            spawnPoint = MapData.getPathStartLocation(world, mapId, String.valueOf(1));
+        }
 
         // Spawn special mobs for difficulty increase
-        if(checkifSpawnSpecial(currentRound)) {
+        if (checkifSpawnSpecial(currentRound)) {
             EntityType type = getMob(currentRound);
 
             Entity entity = world.spawnEntity(spawnPoint, type);
@@ -204,26 +210,23 @@ public class MobHandler {
                 BukkitTask healthTask = displayHealthBar(mob);
                 healthBarTasks.put(mob.getUniqueId(), healthTask);
 
-                // Start path following
-                BukkitTask movementTask = followPath(mob, world, mapId);
+                // Start path following - pass the specific randomPathId
+                BukkitTask movementTask = followPath(mob, world, mapId, randomPathId);
                 zombieMovementTasks.put(mob.getUniqueId(), movementTask);
                 return mob;
-
             }
         }
 
         // Spawn zombie
         Zombie zombie = (Zombie) world.spawnEntity(spawnPoint, EntityType.ZOMBIE);
 
-
         // Loop to add buffs on the current zombie that scales with the current round
-        while(checkIfBuffed(currentRound)) {
-            if(count > 3) {break;}
+        while (checkIfBuffed(currentRound)) {
+            if (count > 3) {break;}
             count++;
             zombieEquip(count, currentRound, zombie);
             checkIfBuffed(currentRound);
         }
-
 
         // Set spawn restrictions
         zombie.setShouldBurnInDay(false);
@@ -232,40 +235,46 @@ public class MobHandler {
         zombie.setCustomNameVisible(true);
         zombie.eject();
 
-
-
         // Start health bar display
         BukkitTask healthTask = displayHealthBar(zombie);
         healthBarTasks.put(zombie.getUniqueId(), healthTask);
 
-        // Start path following
-        BukkitTask movementTask = followPath(zombie, world, mapId);
+        // Start path following - pass the specific randomPathId
+        BukkitTask movementTask = followPath(zombie, world, mapId, randomPathId);
         zombieMovementTasks.put(zombie.getUniqueId(), movementTask);
 
         return zombie;
     }
 
+    // Modified followPath method to accept a specific pathId
+    private static BukkitTask followPath(Mob zombie, World world, String mapId, String initialPathId) {
+        // Use the provided path ID instead of getting a random one
+        String currentPathId = initialPathId;
 
-    private static BukkitTask followPath(Mob zombie, World world, String mapId) {
-        // Get waypoints for the specified map
-        List<Location> waypoints = MapData.getWaypoints(world, mapId);
-        // Get end location for the specified map
-        Location endLocation = MapData.getEndLocation(world, mapId);
+        // Track which paths this zombie has already visited to prevent loops
+        Set<String> visitedPaths = new HashSet<>();
+        visitedPaths.add(currentPathId);
+
+        // Get waypoints for the initial path
+        List<Location> waypoints = MapData.getWaypoints(world, mapId, currentPathId);
 
         if (waypoints == null || waypoints.isEmpty()) {
-            plugin.getLogger().warning("No waypoints found for map " + mapId);
+            plugin.getLogger().warning("No waypoints found for map " + mapId + " path " + currentPathId);
             return null;
         }
 
         return new BukkitRunnable() {
             int waypointIndex = 0;
+            String pathId = currentPathId;
+            List<Location> currentWaypoints = waypoints;
             final double baseStepDistance = 0.2;
             final double slownessMultiplier = 0.5; // Reduces speed by half when slowed
-            final  double speedMultiplier = 2.0;// Doubles speed when applied
+            final double speedMultiplier = 2.0;// Doubles speed when applied
             private int tickcounter = 0; // Used to execute some logic at a different rate than the rate of run()
 
             @Override
             public void run() {
+                // Rest of the method remains unchanged
                 // If zombie is dead or invalid, clean up
                 if (zombie == null || zombie.isDead() || !zombie.isValid()) {
                     cancel();
@@ -278,7 +287,6 @@ public class MobHandler {
                     applyEffectBasedOnNearbyMob((Zombie) zombie);
                     tickcounter = 0;
                 }
-
 
                 // Calculate current step distance based on current effect
                 double stepDistance = baseStepDistance * (zombie.hasPotionEffect(PotionEffectType.SLOWNESS) ? slownessMultiplier : 1.0);
@@ -294,40 +302,43 @@ public class MobHandler {
                             0.2, .8, 0.2,
                             0
                     );
-
                 }
 
-                // Path completion check
-                if (waypointIndex >= waypoints.size()) {
-                    cancel();
-                    zombieMovementTasks.remove(zombie.getUniqueId());
-                    return;
-                }
+                // Check if we're done with the current path
+                if (waypointIndex >= currentWaypoints.size()) {
+                    // If we reached the end of a path, check if it's an end location
+                    boolean isEndLocation = true;
 
-                Location target = waypoints.get(waypointIndex);
-                Vector direction = target.toVector().subtract(zombie.getLocation().toVector());
+                    // Check if we're at a branch point and can take a new path
+                    if (MapData.hasPathBranches(mapId, pathId)) {
+                        List<MapData.BranchPoint> branchPoints = MapData.getPathBranches(mapId, pathId);
 
-                if (direction.lengthSquared() > 0) {
-                    // Normalize and scale direction
-                    direction.normalize().multiply(stepDistance);
+                        for (MapData.BranchPoint branch : branchPoints) {
+                            // Check if this branch occurs at our current waypoint and we haven't visited the target path yet
+                            if (branch.getWaypointIndex() == waypointIndex - 1 && !visitedPaths.contains(branch.getTargetPathId())) {
+                                // Determine if we should take this branch based on its probability
+                                float random = new Random().nextFloat();
+                                if (random <= branch.getBranchChance()) {
+                                    // Take this branch
+                                    String newPathId = branch.getTargetPathId();
+                                    List<Location> newWaypoints = MapData.getWaypoints(world, mapId, newPathId);
 
-                    // Calculate movement yaw
-                    float yaw = (float) Math.toDegrees(Math.atan2(-direction.getX(), direction.getZ()));
-                    yaw = (yaw + 360) % 360; // Ensure positive angle
+                                    if (newWaypoints != null && !newWaypoints.isEmpty()) {
+                                        // Switch to the new path
+                                        pathId = newPathId;
+                                        currentWaypoints = newWaypoints;
+                                        waypointIndex = 0;
+                                        visitedPaths.add(newPathId);
+                                        isEndLocation = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-                    // Create new location with rotation
-                    Location newLocation = zombie.getLocation().add(direction);
-                    newLocation.setYaw(yaw);
-
-                    // Teleport with rotation
-                    zombie.teleport(newLocation);
-                }
-
-                // Waypoint progression
-                if (zombie.getLocation().distance(target) < stepDistance) {
-                    waypointIndex++;
-                    // If we've reached the last waypoint and it's the end location
-                    if (waypointIndex == waypoints.size()) {
+                    // If we didn't branch to a new path and reached the end of a path
+                    if (isEndLocation) {
                         // Check if we have the player information to handle game end
                         if (zombie.hasMetadata("gameSession")) {
                             String playerUuidString = zombie.getMetadata("gameSession").getFirst().asString();
@@ -352,8 +363,61 @@ public class MobHandler {
                             }
                         }
 
+                        cancel();
+                        zombieMovementTasks.remove(zombie.getUniqueId());
+                        return;
                     }
-                }tickcounter++;
+                }
+
+                // Get the current target waypoint
+                Location target = currentWaypoints.get(waypointIndex);
+                Vector direction = target.toVector().subtract(zombie.getLocation().toVector());
+
+                if (direction.lengthSquared() > 0) {
+                    // Normalize and scale direction
+                    direction.normalize().multiply(stepDistance);
+
+                    // Calculate movement yaw
+                    float yaw = (float) Math.toDegrees(Math.atan2(-direction.getX(), direction.getZ()));
+                    yaw = (yaw + 360) % 360; // Ensure positive angle
+
+                    // Create new location with rotation
+                    Location newLocation = zombie.getLocation().add(direction);
+                    newLocation.setYaw(yaw);
+
+                    // Teleport with rotation
+                    zombie.teleport(newLocation);
+                }
+
+                // Waypoint progression
+                if (zombie.getLocation().distance(target) < stepDistance) {
+                    waypointIndex++;
+
+                    // Check if we've reached a branch point and should consider taking it
+                    if (MapData.hasPathBranches(mapId, pathId)) {
+                        for (MapData.BranchPoint branch : MapData.getPathBranches(mapId, pathId)) {
+                            // Only consider branches at our current position that we haven't visited yet
+                            if (branch.getWaypointIndex() == waypointIndex - 1 && !visitedPaths.contains(branch.getTargetPathId())) {
+                                float random = new Random().nextFloat();
+                                if (random <= branch.getBranchChance()) {
+                                    // Switch paths
+                                    String newPathId = branch.getTargetPathId();
+                                    List<Location> newWaypoints = MapData.getWaypoints(world, mapId, newPathId);
+
+                                    if (newWaypoints != null && !newWaypoints.isEmpty()) {
+                                        pathId = newPathId;
+                                        currentWaypoints = newWaypoints;
+                                        waypointIndex = 0;
+                                        visitedPaths.add(newPathId);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                tickcounter++;
             }
         }.runTaskTimer(plugin, 0, 2);
     }

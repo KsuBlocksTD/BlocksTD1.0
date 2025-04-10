@@ -1,5 +1,7 @@
 package ksucapproj.blockstowerdefense1.commands;
 
+import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -9,12 +11,14 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class MapCommand {
@@ -52,19 +56,87 @@ public class MapCommand {
                         )
                 )
 
-                // Add waypoint
-                .then(Commands.literal("addwp")
+                // Create a new path with starting point
+                .then(Commands.literal("createpath")
                         .then(Commands.argument("map_id", StringArgumentType.word())
                                 .suggests(MapCommand::getAvailableMapsSuggestions)
-                                .executes(MapCommand::executeAddWaypoint)
+                                .then(Commands.argument("path_id", StringArgumentType.word())
+                                        .executes(MapCommand::executeCreatePath)
+                                )
                         )
                 )
 
-                // Clear waypoints
+                // Add waypoint to a specific path
+                .then(Commands.literal("addwp")
+                        .then(Commands.argument("map_id", StringArgumentType.word())
+                                .suggests(MapCommand::getAvailableMapsSuggestions)
+                                .then(Commands.argument("path_id", StringArgumentType.word())
+                                        .suggests(MapCommand::getAvailablePathsSuggestions)
+                                        .executes(MapCommand::executeAddWaypointToPath)
+                                )
+                        )
+                )
+
+                // Remove a path
+                .then(Commands.literal("removepath")
+                        .then(Commands.argument("map_id", StringArgumentType.word())
+                                .suggests(MapCommand::getAvailableMapsSuggestions)
+                                .then(Commands.argument("path_id", StringArgumentType.word())
+                                        .suggests(MapCommand::getAvailablePathsSuggestions)
+                                        .executes(MapCommand::executeRemovePath)
+                                )
+                        )
+                )
+
+                // Add a branch point
+                .then(Commands.literal("addbranch")
+                        .then(Commands.argument("map_id", StringArgumentType.word())
+                                .suggests(MapCommand::getAvailableMapsSuggestions)
+                                .then(Commands.argument("source_path", StringArgumentType.word())
+                                        .suggests(MapCommand::getAvailablePathsSuggestions)
+                                        .then(Commands.argument("waypoint_index", IntegerArgumentType.integer(0))
+                                                .then(Commands.argument("target_path", StringArgumentType.word())
+                                                        .suggests(MapCommand::getAvailablePathsSuggestions)
+                                                        .executes(context -> executeAddBranch(context, 0.5f))
+                                                        .then(Commands.argument("chance", FloatArgumentType.floatArg(0, 1))
+                                                                .executes(context -> executeAddBranch(
+                                                                        context,
+                                                                        FloatArgumentType.getFloat(context, "chance")
+                                                                ))
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                )
+
+                // Clear waypoints from a specific path
                 .then(Commands.literal("clearwp")
                         .then(Commands.argument("map_id", StringArgumentType.word())
                                 .suggests(MapCommand::getAvailableMapsSuggestions)
-                                .executes(MapCommand::executeClearWaypoints)
+                                .then(Commands.argument("path_id", StringArgumentType.word())
+                                        .suggests(MapCommand::getAvailablePathsSuggestions)
+                                        .executes(MapCommand::executeClearSpecificPath)
+                                )
+                        )
+                )
+
+                // List all paths for a map
+                .then(Commands.literal("paths")
+                        .then(Commands.argument("map_id", StringArgumentType.word())
+                                .suggests(MapCommand::getAvailableMapsSuggestions)
+                                .executes(MapCommand::executeListPaths)
+                        )
+                )
+
+                // Show path info
+                .then(Commands.literal("pathinfo")
+                        .then(Commands.argument("map_id", StringArgumentType.word())
+                                .suggests(MapCommand::getAvailableMapsSuggestions)
+                                .then(Commands.argument("path_id", StringArgumentType.word())
+                                        .suggests(MapCommand::getAvailablePathsSuggestions)
+                                        .executes(MapCommand::executeShowPathInfo)
+                                )
                         )
                 )
 
@@ -85,8 +157,21 @@ public class MapCommand {
     private static CompletableFuture<Suggestions> getAvailableMapsSuggestions(
             final CommandContext<CommandSourceStack> ctx,
             final SuggestionsBuilder builder) {
-        MapData.getAvailableMaps().stream()
-                .forEach(builder::suggest);
+        MapData.getAvailableMaps().forEach(builder::suggest);
+        return builder.buildFuture();
+    }
+
+    // Suggestion provider for path IDs for a specific map
+    private static CompletableFuture<Suggestions> getAvailablePathsSuggestions(
+            final CommandContext<CommandSourceStack> ctx,
+            final SuggestionsBuilder builder) {
+        try {
+            String mapId = StringArgumentType.getString(ctx, "map_id");
+            Set<String> pathIds = MapData.getPathIds(mapId);
+            pathIds.forEach(builder::suggest);
+        } catch (Exception e) {
+            // If map_id is not found, suggest nothing
+        }
         return builder.buildFuture();
     }
 
@@ -97,12 +182,12 @@ public class MapCommand {
         }
 
         List<String> mapIds = MapData.getAvailableMaps();
-        player.sendMessage(Component.text("§6Available maps (" + mapIds.size() + "):"));
-        mapIds.forEach(mapId -> player.sendMessage(Component.text("§e- " + mapId)));
+        player.sendMessage(Component.text("Available maps (" + mapIds.size() + "):", NamedTextColor.GOLD));
+        mapIds.forEach(mapId -> player.sendMessage(Component.text("- " + mapId, NamedTextColor.YELLOW)));
         return 1;
     }
 
-    // Create Map
+    // Create Map (no starting point)
     private static int executeCreateMap(final CommandContext<CommandSourceStack> ctx) {
         if (!(ctx.getSource().getExecutor() instanceof Player player)) {
             return 1;
@@ -112,14 +197,14 @@ public class MapCommand {
 
         // Validate map ID
         if (!mapId.matches("^[a-zA-Z0-9_-]+$")) {
-            player.sendMessage(Component.text("§cInvalid map ID. Use only letters, numbers, underscores, and hyphens."));
+            player.sendMessage(Component.text("Invalid map ID. Use only letters, numbers, underscores, and hyphens.", NamedTextColor.RED));
             return 1;
         }
 
         // Try to create the map
-        if (MapData.createMap(mapId, player.getLocation())) {
+        if (MapData.createMap(mapId)) {
             player.sendMessage(MiniMessage.miniMessage().deserialize(
-                    "Created map <yellow>" + mapId + "</yellow> with start at your location."
+                    "Created map <yellow>" + mapId + "</yellow>. Use '/tdmap createpath " + mapId + " <path_id>' to add paths."
             ));
         } else {
             player.sendMessage(MiniMessage.miniMessage().deserialize(
@@ -143,7 +228,7 @@ public class MapCommand {
             ));
         } else {
             player.sendMessage(MiniMessage.miniMessage().deserialize(
-                    "Map <yellow>" + mapId + "</yellow> does not exist."
+                    "Map <yellow>" + mapId + "</yellow> does not exist or is the default map."
             ));
         }
         return 1;
@@ -169,44 +254,254 @@ public class MapCommand {
         return 1;
     }
 
-    // Add Waypoint
-    private static int executeAddWaypoint(final CommandContext<CommandSourceStack> ctx) {
+    // Create a new path with starting point at player's location
+    private static int executeCreatePath(final CommandContext<CommandSourceStack> ctx) {
         if (!(ctx.getSource().getExecutor() instanceof Player player)) {
             return 1;
         }
 
         String mapId = StringArgumentType.getString(ctx, "map_id");
+        String pathId = StringArgumentType.getString(ctx, "path_id");
 
-        if (MapData.addWaypoint(mapId, player.getLocation())) {
-            int waypointCount = MapData.getWaypointCount(mapId);
+        // Validate path ID
+        if (!pathId.matches("^[a-zA-Z0-9_-]+$")) {
+            player.sendMessage(Component.text("Invalid path ID. Use only letters, numbers, underscores, and hyphens.", NamedTextColor.RED));
+            return 1;
+        }
+
+        MapData.MapDetails mapDetails = MapData.getMap(mapId);
+        if (mapDetails == null) {
             player.sendMessage(MiniMessage.miniMessage().deserialize(
-                    "Added waypoint #<yellow>" + waypointCount + "</yellow> to map <yellow>" + mapId + "</yellow> at your location."
+                    "Map <yellow>" + mapId + "</yellow> does not exist."
+            ));
+            return 1;
+        }
+
+        // Check if path already exists
+        if (mapDetails.getPathIds().contains(pathId)) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Path <green>" + pathId + "</green> already exists on map <yellow>" + mapId + "</yellow>."
+            ));
+            return 1;
+        }
+
+        // Create the path with starting point at player's location
+        if (MapData.createPath(mapId, pathId, player.getLocation())) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Created path <green>" + pathId +
+                            "</green> on map <yellow>" + mapId +
+                            "</yellow> with starting point at your location."
             ));
         } else {
             player.sendMessage(MiniMessage.miniMessage().deserialize(
-                    "Map <yellow>" + mapId + "</yellow> does not exist."
+                    "Failed to create path <green>" + pathId + "</green>."
             ));
         }
         return 1;
     }
 
-    // Clear Waypoints
-    private static int executeClearWaypoints(final CommandContext<CommandSourceStack> ctx) {
+    // Add Waypoint to specific path
+    private static int executeAddWaypointToPath(final CommandContext<CommandSourceStack> ctx) {
         if (!(ctx.getSource().getExecutor() instanceof Player player)) {
             return 1;
         }
 
         String mapId = StringArgumentType.getString(ctx, "map_id");
+        String pathId = StringArgumentType.getString(ctx, "path_id");
 
-        if (MapData.clearWaypoints(mapId)) {
+        if (MapData.addWaypoint(mapId, pathId, player.getLocation())) {
+            int waypointCount = MapData.getWaypointCount(mapId, pathId);
             player.sendMessage(MiniMessage.miniMessage().deserialize(
-                    "Cleared all waypoints from map <yellow>" + mapId + "</yellow>."
+                    "Added waypoint #<yellow>" + waypointCount +
+                            "</yellow> to path <green>" + pathId +
+                            "</green> on map <yellow>" + mapId + "</yellow>."
+            ));
+
+            // If this is the first waypoint added after the starting point, clarify
+            if (waypointCount == 2) {
+                player.sendMessage(MiniMessage.miniMessage().deserialize(
+                        "<gray>Each path's last waypoint will be used as an end point.</gray>"
+                ));
+            }
+        } else {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Map <yellow>" + mapId + "</yellow> or path <green>" + pathId + "</green> does not exist."
+            ));
+        }
+        return 1;
+    }
+
+    // Remove a path
+    private static int executeRemovePath(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
+        }
+
+        String mapId = StringArgumentType.getString(ctx, "map_id");
+        String pathId = StringArgumentType.getString(ctx, "path_id");
+
+        if (MapData.removePath(mapId, pathId)) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Removed path <green>" + pathId + "</green> from map <yellow>" + mapId + "</yellow>."
             ));
         } else {
             player.sendMessage(MiniMessage.miniMessage().deserialize(
-                    "Map <yellow>" + mapId + "</yellow> does not exist."
+                    "Path <green>" + pathId + "</green> does not exist or map <yellow>" + mapId + "</yellow> does not exist."
             ));
         }
+        return 1;
+    }
+
+    // Add a branch point
+    private static int executeAddBranch(final CommandContext<CommandSourceStack> ctx, float chance) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
+        }
+
+        String mapId = StringArgumentType.getString(ctx, "map_id");
+        String sourcePath = StringArgumentType.getString(ctx, "source_path");
+        int waypointIndex = IntegerArgumentType.getInteger(ctx, "waypoint_index");
+        String targetPath = StringArgumentType.getString(ctx, "target_path");
+
+        if (MapData.addBranchPoint(mapId, sourcePath, waypointIndex, targetPath, chance)) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Added branch from path <green>" + sourcePath +
+                            "</green> at waypoint <yellow>#" + waypointIndex +
+                            "</yellow> to path <green>" + targetPath +
+                            "</green> with <yellow>" + (int)(chance * 100) +
+                            "%</yellow> chance."
+            ));
+        } else {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Failed to add branch. Check that all paths exist and the waypoint index is valid."
+            ));
+        }
+        return 1;
+    }
+
+    // Clear specific path
+    private static int executeClearSpecificPath(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
+        }
+
+        String mapId = StringArgumentType.getString(ctx, "map_id");
+        String pathId = StringArgumentType.getString(ctx, "path_id");
+
+        if (MapData.clearPath(mapId, pathId)) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Cleared all waypoints from path <green>" + pathId +
+                            "</green> on map <yellow>" + mapId + "</yellow>."
+            ));
+        } else {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Map <yellow>" + mapId + "</yellow> or path <green>" + pathId + "</green> does not exist."
+            ));
+        }
+        return 1;
+    }
+
+    // List all paths for a map
+    private static int executeListPaths(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
+        }
+
+        String mapId = StringArgumentType.getString(ctx, "map_id");
+        Set<String> pathIds = MapData.getPathIds(mapId);
+
+        if (pathIds.isEmpty()) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Map <yellow>" + mapId + "</yellow> does not exist or has no paths."
+            ));
+            return 1;
+        }
+
+        player.sendMessage(Component.text("==== Paths for map " + mapId + " (" + pathIds.size() + ") ====", NamedTextColor.GOLD));
+        for (String pathId : pathIds) {
+            int waypointCount = MapData.getWaypointCount(mapId, pathId);
+            boolean hasBranches = MapData.hasPathBranches(mapId, pathId);
+
+            Component pathInfo = Component.text("- " + pathId, NamedTextColor.GREEN)
+                    .append(Component.text(" (" + waypointCount + " waypoints)", NamedTextColor.YELLOW));
+
+            if (hasBranches) {
+                pathInfo = pathInfo.append(Component.text(" [has branches]", NamedTextColor.AQUA));
+            }
+
+            player.sendMessage(pathInfo);
+        }
+        return 1;
+    }
+
+    // Show path info
+    private static int executeShowPathInfo(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+            return 1;
+        }
+
+        String mapId = StringArgumentType.getString(ctx, "map_id");
+        String pathId = StringArgumentType.getString(ctx, "path_id");
+
+        MapData.MapDetails map = MapData.getMap(mapId);
+        if (map == null) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Map <yellow>" + mapId + "</yellow> does not exist."
+            ));
+            return 1;
+        }
+
+        MapData.PathData pathData = map.getPathData(pathId);
+        if (pathData == null) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize(
+                    "Path <green>" + pathId + "</green> does not exist on map <yellow>" + mapId + "</yellow>."
+            ));
+            return 1;
+        }
+
+        List<Location> waypoints = pathData.getWaypoints();
+        List<MapData.BranchPoint> branches = pathData.getBranchPoints();
+
+        player.sendMessage(Component.text("==== Path: " + pathId + " on Map: " + mapId + " ====", NamedTextColor.GOLD));
+
+        // Show start point (first waypoint)
+        if (!waypoints.isEmpty()) {
+            Location start = waypoints.get(0);
+            player.sendMessage(Component.text("Start Point: ", NamedTextColor.GREEN)
+                    .append(Component.text("X: " + formatCoordinate(start.getX()) +
+                            ", Y: " + formatCoordinate(start.getY()) +
+                            ", Z: " + formatCoordinate(start.getZ()), NamedTextColor.GRAY)));
+        }
+
+        // Show waypoints (excluding start point)
+        int waypointCount = waypoints.size() - 1; // Exclude start point
+        player.sendMessage(Component.text("Waypoints: " + waypointCount, NamedTextColor.YELLOW));
+
+        for (int i = 1; i < waypoints.size(); i++) {
+            Location wp = waypoints.get(i);
+
+            // Special highlighting for the end point (last waypoint)
+            NamedTextColor indexColor = (i == waypoints.size() - 1) ? NamedTextColor.RED : NamedTextColor.YELLOW;
+            String prefix = (i == waypoints.size() - 1) ? "End: " : i + ": ";
+
+            player.sendMessage(Component.text("  " + prefix, indexColor)
+                    .append(Component.text("X: " + formatCoordinate(wp.getX()) +
+                            ", Y: " + formatCoordinate(wp.getY()) +
+                            ", Z: " + formatCoordinate(wp.getZ()), NamedTextColor.GRAY)));
+        }
+
+        if (!branches.isEmpty()) {
+            player.sendMessage(Component.text("Branch Points: " + branches.size(), NamedTextColor.AQUA));
+            for (MapData.BranchPoint branch : branches) {
+                int wpIndex = branch.getWaypointIndex();
+                String targetPath = branch.getTargetPathId();
+                float chance = branch.getBranchChance();
+
+                player.sendMessage(Component.text("  At waypoint #" + wpIndex +
+                        " → " + targetPath + " (" + (int)(chance * 100) + "% chance)", NamedTextColor.AQUA));
+            }
+        }
+
         return 1;
     }
 
@@ -226,21 +521,46 @@ public class MapCommand {
             return 1;
         }
 
-        Location start = map.getStartLocationinternal();
-        List<Location> waypoints = map.getWaypoints();
+        Set<String> pathIds = map.getPathIds();
 
-        player.sendMessage(Component.text("§6==== Map: " + mapId + " ===="));
-        player.sendMessage(Component.text("§eStart: §7X: " + formatCoordinate(start.getX()) +
-                ", Y: " + formatCoordinate(start.getY()) +
-                ", Z: " + formatCoordinate(start.getZ())));
-        player.sendMessage(Component.text("§eWaypoints: §7" + waypoints.size()));
+        player.sendMessage(Component.text("==== Map: " + mapId + " ====", NamedTextColor.GOLD));
 
-        for (int i = 0; i < waypoints.size(); i++) {
-            Location wp = waypoints.get(i);
-            player.sendMessage(Component.text("§e  " + (i + 1) + ": §7X: " + formatCoordinate(wp.getX()) +
-                    ", Y: " + formatCoordinate(wp.getY()) +
-                    ", Z: " + formatCoordinate(wp.getZ())));
+        // Show paths summary
+        player.sendMessage(Component.text("Paths: " + pathIds.size(), NamedTextColor.GREEN));
+        for (String pathId : pathIds) {
+            List<Location> waypoints = map.getWaypoints(pathId);
+            int wpCount = waypoints.size();
+            boolean hasBranches = MapData.hasPathBranches(mapId, pathId);
+
+            Component pathInfo = Component.text("  " + pathId + ": ", NamedTextColor.GREEN)
+                    .append(Component.text((wpCount > 0 ? wpCount - 1 : 0) + " waypoints", NamedTextColor.GRAY));
+
+            if (hasBranches) {
+                pathInfo = pathInfo.append(Component.text(" [has branches]", NamedTextColor.AQUA));
+            }
+
+            // Show start and end points if available
+            if (wpCount > 0) {
+                Location start = waypoints.get(0);
+                pathInfo = pathInfo.append(Component.text("\n    Start: ", NamedTextColor.YELLOW)
+                        .append(Component.text("X: " + formatCoordinate(start.getX()) +
+                                ", Y: " + formatCoordinate(start.getY()) +
+                                ", Z: " + formatCoordinate(start.getZ()), NamedTextColor.GRAY)));
+
+                if (wpCount > 1) {
+                    Location end = waypoints.get(wpCount - 1);
+                    pathInfo = pathInfo.append(Component.text("\n    End: ", NamedTextColor.RED)
+                            .append(Component.text("X: " + formatCoordinate(end.getX()) +
+                                    ", Y: " + formatCoordinate(end.getY()) +
+                                    ", Z: " + formatCoordinate(end.getZ()), NamedTextColor.GRAY)));
+                }
+            }
+
+            player.sendMessage(pathInfo);
         }
+
+        player.sendMessage(Component.text("Use '/tdmap paths " + mapId + "' for path list", NamedTextColor.GRAY));
+        player.sendMessage(Component.text("Use '/tdmap pathinfo " + mapId + " <path_id>' for detailed path info", NamedTextColor.GRAY));
         return 1;
     }
 
@@ -250,14 +570,31 @@ public class MapCommand {
             return 1;
         }
 
-        player.sendMessage(Component.text("§6==== Tower Defense Map Commands ===="));
-        player.sendMessage(Component.text("§e/tdmap list §7- List all available maps"));
-        player.sendMessage(Component.text("§e/tdmap create <map_id> §7- Create a new map using your location as start"));
-        player.sendMessage(Component.text("§e/tdmap delete <map_id> §7- Delete a map"));
-        player.sendMessage(Component.text("§e/tdmap setdefault <map_id> §7- Set default map"));
-        player.sendMessage(Component.text("§e/tdmap addwp <map_id> §7- Add waypoint to map at your location"));
-        player.sendMessage(Component.text("§e/tdmap clearwp <map_id> §7- Clear all waypoints from map"));
-        player.sendMessage(Component.text("§e/tdmap info <map_id> §7- Show map information"));
+        player.sendMessage(Component.text("==== Tower Defense Map Commands ====", NamedTextColor.GOLD));
+        player.sendMessage(Component.text("/tdmap list", NamedTextColor.YELLOW)
+                .append(Component.text(" - List all available maps", NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/tdmap create <map_id>", NamedTextColor.YELLOW)
+                .append(Component.text(" - Create a new empty map", NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/tdmap delete <map_id>", NamedTextColor.YELLOW)
+                .append(Component.text(" - Delete a map", NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/tdmap setdefault <map_id>", NamedTextColor.YELLOW)
+                .append(Component.text(" - Set default map", NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/tdmap createpath <map_id> <path_id>", NamedTextColor.YELLOW)
+                .append(Component.text(" - Create a new path with start at your location", NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/tdmap addwp <map_id> <path_id>", NamedTextColor.YELLOW)
+                .append(Component.text(" - Add waypoint to path", NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/tdmap removepath <map_id> <path_id>", NamedTextColor.YELLOW)
+                .append(Component.text(" - Remove a path", NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/tdmap addbranch <map_id> <source_path> <wp_index> <target_path> [chance]", NamedTextColor.YELLOW)
+                .append(Component.text(" - Add branch between paths", NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/tdmap clearwp <map_id> <path_id>", NamedTextColor.YELLOW)
+                .append(Component.text(" - Clear waypoints from path", NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/tdmap paths <map_id>", NamedTextColor.YELLOW)
+                .append(Component.text(" - List all paths in a map", NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/tdmap pathinfo <map_id> <path_id>", NamedTextColor.YELLOW)
+                .append(Component.text(" - Show detailed path information", NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/tdmap info <map_id>", NamedTextColor.YELLOW)
+                .append(Component.text(" - Show map information", NamedTextColor.GRAY)));
         return 1;
     }
 

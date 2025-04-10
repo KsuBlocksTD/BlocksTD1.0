@@ -204,7 +204,7 @@ public class StartGame {
         World world = player.getWorld();
 
         // Get the start location for the specified map
-        Location startLocation = MapData.getStartLocation(world, mapId);
+        Location startLocation = MapData.getPathStartLocation(world, mapId, String.valueOf(1));
 
         //player.sendMessage(party.getOnlineMembers().toString());
         int count = party.getOnlineMembers().size();
