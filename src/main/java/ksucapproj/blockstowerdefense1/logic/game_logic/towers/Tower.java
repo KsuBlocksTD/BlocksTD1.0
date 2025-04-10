@@ -1,5 +1,6 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
+import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,16 +14,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static ksucapproj.blockstowerdefense1.logic.GUI.TowerGUI.*;
 
 public abstract class Tower {
     protected final JavaPlugin plugin;  // Now an instance variable, not static
     protected static final Map<UUID, BukkitTask> towerTasks = new ConcurrentHashMap<>();
     protected static final Map<UUID, UUID> towerOwners = new ConcurrentHashMap<>();
+    private static final Map<UUID, Tower> towerEntityToTowerMap = new HashMap<>();
+
 
     protected final Location location;
     protected final Player owner;
@@ -31,6 +33,8 @@ public abstract class Tower {
 
     protected double scanRadius;
     protected double attackInterval;
+    protected double attackLevel = 0;
+    protected double rangeLevel = 0;
 
     public UUID getTowerOwner(UUID towerUUID) {
         for (Map.Entry<UUID, UUID> entry : towerOwners.entrySet()) {
@@ -49,22 +53,190 @@ public abstract class Tower {
         this.scanRadius = scanRadius;
         this.attackInterval = attackInterval;
 
+
+
         this.towerEntity = spawnTowerEntity();
+        towerEntityToTowerMap.put(towerEntity.getUniqueId(), this);
         BukkitTask task = startTowerBehavior();
         towerTasks.put(towerEntity.getUniqueId(), task);
         towerOwners.put(towerEntity.getUniqueId(), owner.getUniqueId());
     }
 
+
+    // Method to upgrade the tower's scan radius and attack interval
+    public static void upgradeTower(Villager towerEntity, double newRange, long newAttackSpeed) {
+        // Check if the towerEntity is not null
+        if (towerEntity != null && towerEntity.hasMetadata("tower")) {
+            // Retrieve the tower instance linked to this Villager
+            Tower tower = getTowerFromEntity(towerEntity);
+
+            // Upgrade the tower's attributes
+            if (tower != null) {
+                tower.setScanRadius(newRange);  // Set the new scan radius
+                tower.setAttackInterval(newAttackSpeed);  // Set the new attack interval
+
+                // Cancel the old task and start a new one with the updated interval
+                UUID towerUUID = towerEntity.getUniqueId();
+                BukkitTask oldTask = towerTasks.get(towerUUID);
+                if (oldTask != null) {
+                    oldTask.cancel();
+                }
+
+                BukkitTask newTask = tower.startTowerBehavior();
+                towerTasks.put(towerUUID, newTask);
+
+                // Don't try to send a message to the player here - do that from the GUI handler
+            }
+        }
+    }
+
+    // New getters and setters for upgrade levels
+    public double getRangeLevel() {
+        return rangeLevel;
+    }
+
+    public void setRangeLevel(double level) {
+        this.rangeLevel = level;
+    }
+
+    public double getAttackLevel() {
+        return attackLevel;
+    }
+
+    public void setAttackLevel(double level) {
+        this.attackLevel = level;
+    }
+
+    // Getters for tower attributes
+    public double getScanRadius() {
+        return scanRadius;
+    }
+
+    public void setScanRadius(double scanRadius) {
+        this.scanRadius = scanRadius;
+    }
+
+    public double getAttackInterval() {
+        return attackInterval;
+    }
+
+    public void setAttackInterval(double attackInterval) {
+        this.attackInterval = attackInterval;
+    }
+
+    // Calculate sell value based on upgrade levels
+    public int getSellValue() {
+        // Base value + additional value for each upgrade
+        //return baseSellValue + (rangeLevel - 1) * 75 + (speedLevel - 1) * 100;
+        return 500;
+    }
+
+    public void handleRangeUpgrade(Player player, Tower tower, Villager towerEntity) {
+        double currentLevel = tower.getRangeLevel();
+
+        // Check if max level reached
+        if (currentLevel >= MAX_UPGRADE_LEVEL) {
+            player.sendMessage("§cThis tower's range is already at maximum level!");
+            return;
+        }
+
+        // Check if player has enough money
+        if (!(Economy.getPlayerMoney(player) > RANGE_UPGRADE_COST)) {
+            player.sendMessage("§cYou don't have enough money for this upgrade!");
+            return;
+        }
+
+        // Calculate new range
+        double currentRange = tower.getScanRadius();
+        double newRange = currentRange + 1.0;
+
+        // Apply upgrade
+        Tower.upgradeTower(towerEntity, newRange, (long)tower.getAttackInterval());
+        tower.setRangeLevel(currentLevel + 1);
+
+        // Deduct cost
+        Economy.spendMoney(player, RANGE_UPGRADE_COST);
+
+        // Confirm upgrade
+        player.sendMessage("§aTower range upgraded successfully!");
+    }
+
+    public void handleSpeedUpgrade(Player player, Tower tower, Villager towerEntity) {
+        double currentLevel = tower.getAttackLevel();
+
+        // Check if max level reached
+        if (currentLevel >= MAX_UPGRADE_LEVEL) {
+            player.sendMessage("§cThis tower's attack speed is already at maximum level!");
+            return;
+        }
+
+        // Check if player has enough money
+        if (!(Economy.getPlayerMoney(player) > ATTACK_UPGRADE_COST)) {
+            player.sendMessage("§cYou don't have enough money for this upgrade!");
+            return;
+        }
+
+        // Calculate new attack interval (20% faster)
+        long currentInterval = (long)tower.getAttackInterval();
+        long newInterval = Math.max(1, (long)(currentInterval * 0.8));
+
+        // Apply upgrade
+        Tower.upgradeTower(towerEntity, tower.getScanRadius(), newInterval);
+        tower.setAttackLevel(currentLevel + 1);
+
+        // Deduct cost
+        Economy.spendMoney(player, ATTACK_UPGRADE_COST);
+
+        // Confirm upgrade
+        player.sendMessage("§aTower attack speed upgraded successfully!");
+    }
+
+    public void handleSellTower(Player player, Tower tower, Villager towerEntity) {
+        // Get the sell value
+        int sellValue = tower.getSellValue();
+
+        // Add money to player
+        Economy.addPlayerMoney(player, sellValue);
+
+        // Kill the tower entity
+        towerEntity.remove();
+
+        // Confirm sale
+        player.sendMessage("§aTower sold for " + sellValue + " coins!");
+    }
+
+    // Retrieve the tower using the Villager entity's UUID
+    public static Tower getTowerFromEntity(Villager towerEntity) {
+        return towerEntityToTowerMap.get(towerEntity.getUniqueId());
+    }
+
+    private static Villager.Profession getProfessionForTower(String type) {
+        return switch (type) {
+            case "Wizard Tower" -> Villager.Profession.LIBRARIAN;
+            case "Slow Tower" -> Villager.Profession.WEAPONSMITH;
+            case "Splash Tower" -> Villager.Profession.CLERIC;
+            case "Fast Tower" -> Villager.Profession.ARMORER;
+            case "Sniper Tower" -> Villager.Profession.LEATHERWORKER;
+            default -> throw new IllegalStateException("Unexpected value: " + type);
+        };
+    }
+
+
+
     protected Villager spawnTowerEntity() {
         Location towerLocation = location.clone().toCenterLocation().add(0, -.5, 0);
         Villager tower = (Villager) towerLocation.getWorld().spawnEntity(towerLocation, EntityType.VILLAGER);
+        tower.setProfession(getProfessionForTower(getTowerName()));
         tower.setAI(false);
         tower.setInvulnerable(true);
         tower.setSilent(true);
-        tower.setCustomName(getTowerName());
+        tower.customName(Component.text(getTowerName()));
         tower.setCustomNameVisible(true);
+
+
+
         //this is the code for setting ownership for a tower:
-      //  towerEntity.setMetadata("owner", new FixedMetadataValue(plugin, owner.getUniqueId().toString()));
+        //towerEntity.setMetadata("owner", new FixedMetadataValue(plugin, owner.getUniqueId().toString()));
 
         tower.setMetadata("tower", new FixedMetadataValue(plugin, "true"));
         tower.setMetadata("owner", new FixedMetadataValue(plugin, owner.getUniqueId().toString()));
@@ -72,6 +244,9 @@ public abstract class Tower {
 
         return tower;
     }
+
+
+
 
     protected BukkitTask startTowerBehavior() {
         return new BukkitRunnable() {
@@ -88,7 +263,7 @@ public abstract class Tower {
         }.runTaskTimer(plugin, 0L,(long) attackInterval);
     }
 
-    protected abstract String getTowerName();
+    public abstract String getTowerName();
     protected abstract void attack();
 
     protected void faceTarget(Entity target) {
@@ -185,21 +360,4 @@ public abstract class Tower {
         towerOwners.clear();
     }
 
-    public double getScanRadius() {
-        return scanRadius;
-    }
-    public void setScanRadius(double scanRadius) {
-        this.scanRadius = scanRadius;
-    }
-
-    public double getAttackInterval() {
-        return attackInterval;
-    }
-    public void setAttackInterval(double attackInterval) {
-        this.attackInterval = attackInterval;
-    }
-
-    public Boolean getUpgradeTierOne(boolean left){
-        return null;
-    }
 }

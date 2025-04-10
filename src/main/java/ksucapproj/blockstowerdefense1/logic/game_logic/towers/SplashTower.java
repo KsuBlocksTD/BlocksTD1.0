@@ -22,12 +22,15 @@ public class SplashTower extends Tower {
     }
 
     @Override
-    protected String getTowerName() {
+    public String getTowerName() {
         return "Splash Tower";
     }
 
     @Override
     protected void attack() {
+        // make it throw a potion eventually  this crap is obnoxious
+//        Sound sound = Sound.sound(Key.key("entity.splash_potion.throw"), Sound.Source.NEUTRAL, 1, 1);
+//        playSound(sound, towerEntity.getLocation(),  1f, 1f);
         PriorityQueue<Entity> targetQueue = new PriorityQueue<>(
                 Comparator.comparingDouble(e -> e.getLocation().distance(towerEntity.getLocation()))
         );
@@ -36,8 +39,8 @@ public class SplashTower extends Tower {
         for (Entity entity : nearbyEntities) {
             if (entity instanceof Mob & entity.getType() != EntityType.VILLAGER) {
                 if (entity.hasMetadata("gameSession") && towerEntity.hasMetadata("owner")) {
-                    String zombieOwner = entity.getMetadata("gameSession").get(0).asString();
-                    String towerOwner = towerEntity.getMetadata("owner").get(0).asString();
+                    String zombieOwner = entity.getMetadata("gameSession").getFirst().asString();
+                    String towerOwner = towerEntity.getMetadata("owner").getFirst().asString();
                     if (zombieOwner.equals(towerOwner)) {
                         targetQueue.add(entity);
                     }
@@ -56,7 +59,7 @@ public class SplashTower extends Tower {
                     primaryZombie.damage(0.0);
                 } else {primaryZombie.damage(config.getSplashTowerDamage());}
 
-                primaryZombie.getWorld().spawnParticle(Particle.EXPLOSION, primaryZombie.getLocation(), 10);
+                primaryZombie.getWorld().spawnParticle(Particle.EXPLOSION, primaryZombie.getLocation(), 8);
                 primaryZombie.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
 
                 // Damage nearby zombies within 2 blocks
@@ -68,12 +71,7 @@ public class SplashTower extends Tower {
                             nearbyZombie.damage(0.0);
                         } else {nearbyZombie.damage(config.getSplashTowerAOEDamage());}
                         nearbyZombie.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
-                        // Slight slow for each zombie
-                        nearbyZombie.addPotionEffect(new PotionEffect(
-                                PotionEffectType.SLOWNESS,
-                                10,  // Duration
-                                1     // Amplifier
-                        ));
+
                     }
                 }
             }

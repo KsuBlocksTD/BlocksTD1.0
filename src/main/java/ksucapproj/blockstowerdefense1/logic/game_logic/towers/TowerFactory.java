@@ -65,7 +65,7 @@ public class TowerFactory {
             boolean towerNearby = nearbyTower(placementLocation, .5);
 
 
-            // Use default location if placement location is null
+             //make sure you cant stack towers
             if (towerNearby) {
                 player.sendRichMessage("<red>Invalid Tower location");
                 return;
@@ -87,7 +87,7 @@ public class TowerFactory {
 
 
             } catch (Exception e) {
-                player.sendRichMessage("<red>Invalid Tower location");
+                player.sendRichMessage("<red>Invalid Tower location exception");
                 //e.printStackTrace();
             }
 

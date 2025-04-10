@@ -1,5 +1,6 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.*;
@@ -20,7 +21,7 @@ public class BasicTower extends Tower {
     }
 
     @Override
-    protected String getTowerName() {
+    public String getTowerName() {
         return "Wizard Tower";
     }
 
@@ -50,6 +51,8 @@ public class BasicTower extends Tower {
             faceTarget(target);
             if (target instanceof Mob zombie) {
                 towerEntity.getWorld().strikeLightningEffect(zombie.getLocation());
+                // debug
+                Bukkit.getLogger().info(String.valueOf(scanRadius));
                 if(zombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
                     zombie.damage(0.0);
                 } else {zombie.damage(config.getBasicTowerDamage());}
@@ -58,20 +61,5 @@ public class BasicTower extends Tower {
             }
         }
     }
-    @Override
-    public Boolean getUpgradeTierOne(boolean left){
-        if (Boolean.TRUE.equals(left)){
-            // increase range upon upgrade by 50%
-            scanRadius = scanRadius * 1.5;
-            owner.sendRichMessage("<gold>Tower range increased by 50%!");
-            return true;
-        }
-        else if (Boolean.FALSE.equals(left)){
-            // increase attack speed by 25%
-            attackInterval = attackInterval * 0.75;
-            owner.sendRichMessage("<gold>Tower range increased by 50%!");
-            return false;
-        }
-        return null;
+
     }
-}

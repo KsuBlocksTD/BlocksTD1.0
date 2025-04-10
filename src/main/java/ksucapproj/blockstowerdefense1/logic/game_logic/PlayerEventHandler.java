@@ -12,7 +12,9 @@ import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
+import ksucapproj.blockstowerdefense1.logic.GUI.TowerGUI;
 import ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI;
+import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerEggPurchase;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerFactory;
 import net.kyori.adventure.text.Component;
@@ -21,24 +23,29 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import static ksucapproj.blockstowerdefense1.logic.GUI.TowerGUI.openGUIs;
+import static ksucapproj.blockstowerdefense1.logic.game_logic.StartGame.isPlayerHealingDisabled;
+
 
 public class PlayerEventHandler implements Listener {
     private final JavaPlugin plugin;
@@ -59,6 +66,7 @@ public class PlayerEventHandler implements Listener {
         // activates the player join event for economy
         Player player = event.getPlayer();
 
+        player.setHealth(20);
         player.setSaturation(999999999);
         player.setGameMode(GameMode.ADVENTURE);
         player.setInvulnerable(true);
@@ -108,7 +116,7 @@ public class PlayerEventHandler implements Listener {
 
 
 
-    // This event checks what the player clicked in the GUI
+    // This event checks what the player clicked in the upgradeGUI
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
@@ -171,7 +179,104 @@ public class PlayerEventHandler implements Listener {
             boolean tf = TowerEggPurchase.processPurchase(player, clickedItem);
            // if (tf) {player.sendMessage("Purchased " + clickedItem.displayName());} else {player.sendMessage("Purchased failed for " + clickedItem.displayName());}
         }
-        openChestGUI.openInventories.remove(player); player.closeInventory();
+        openChestGUI.openInventories.remove(player);
+        player.closeInventory();
+    }
+
+
+    TowerGUI towerGUI = new TowerGUI();
+
+    @EventHandler
+    public void onInventoryClick2(InventoryClickEvent event) {
+        // Check if it's one of our GUIs
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (!event.getView().title().equals(Component.text("Tower Control"))) return;
+
+        // Cancel the event to prevent taking items
+        event.setCancelled(true);
+
+        // Get the tower entity associated with this GUI
+        Villager towerEntity = openGUIs.get(player.getUniqueId());
+        if (towerEntity == null) return;
+
+        // Get the tower from the entity
+        Tower tower = Tower.getTowerFromEntity(towerEntity);
+        if (tower == null) return;
+
+        // Handle clicked slot
+        int slot = event.getRawSlot();
+
+        if (slot == 11) { // Range upgrade
+            tower.handleRangeUpgrade(player, tower, towerEntity);
+        } else if (slot == 15) { // Speed upgrade
+            tower.handleSpeedUpgrade(player, tower, towerEntity);
+        } else if (slot == 22) { // Sell tower
+            tower.handleSellTower(player, tower, towerEntity);
+            player.closeInventory();
+            return;
+        }
+
+        // Refresh the GUI
+        towerGUI.openTowerGUI(player, tower, towerEntity);
+        player.closeInventory();
+    }
+
+    @EventHandler
+    public void onInventoryClose2(org.bukkit.event.inventory.InventoryCloseEvent event) {
+        if (event.getPlayer() instanceof Player) {
+            openGUIs.remove(event.getPlayer().getUniqueId());
+        }
+    }
+
+    @EventHandler
+    public void onTowerInteract(PlayerInteractEntityEvent event) {
+        // Check if the entity is a tower (villager with tower metadata)
+        if (!(event.getRightClicked() instanceof Villager villager)) {
+            return;
+        }
+
+        if (!villager.hasMetadata("tower")) {
+            return;
+        }
+
+        // Check if player owns the tower or is an admin
+        Player player = event.getPlayer();
+        if (!isOwnerOrAdmin(player, villager)) {
+            player.sendMessage("§cYou don't own this tower!");
+            return;
+        }
+
+        // Get the tower instance
+        Tower tower = Tower.getTowerFromEntity(villager);
+        if (tower == null) {
+            player.sendMessage("§cError: Tower data not found!");
+            return;
+        }
+
+        // Open the tower GUI
+        event.setCancelled(true);
+        towerGUI.openTowerGUI(player, tower, villager);
+    }
+
+    private boolean isOwnerOrAdmin(Player player, Villager villager) {
+        // Check if player is an admin (has permission)
+        if (player.hasPermission("blockstowerdefense.admin")) {
+            return true;
+        }
+
+        // Check if player is the owner
+        List<MetadataValue> metadata = villager.getMetadata("owner");
+        if (metadata.isEmpty()) {
+            return false;
+        }
+
+        String ownerUUIDString = metadata.getFirst().asString();
+        try {
+            UUID ownerUUID = UUID.fromString(ownerUUIDString);
+            return player.getUniqueId().equals(ownerUUID);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     /// can maybe be removed?
@@ -278,6 +383,25 @@ public class PlayerEventHandler implements Listener {
 
                     );
                 }
+            }
+        }
+    }
+
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onEntityRegainHealth(EntityRegainHealthEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        if (isPlayerHealingDisabled(player)) {
+            // Cancel normal regeneration sources
+            EntityRegainHealthEvent.RegainReason reason = event.getRegainReason();
+
+            // We can allow certain types of healing if needed by not cancelling specific reasons
+            // For example, to allow commands to heal players:
+            if (reason != EntityRegainHealthEvent.RegainReason.CUSTOM) {
+                event.setCancelled(true);
             }
         }
     }

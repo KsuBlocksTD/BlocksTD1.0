@@ -22,7 +22,7 @@ public class SlowTower extends Tower {
     }
 
     @Override
-    protected String getTowerName() {
+    public String getTowerName() {
         return "Slow Tower";
     }
 
@@ -64,14 +64,14 @@ public class SlowTower extends Tower {
                         2     //
                 ));
 
-                // Visual effect of slowing
-                zombie.getWorld().spawnParticle(
-                        Particle.DRIPPING_HONEY,
-                        zombie.getLocation(),
-                        40,
-                        0, 0, 0,
-                        0.1
-                );
+//                // Visual effect of slowing
+//                zombie.getWorld().spawnParticle(
+//                        Particle.DRIPPING_HONEY,
+//                        zombie.getLocation(),
+//                        40,
+//                        0, 0, 0,
+//                        0.1
+//                );
             }
         }
     }

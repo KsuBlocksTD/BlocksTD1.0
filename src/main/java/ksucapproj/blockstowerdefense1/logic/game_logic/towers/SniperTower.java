@@ -21,7 +21,7 @@ public class SniperTower extends Tower {
     }
 
     @Override
-    protected String getTowerName() {
+    public String getTowerName() {
         return "Sniper Tower";
     }
 

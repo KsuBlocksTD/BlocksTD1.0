@@ -9,7 +9,6 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -21,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class UpgradeGUI implements Listener {
+public class UpgradeGUI {
 
 
     public Map<Player, Inventory> openInventories = new HashMap<>();

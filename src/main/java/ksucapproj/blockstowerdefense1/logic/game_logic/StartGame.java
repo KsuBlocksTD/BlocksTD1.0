@@ -29,6 +29,8 @@ public class StartGame {
 
     private final JavaPlugin plugin;
     private final Map<UUID, GameSession> playerSessions = new ConcurrentHashMap<>();
+    private static final Map<String, Boolean> healingDisabledMaps = new HashMap<>();
+
 
     public boolean isInplayerSessions(UUID uuid) {
         return playerSessions.containsKey(uuid);
@@ -39,9 +41,38 @@ public class StartGame {
     public void resetPlayerGame(Player player, String mapId) {
     }
 
+    public void setHealingDisabled(String mapId, boolean disabled) {
+        healingDisabledMaps.put(mapId, disabled);
+    }
+
+    public void setPlayerHealingDisabled(Player player, boolean disabled) {
+        player.setMetadata("healing_disabled", new FixedMetadataValue(plugin, disabled));
+    }
+
+    public static boolean isHealingDisabled(String mapId) {
+        return healingDisabledMaps.getOrDefault(mapId, true);
+    }
+
+    public static boolean isPlayerHealingDisabled(Player player) {
+        // First check player-specific setting
+        if (player.hasMetadata("healing_disabled")) {
+            return player.getMetadata("healing_disabled").get(0).asBoolean();
+        }
+
+        // Fall back to map setting if player has a map metadata
+        if (player.hasMetadata("mapId")) {
+            String mapId = player.getMetadata("mapId").get(0).asString();
+            return isHealingDisabled(mapId);
+        }
+
+        // Default to the global setting
+        return healingDisabledMaps.getOrDefault("default", true);
+    }
+
     // Game session class to track per-player game state
     private static class GameSession {
         int currentRound = 1;
+        int zombiesPassed = 0;
         float multiplier = 1.25F;
         int zombiesPerRound = 5;
         boolean isReady = false;
@@ -53,12 +84,22 @@ public class StartGame {
         Set<UUID> activeZombies = new HashSet<>();// Track zombie UUIDs that belong to this session
 
         GameSession(String mapId) {
-            this.currentMapId = mapId;
+            this.currentMapId = mapId; healingDisabledMaps.put("default", true);
         }
     }
 
     // various getters and setters
 
+
+    public int getZombiesPassed(UUID playerUUID) {
+        GameSession session = playerSessions.get(playerUUID);
+        return session.zombiesPassed;
+    }
+
+    public void setOneZombiesPassed(UUID playerUUID) {
+        GameSession session = playerSessions.get(playerUUID);
+        session.zombiesPassed++;
+    }
 
     public void setCurrentRound(UUID playerUUID, int newRound) {
         GameSession session = playerSessions.get(playerUUID);
@@ -137,6 +178,7 @@ public class StartGame {
     // main method call for starting a game
     private void handleStartGameCommand(Player player, String mapId) {
         new Economy();
+        player.setHealth(20);
 
         PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 

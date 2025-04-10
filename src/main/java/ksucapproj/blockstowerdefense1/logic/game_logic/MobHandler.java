@@ -230,6 +230,7 @@ public class MobHandler {
         zombie.setAdult();
         zombie.setAI(false);
         zombie.setCustomNameVisible(true);
+        zombie.eject();
 
 
 
@@ -283,6 +284,19 @@ public class MobHandler {
                 double stepDistance = baseStepDistance * (zombie.hasPotionEffect(PotionEffectType.SLOWNESS) ? slownessMultiplier : 1.0);
                 stepDistance = stepDistance * (zombie.hasPotionEffect(PotionEffectType.SPEED) ? speedMultiplier : 1.0);
 
+                if(zombie.hasPotionEffect(PotionEffectType.SLOWNESS) && tickcounter % 12 == 0) {
+                    // Visual effect of slowing
+                    zombie.getWorld().playSound(zombie.getLocation(), Sound.BLOCK_HONEY_BLOCK_STEP, 1f, 1f);
+                    zombie.getWorld().spawnParticle(
+                            Particle.FALLING_HONEY,
+                            zombie.getLocation().add(0,1,0),
+                            5,
+                            0.2, .8, 0.2,
+                            0
+                    );
+
+                }
+
                 // Path completion check
                 if (waypointIndex >= waypoints.size()) {
                     cancel();
@@ -320,14 +334,24 @@ public class MobHandler {
                             UUID playerUUID = UUID.fromString(playerUuidString);
                             Player player = Bukkit.getPlayer(playerUUID);
 
-                            if (player != null && player.isOnline()) {
+                            if (player != null && player.isOnline() && gameManager.getZombiesPassed(playerUUID) > 9) {
                                 handleGameEnd(zombie, player, mapId);
                                 gameManager.cleanupPlayer(playerUUID);
+                                zombieMovementTasks.remove(zombie.getUniqueId());
+                                zombie.remove();
+                                cancel();
+                            }
+                            else {
+                                player.setInvulnerable(false);
+                                player.damage(2);
+                                player.setInvulnerable(true);
+                                gameManager.setOneZombiesPassed(playerUUID);
+                                zombie.setKiller(null);
+                                zombie.damage(9999);
+                                player.sendRichMessage("<red>A zombie has gotten past your defenses!");
                             }
                         }
-                        zombieMovementTasks.remove(zombie.getUniqueId());
-                        zombie.remove();
-                        cancel();
+
                     }
                 }tickcounter++;
             }
@@ -461,9 +485,8 @@ public class MobHandler {
         }
     }
 
-    /**
-     * Clean up all resources when the plugin is disabled
-     */
+
+      // Clean up all resources when the plugin is disabled
     public static void cleanupAll() {
         // Cancel all zombie tasks
         for (BukkitTask task : zombieMovementTasks.values()) {

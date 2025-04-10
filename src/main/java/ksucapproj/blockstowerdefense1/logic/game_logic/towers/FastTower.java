@@ -20,7 +20,7 @@ public class FastTower extends Tower {
     }
 
     @Override
-    protected String getTowerName() {
+    public String getTowerName() {
         return "Fast Tower";
     }
 
