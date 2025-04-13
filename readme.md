@@ -6,13 +6,11 @@ Welcome to our team's Senior Capstone Project! This is the location of all relat
 
 This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-like gamemode.
 
-
-
 ## Meet Our Team
 
 **01-T2-Minecraft Game Mode**
 **CS 4850 - Section 03/04/05 - Spring 2025**
-(Image Link to Pictures)
+![The Team](ReadMeFiles/The Team.png)
 
 ### Programming/Development
 * __[Matthew Elledge](https://github.com/mthyuu)__
@@ -24,32 +22,29 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * __[AnnaGrace Gwee]()__
 
 ## Final Report
-* WIP
+![WIP]()
 
 ## Artifacts
-**[Project Selection]**
+[Project Selection - 2025 January 15th](ReadMeFiles/%5B2025-01-15%5D%2001-T2-Minecraft-Selection.pdf)
 
-**[Project Plan]**(ReadMeFiles/%5B2025-01-26%5D%2001-T2-Minecraft-ProjectPlan.pdf)
+[Project Plan - 2025 January 26th](ReadMeFiles/%5B2025-01-26%5D%2001-T2-Minecraft-ProjectPlan.pdf)
+
+[Design (SDD) - 2025 February 2nd]()
+
+[Requirements (SRS) - 2025 February 2nd]()
+
+[Development - 2025 March 9th]()
+
+[Presentation - 2025 March 27th]()
+
+[STP - 2025 March 30th]()
 
 ## Development Timeline
 * __[Timeline](https://kennesawedu-my.sharepoint.com/:x:/g/personal/bnguye61_students_kennesaw_edu/ERojmLOqwMdJk5EmDxPFZrsBXvqYyGzkUVO7eZbrecg--w?e=7eKOne)__
 
-  * __[Milestone 1]()__ - 10 February 2025
-  * __[Milestone 2]()__ - 17 March 2025
-  * __[Milestone 3]()__ - 13 April 2025
-
-## Requirements 
-* __[Requirements Introduction](https://kennesawedu-my.sharepoint.com/:w:/g/personal/bnguye61_students_kennesaw_edu/ESRKsDVl-k9Ln7mFK63PyE8Bqanx54lYlbpumb_134vkFg?e=grHinA)__
-
-## Project Design
-* __[Project Design Document]()__
-
-## Project Development
-* __[Project Development Document]()__
-
-## Implementation - Final Project
-* __[Final Implementation]()__
-* __[Setup]()__
+[Milestone 1 - 2025 February 10th]()
+[Milestone 2 - 2025 March 17th]()
+[Milestone 3 - 2025 April 13th]()
 
 ## Resources
 ### Dependencies
