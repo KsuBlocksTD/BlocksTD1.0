@@ -2,11 +2,18 @@
 
 # Introduction to Senior Capstone - KSU Blocks Tower Defense 
 
-Welcome to our team's Senior Capstone Project! This is the location of all related documentation and artifacts
+Welcome to our team's Senior Capstone Project! This is the location of all related documentation and artifacts.
 
-This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-like gamemode 
+This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-like gamemode.
+
+
 
 ## Meet Our Team
+
+**01-T2-Minecraft Game Mode**
+**CS 4850 - Section 03/04/05 - Spring 2025**
+(Image Link to Pictures)
+
 ### Programming/Development
 * __[Matthew Elledge](https://github.com/mthyuu)__
 * __[Logan Slicker](https://github.com/SlickerLogan)__ 
@@ -16,8 +23,13 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * __[Ashley Ahn](https://github.com/ashjuno)__
 * __[AnnaGrace Gwee]()__
 
-## Project Plan
-* __[Project Plan](https://kennesawedu-my.sharepoint.com/:w:/g/personal/bnguye61_students_kennesaw_edu/EdD1jPkrcI5EuALFmhuU-FUBRrm9n1PeI7iYbwIOJR6mOQ?e=VReZp3)__
+## Final Report
+* WIP
+
+## Artifacts
+**[Project Selection]**
+
+**[Project Plan]**(ReadMeFiles/[2025-01-26] 01-T2-Minecraft-ProjectPlan.pdf)
 
 ## Development Timeline
 * __[Timeline](https://kennesawedu-my.sharepoint.com/:x:/g/personal/bnguye61_students_kennesaw_edu/ERojmLOqwMdJk5EmDxPFZrsBXvqYyGzkUVO7eZbrecg--w?e=7eKOne)__
