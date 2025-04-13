@@ -22,7 +22,7 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * __[AnnaGrace Gwee]()__
 
 ## Final Report
-![WIP]()
+![Work In Progress: Tune Back Later]()
 
 ## Artifacts
 [Project Selection - 2025 January 15th](ReadMeFiles/%5B2025-01-15%5D%2001-T2-Minecraft-Selection.pdf)
@@ -40,7 +40,7 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 [STP - 2025 March 30th]()
 
 ## Development Timeline
-* __[Timeline](https://kennesawedu-my.sharepoint.com/:x:/g/personal/bnguye61_students_kennesaw_edu/ERojmLOqwMdJk5EmDxPFZrsBXvqYyGzkUVO7eZbrecg--w?e=7eKOne)__
+![Gantt Chart]()
 
 [Milestone 1 - 2025 February 10th]()
 
