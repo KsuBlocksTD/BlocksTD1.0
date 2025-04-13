@@ -19,10 +19,10 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * __[Bryan Nguyen](https://github.com/BunnyCatCat)__
 ### Design
 * __[Ashley Ahn](https://github.com/ashjuno)__
-* __[AnnaGrace Gwee]()__
+* __[AnnaGrace Gwee](https://github.com/annagracehowell)__
 
 ## Final Report
-![Work In Progress: Tune Back Later]()
+![(WIP) Final Report - 2025 April 27th]()
 
 ## Artifacts
 [Project Selection - 2025 January 15th](ReadMeFiles/01-T2-Minecraft-Selection.pdf)
@@ -46,7 +46,7 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 
 [Milestone 2 - 2025 March 17th](ReadMeFiles/01-T2-Minecraft-Tower-Defense-Milestone-2.pdf)
 
-[Milestone 3 - 2025 April 13th]()
+[(WIP)_Milestone 3 - 2025 April 13th]()
 
 ## Resources
 ### Dependencies
