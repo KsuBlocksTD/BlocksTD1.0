@@ -29,7 +29,7 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 ## Artifacts
 **[Project Selection]**
 
-**[Project Plan]**(ReadMeFiles/[2025-01-26] 01-T2-Minecraft-ProjectPlan.pdf)
+**[Project Plan]**(ReadMeFiles/%5B2025-01-26%5D%2001-T2-Minecraft-ProjectPlan.pdf)
 
 ## Development Timeline
 * __[Timeline](https://kennesawedu-my.sharepoint.com/:x:/g/personal/bnguye61_students_kennesaw_edu/ERojmLOqwMdJk5EmDxPFZrsBXvqYyGzkUVO7eZbrecg--w?e=7eKOne)__
