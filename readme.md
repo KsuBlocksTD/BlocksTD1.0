@@ -44,6 +44,8 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 ## Development Timeline
 * [Gantt Chart - 2025 April 13th](ReadMeFiles/01-T2-Minecraft-GanttChart-Estimate.pdf)
 
+* [Game Design Document - 2025 February 10th](ReadMeFiles/01-T2-MTD_Game_Design_Document.pdf)
+
 * [Milestone 1 - 2025 February 10th](ReadMeFiles/01-T2-Minecraft-Game-Mode-Milestone-1.pdf)
 
 * [Milestone 2 - 2025 March 17th](ReadMeFiles/01-T2-Minecraft-Tower-Defense-Milestone-2.pdf)
