@@ -43,7 +43,9 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * __[Timeline](https://kennesawedu-my.sharepoint.com/:x:/g/personal/bnguye61_students_kennesaw_edu/ERojmLOqwMdJk5EmDxPFZrsBXvqYyGzkUVO7eZbrecg--w?e=7eKOne)__
 
 [Milestone 1 - 2025 February 10th]()
+
 [Milestone 2 - 2025 March 17th]()
+
 [Milestone 3 - 2025 April 13th]()
 
 ## Resources
