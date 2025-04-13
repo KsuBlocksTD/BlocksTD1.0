@@ -21,6 +21,10 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 ### Design
 * __[Ashley Ahn](https://github.com/ashjuno)__
 * __[AnnaGrace Gwee](https://github.com/annagracehowell)__
+### Advisor & Professor
+* Sharon Perry
+### Sponsor
+* Norman Reid (KSU Minecraft Server)
 
 ## Final Report
 * ![(WIP) Final Report - 2025 April 27th]()
