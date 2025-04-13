@@ -10,7 +10,7 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 
 **01-T2-Minecraft Game Mode**
 **CS 4850 - Section 03/04/05 - Spring 2025**
-![The Team](ReadMeFiles/The Team.png)
+![The Team](ReadMeFiles/TheTeam.png)
 
 ### Programming/Development
 * __[Matthew Elledge](https://github.com/mthyuu)__
@@ -25,26 +25,26 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 ![Work In Progress: Tune Back Later]()
 
 ## Artifacts
-[Project Selection - 2025 January 15th](ReadMeFiles/%5B2025-01-15%5D%2001-T2-Minecraft-Selection.pdf)
+[Project Selection - 2025 January 15th](ReadMeFiles/01-T2-Minecraft-Selection.pdf)
 
-[Project Plan - 2025 January 26th](ReadMeFiles/%5B2025-01-26%5D%2001-T2-Minecraft-ProjectPlan.pdf)
+[Project Plan & Gantt Chart - 2025 January 26th](ReadMeFiles/01-T2-Minecraft-ProjectPlan.pdf)
 
-[Design (SDD) - 2025 February 2nd]()
+[Design (SDD) - 2025 February 2nd](ReadMeFiles/01-T2-Minecraft-Design.pdf)
 
-[Requirements (SRS) - 2025 February 2nd]()
+[Requirements (SRS) - 2025 February 2nd](ReadMeFiles/01-T2-Minecraft-Requirements.pdf)
 
-[Development - 2025 March 9th]()
+[Development - 2025 March 9th](ReadMeFiles/01-T2-Minecraft-Development.pdf)
 
-[Presentation - 2025 March 27th]()
+[Presentation - 2025 March 27th](ReadMeFiles/01-T2-Minecraft-Game-Mode-Presentation_No_Video.pdf)
 
-[STP - 2025 March 30th]()
+[STP - 2025 March 30th](ReadMeFiles/01-T2-Minecraft-STP.pdf)
 
 ## Development Timeline
-![Gantt Chart]()
+![Gantt Chart - 2025 April 13th](ReadMeFiles/01-T2-Minecraft-GanttChart-Estimate.pdf)
 
-[Milestone 1 - 2025 February 10th]()
+[Milestone 1 - 2025 February 10th](ReadMeFiles/01-T2-Minecraft-Game-Mode-Milestone-1.pdf)
 
-[Milestone 2 - 2025 March 17th]()
+[Milestone 2 - 2025 March 17th](ReadMeFiles/01-T2-Minecraft-Tower-Defense-Milestone-2.pdf)
 
 [Milestone 3 - 2025 April 13th]()
 
