@@ -56,6 +56,14 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 
 * [(WIP)_Milestone 3 - 2025 April 13th]()
 
+## C-Day Files
+* [Poster-UC-027.pdf](ReadMeFiles/Poster-UC-027.pdf)
+  * [Poster-UC-027.pptx](ReadMeFiles/Poster-UC-027.pptx)
+
+* [Video-UC-027.mp4](ReadMeFiles/Video-UC-027.mp4)
+
+* [Flash-UC-027.mp4](ReadMeFiles/Flash-UC-027.mp4)
+
 ## Resources
 ### Dependencies
 * __[PartiesAPI Plugin](https://alessiodp.com/parties)__
