@@ -54,7 +54,7 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 
 * [Milestone 2 - 2025 March 17th](ReadMeFiles/01-T2-Minecraft-Tower-Defense-Milestone-2.pdf)
 
-* [(WIP)_Milestone 3 - 2025 April 13th]()
+* [Milestone 3 - 2025 April 13th](ReadMeFiles/01-T2-Minecraft-Tower-Defense-Milestone-3.pdf)
 
 ## C-Day Files
 * [Poster-UC-027.pdf](ReadMeFiles/Poster-UC-027.pdf)
