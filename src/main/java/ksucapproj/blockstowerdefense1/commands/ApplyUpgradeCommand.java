@@ -9,6 +9,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
@@ -26,7 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ApplyUpgradeCommand {
 
-    // this is used to create all of the upgrade suggestions for the command
+    // this is used to create all upgrade suggestions for the '/apply-upgrade' command
     private static final List<String> upgradeTypes = List.of("SWIFTNESS", "STRENGTH", "MATERIAL", "SLOWNESS", "SWEEPING-EDGE");
 
     @NullMarked
@@ -36,7 +37,7 @@ public class ApplyUpgradeCommand {
 
                 .then(Commands.argument("upgrade-type", StringArgumentType.word())
                         .suggests(ApplyUpgradeCommand::getUpgradeTypeSuggestions)
-                        .then(Commands.argument("tier", IntegerArgumentType.integer(0,5))
+                        .then(Commands.argument("tier", IntegerArgumentType.integer(0, BlocksTowerDefense1.getInstance().getBTDConfig().getPlayerUniversalMaxLevel()))
                                 .executes(ApplyUpgradeCommand::executeUpgradeCommandLogic)
                         )
                 )
@@ -80,7 +81,7 @@ public class ApplyUpgradeCommand {
         // gets the player's upgrade object from PlayerUpgrades
         PlayerUpgrades playerUpgrades = PlayerUpgrades.getPlayerUpgradesMap().get(player);
 
-
+        // switch that takes in the upgrade type the user specifies, and applies it to the value specified
         switch (upgradeType) {
             case "SWIFTNESS" -> playerUpgrades.setSwiftnessLevel(tier);
             case "STRENGTH" -> playerUpgrades.setStrengthLevel(tier);

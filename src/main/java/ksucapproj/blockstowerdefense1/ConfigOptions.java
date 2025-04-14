@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 public class ConfigOptions {
     private FileConfiguration config;  // Remove `final` so we can update it after loading
 
@@ -22,6 +24,13 @@ public class ConfigOptions {
 
      */
 
+
+    public int getPlayerUniversalMaxLevel() {
+        return config.getInt("btd.attributes.upgrades.player.universal.max-level"); // Default value is 5 if not set
+    }
+    public int getPlayerUniversalCostMult() {
+        return config.getInt("btd.attributes.upgrades.player.universal.cost-multiplier"); // Default value is 1 if not set
+    }
 
     // Getter for Speed level max upgrade
     public int getSpeedMaxLevel() {
@@ -79,7 +88,7 @@ public class ConfigOptions {
 
     // Getter for the message of the day for the server
     public String getMOTDOnPlayerJoin(){
-        if (config.getBoolean("btd.settings.motd.enable", false)){
+        if (config.getBoolean("btd.settings.motd.enable")){
             return config.getString("btd.settings.motd.message");
         }
         return null;
@@ -87,7 +96,7 @@ public class ConfigOptions {
 
     // Getter for the greeting of a player on join-in
     public String getGreetOnPlayerJoin(){
-        if (config.getBoolean("btd.settings.greet-player.enable", true)){
+        if (config.getBoolean("btd.settings.greet-player.enable")){
             return config.getString("btd.settings.greet-player.message");
         }
         return null;

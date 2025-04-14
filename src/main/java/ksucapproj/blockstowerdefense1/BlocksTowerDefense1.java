@@ -46,10 +46,9 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         api = Parties.getApi(); // For static api getter
 
 
-        instance.saveDefaultConfig();  // Ensures the config is saved if it doesn't exist
+        saveResource("config.yml", /* replace */ false);
         instance.reloadConfig();       // Ensures the latest config is loaded
 
-        saveResource("config.yml", /* replace */ false);
         config = new ConfigOptions(this); // initializes config object
 
         // confirmation msgs if config is initialized as null ICE
@@ -66,7 +65,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         // Use the same gameManager instance for PlayerEventHandler
         new MobHandler(gameManager, this);
         new PlayerEventHandler(this, gameManager);
-        TestCommand testCommand = new TestCommand(gameManager, this);
+        GameCommand gameCommand = new GameCommand(gameManager, this);
 
         MapData.loadMaps(this);
 
@@ -108,10 +107,10 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             commands.registrar().register(ApplyUpgradeCommand.register());
             commands.registrar().register(MapCommand.mapCommand());
             // register gamemanager commands
-            commands.registrar().register(testCommand.setRoundCommand());
-            commands.registrar().register(testCommand.startGameCommand());
-            commands.registrar().register(testCommand.readyUpCommand());
-            commands.registrar().register(testCommand.quitGameCommand());
+            commands.registrar().register(gameCommand.setRoundCommand());
+            commands.registrar().register(gameCommand.startGameCommand());
+            commands.registrar().register(gameCommand.readyUpCommand());
+            commands.registrar().register(gameCommand.quitGameCommand());
 
         });
 
@@ -133,8 +132,6 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
-        instance.saveConfig();
         MapData.saveMaps();
 
         try {

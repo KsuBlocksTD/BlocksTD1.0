@@ -62,7 +62,8 @@ public class PlayerSword {
     public void applySwordMaterialUpgrade(){
         currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 400 atm
-        cost = config.getSwordMaterialBaseCost() * swordLevel;
+        cost = (config.getSwordMaterialBaseCost() * swordLevel);
+        cost = cost * config.getPlayerUniversalCostMult();
         if (currTotal >= cost){
 
             if (swordLevel < config.getSwordMaterialMaxLevel()){
@@ -84,7 +85,8 @@ public class PlayerSword {
     public void applySlownessUpgrade() {
         currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 400 atm
-        cost = config.getSlownessBaseCost() * swordLevel;
+        cost = config.getSlownessBaseCost() * (slownessLevel +1);
+        cost = cost * config.getPlayerUniversalCostMult();
         if (currTotal >= cost){
 
             // Apply slowness to the mob (target)
@@ -121,7 +123,8 @@ public class PlayerSword {
     public void applySweepingEdgeUpgrade(){
         currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 400 atm
-        cost = config.getSweepingEdgeBaseCost() * sweepingEdgeLevel;
+        cost = config.getSweepingEdgeBaseCost() * (sweepingEdgeLevel +1);
+        cost = cost * config.getPlayerUniversalCostMult();
         if (currTotal >= cost){
 
             if (sweepingEdgeLevel < config.getSweepingEdgeMaxLevel()){

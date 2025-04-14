@@ -17,20 +17,20 @@ btd:
 
     weather-cycle:
       enable: false # false
-      default-weather:
+      default-weather: clear
 
     natural-mob-spawn:
     motd:
       enable: false # false
-      message:
+      message: "Welcome to Blocks Tower Defense, the best tower defense game in Minecraft!"
     greet-player:
-      enable: true # true
-      message:
+      enable: false # false
+      message: "Welcome to the server, <player_name>!"
 
 
 
   spawn:
-    world:
+    world: world
     x:
     y:
     z:
@@ -126,8 +126,8 @@ btd:
 
       # these multipliers are not set up yet
       universal:
-        health-multiplier:
-        reward-multiplier:
+        health-multiplier: 1
+        reward-multiplier: 1
         effect-radius: 5.0
 
       zombie:
@@ -158,12 +158,13 @@ btd:
       attribute-multipliers:
         # all values have a default of 1.0x multiplier
         # this means if the multiplier for speed is 2, the player moves 2x speed than normal by default
+        # these multipliers are not set up yet
         attack:
-          speed:
-          range:
-          damage:
+          speed: 1
+          range: 1
+          damage: 1
 
-        base-speed:
+        base-speed: 1
 
 
 
