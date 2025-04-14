@@ -1,0 +1,46 @@
+name: BlocksTowerDefense1.0
+version: '1.0-SNAPSHOT'
+main: ksucapproj.blockstowerdefense1.BlocksTowerDefense1
+api-version: '1.21'
+authors:
+  - mthyuu
+  - Wayneistaken
+  - NekoPara
+  - ashjuno
+  - AnnaGrace_2
+
+commands:
+  summontower:
+    description: Summon a tower at your location
+    usage: /summontower
+    permission: summontower.use
+  startgame:
+    description: Start the tower defense game
+    usage: /startgame
+  upgradetower:
+    description: Upgrade a tower
+    usage: /upgradetower
+  spawnzombie:
+    description: Spawns a zombie with a health bar.
+    usage: /spawnzombie
+    permission: spawnzombie.use
+    permission-message: You do not have permission to use this command.
+  mtd:
+    description: MTD command with corresponding subcommands
+    usage: /mtd <subcommand>
+  readyup:
+    description: start the next round
+    usage: /readyup
+  tdmap:
+    description: Manage tower defense maps
+    usage: /tdmap <subcommand>
+    permission: towerdefense.map
+    aliases: [ tdm ]
+
+  permissions:
+    towerdefense.map:
+      description: Allows using the tower defense map management commands
+      default: op
+depend:
+  - PlaceholderAPI
+  - Parties
