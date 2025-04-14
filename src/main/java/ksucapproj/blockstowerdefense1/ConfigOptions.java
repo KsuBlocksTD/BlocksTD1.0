@@ -31,6 +31,10 @@ public class ConfigOptions {
     public int getPlayerUniversalCostMult() { // not fully implemented
         return config.getInt("btd.attributes.upgrades.player.universal.cost-multiplier"); // Default value is 1 if not set
     }
+    public int getPlayerStartingCoins() { // not fully implemented
+        return config.getInt("btd.attributes.upgrades.player.universal.starting-coins"); // Default value is 500 if not set
+    }
+
 
     // Getter for Speed level max upgrade
     public int getSpeedMaxLevel() {

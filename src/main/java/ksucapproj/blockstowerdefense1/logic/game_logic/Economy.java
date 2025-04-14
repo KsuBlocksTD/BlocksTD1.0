@@ -1,5 +1,7 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
+import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.ConfigOptions;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
@@ -65,7 +67,9 @@ public class Economy {
     // Economy object for a player to be placed into upon loading into a game
     public Economy(Player player){
         this.player = player;
-        this.currTotal = 500;
+        this.currTotal = config.getPlayerStartingCoins(); // starting value variable in config, default: 500
+//        Bukkit.getLogger().warning(String.valueOf(currTotal));
+//        Bukkit.getLogger().warning(String.valueOf(config.getPlayerStartingCoins()));
         this.totalCoinsGained = 0;
         this.totalCoinsSpent = 0;
     }
@@ -74,6 +78,7 @@ public class Economy {
     public Economy(){
         // add new mobs here, along with their coin reward amt
         mobKillRewards.put(EntityType.ZOMBIE, config.getZombieReward());
+//        Bukkit.getLogger().warning(String.valueOf(config.getZombieReward()));
         mobKillRewards.put(EntityType.IRON_GOLEM, config.getGolemReward());
         mobKillRewards.put(EntityType.WITCH, config.getWitchReward());
         mobKillRewards.put(EntityType.ENDERMAN, config.getEmanReward());

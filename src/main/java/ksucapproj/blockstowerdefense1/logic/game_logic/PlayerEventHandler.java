@@ -72,14 +72,14 @@ public class PlayerEventHandler implements Listener {
         player.setInvulnerable(true);
 
 
-        // checks if msg on join is enabled
-        // if so, send player the specified message
-        if (config.getMOTDOnPlayerJoin() != null){
-            player.sendMessage(config.getMOTDOnPlayerJoin());
-        }
+//        // checks if msg on join is enabled
+//        // if so, send player the specified message
+//        if (config.getMOTDOnPlayerJoin() != null){
+//            player.sendMessage(config.getMOTDOnPlayerJoin());
+//        }
 
         // this will eventually be the default greeting on player join
-        event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
+//        event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
 
         // this checks if a player is in the db already, if not, adds them to it
         DatabaseManager.checkPlayerInDB(player, 2);

@@ -46,6 +46,12 @@ public class HubCommand {
             return Command.SINGLE_SUCCESS;
         }
 
+        if (hubSpawn == null){
+            player.sendRichMessage("<red>The hub location has not been set up yet!");
+            return Command.SINGLE_SUCCESS;
+        }
+
+
         //sends player confirmation msg
         player.sendMessage("Teleporting to the hub...");
 

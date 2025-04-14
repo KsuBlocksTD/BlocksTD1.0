@@ -53,6 +53,7 @@ btd:
         universal:
           max-level: 5
           cost-multiplier: 1 # 1 # this is not set up yet
+          starting-coins: 500 # 500
 
         speed:
           max-level: 5 # 5
