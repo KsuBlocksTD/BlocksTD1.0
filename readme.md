@@ -60,9 +60,9 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * [Poster-UC-027.pdf](ReadMeFiles/Poster-UC-027.pdf)
   * [Poster-UC-027.pptx](ReadMeFiles/Poster-UC-027.pptx)
 
-* [Video-UC-027.mp4](ReadMeFiles/Video-UC-027.mp4)
+* [Video-UC-027.mp4](https://youtu.be/eXhWhP5nDJc)
 
-* [Flash-UC-027.mp4](ReadMeFiles/Flash-UC-027.mp4)
+* [Flash-UC-027.mp4](https://youtu.be/HNO0LYXZMiw)
 
 ## Resources
 ### Dependencies
