@@ -1,10 +1,7 @@
 package ksucapproj.blockstowerdefense1;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
 
 public class ConfigOptions {
     private FileConfiguration config;

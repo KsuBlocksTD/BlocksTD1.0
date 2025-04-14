@@ -1,7 +1,5 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
-import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
-import ksucapproj.blockstowerdefense1.ConfigOptions;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;

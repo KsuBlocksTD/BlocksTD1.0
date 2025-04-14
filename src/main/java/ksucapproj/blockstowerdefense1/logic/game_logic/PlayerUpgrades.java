@@ -8,7 +8,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
-import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.*;
+
+import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.getPlayerEconomies;
+import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.playerLeave;
 
 public class PlayerUpgrades{
 

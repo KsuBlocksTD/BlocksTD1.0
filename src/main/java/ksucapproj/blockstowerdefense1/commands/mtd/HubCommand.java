@@ -46,7 +46,7 @@ public class HubCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        if (hubSpawn == null){
+        if ((hubSpawn.getX() == 0) && (hubSpawn.getY() == 0) && (hubSpawn.getZ() == 0)){
             player.sendRichMessage("<red>The hub location has not been set up yet!");
             return Command.SINGLE_SUCCESS;
         }

@@ -5,8 +5,13 @@ import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
-import org.bukkit.*;
-import org.bukkit.entity.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
+import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -18,7 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI.giveCompass;
-import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.*;
+import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.getPlayerEconomies;
+import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.playerJoin;
 
 
 public class StartGame {

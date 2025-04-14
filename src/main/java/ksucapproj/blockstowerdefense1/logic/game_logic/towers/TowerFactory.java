@@ -6,20 +6,15 @@
 
 package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
-import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.List;
 
 public class TowerFactory {
     public enum TowerType {
