@@ -43,7 +43,7 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 
 * [Presentation - 2025 March 27th](ReadMeFiles/01-T2-Minecraft-Game-Mode-Presentation_No_Video.pdf)
 
-* [STP - 2025 March 30th](ReadMeFiles/01-T2-Minecraft-STP.pdf)
+* [Software Test Plan & Report (STP & STR) - 2025 March 30th](ReadMeFiles/01-T2-Minecraft-STP.pdf)
 
 ## Development Timeline
 * [Gantt Chart - 2025 April 13th](ReadMeFiles/01-T2-Minecraft-GanttChart-Estimate.pdf)
