@@ -24,12 +24,22 @@ import org.jspecify.annotations.NullMarked;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+// this class contains several commands, check each command's build to see its usage
+
 public class CoinsCommand {
 
     public static final PartiesAPI api = BlocksTowerDefense1.getApi();
 
 
-    // /addcoins <target> <coinamt>
+    /*
+
+    --This is an admin command--
+
+        Usage: /addcoins <target> <coinamt>
+
+    */
+
+    // this command is not under the /mtd hierarchy, and is therefore its own standalone command **
     @NullMarked
     public static LiteralCommandNode<CommandSourceStack> addCoinsCommand() {
         return Commands.literal("addcoins")
@@ -97,8 +107,8 @@ public class CoinsCommand {
 
 
 
-
-    // /givecoins <coinamt>
+    // this command is not under the /mtd hierarchy, and is therefore its own standalone command **
+    // "/givecoins <coinamt>"
     @NullMarked
     public static LiteralCommandNode<CommandSourceStack> giveCoinsCommand() {
         return Commands.literal("givecoins")

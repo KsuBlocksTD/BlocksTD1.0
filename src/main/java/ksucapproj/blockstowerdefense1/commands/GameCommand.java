@@ -19,6 +19,8 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.concurrent.CompletableFuture;
 
+// this class contains several commands, check each command's build to see its usage
+
 public class GameCommand {
 
     public static final PartiesAPI api = BlocksTowerDefense1.getApi();
@@ -31,7 +33,14 @@ public class GameCommand {
     }
 
 
+    /*
+    --This is an admin command--
 
+        Usage: /setround <round_number>
+
+    */
+
+    // this command is not under the /mtd hierarchy, and is therefore its own standalone command **
     @NullMarked
     public LiteralCommandNode<CommandSourceStack> setRoundCommand() {
         return Commands.literal("setround")
@@ -42,8 +51,23 @@ public class GameCommand {
                 .build();
     }
 
+    private int executeSetRoundLogic(final CommandContext<CommandSourceStack> ctx) {
+        if (!(ctx.getSource().getExecutor() instanceof Player sender)) {
+            return Command.SINGLE_SUCCESS;
+        }
+
+        final int newRound = IntegerArgumentType.getInteger(ctx, "newround");
+
+        // Use the instance variable instead of static method
+        this.gameManager.setCurrentRound(sender.getUniqueId(), newRound);
+
+        sender.sendMessage("New round is " + newRound);
+        return Command.SINGLE_SUCCESS;
+    }
 
 
+    // this command is not under the /mtd hierarchy, and is therefore its own standalone command **
+    // "/quitgame"
     public LiteralCommandNode<CommandSourceStack> quitGameCommand() {
         return Commands.literal("quitgame")
                 .requires(ctx -> ctx.getSender() instanceof Player)
@@ -63,6 +87,10 @@ public class GameCommand {
         return Command.SINGLE_SUCCESS;
     }
 
+
+
+    // this command is not under the /mtd hierarchy, and is therefore its own standalone command **
+    // "/startgame <map_name>"
     public LiteralCommandNode<CommandSourceStack> startGameCommand() {
         return Commands.literal("startgame")
                 .then(Commands.argument("map", StringArgumentType.word())
@@ -98,6 +126,8 @@ public class GameCommand {
     }
 
 
+    // this command is not under the /mtd hierarchy, and is therefore its own standalone command **
+    // "/readyup"
     public LiteralCommandNode<CommandSourceStack> readyUpCommand() {
         return Commands.literal("readyup")
                 .executes(this::executeReadyUpCommand)
@@ -115,25 +145,5 @@ public class GameCommand {
 
         return Command.SINGLE_SUCCESS;
     }
-
-
-
-
-
-
-    private int executeSetRoundLogic(final CommandContext<CommandSourceStack> ctx) {
-        if (!(ctx.getSource().getExecutor() instanceof Player sender)) {
-            return Command.SINGLE_SUCCESS;
-        }
-
-        final int newRound = IntegerArgumentType.getInteger(ctx, "newround");
-
-        // Use the instance variable instead of static method
-        this.gameManager.setCurrentRound(sender.getUniqueId(), newRound);
-
-        sender.sendMessage("New round is " + newRound);
-        return Command.SINGLE_SUCCESS;
-    }
-
 
 }

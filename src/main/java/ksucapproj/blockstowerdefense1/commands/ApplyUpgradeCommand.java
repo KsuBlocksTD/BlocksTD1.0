@@ -25,6 +25,8 @@ import java.util.concurrent.CompletableFuture;
 
  */
 
+// this command is not under the /mtd hierarchy, and is therefore its own standalone command **
+
 public class ApplyUpgradeCommand {
 
     // this is used to create all upgrade suggestions for the '/apply-upgrade' command

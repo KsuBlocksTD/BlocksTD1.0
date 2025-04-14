@@ -58,6 +58,7 @@ public class PlayerUpgrades{
         currTotal = getPlayerEconomies().get(player).getCurrTotal();
         // base cost is 500 atm
         cost = config.getSpeedBaseCost() * (swiftnessLevel +1);
+        cost = cost * config.getPlayerUniversalCostMult();
         if (currTotal >= cost){
 
             if (swiftnessLevel < config.getSpeedMaxLevel()) {
@@ -78,8 +79,9 @@ public class PlayerUpgrades{
 
     public void applyStrengthUpgrade() {
         currTotal = getPlayerEconomies().get(player).getCurrTotal();
-        cost = config.getStrengthBaseCost() * (strengthLevel +1);
         // base cost is 750 atm
+        cost = config.getStrengthBaseCost() * (strengthLevel +1);
+        cost = cost * config.getPlayerUniversalCostMult();
         if (currTotal >= cost){
 
             if (strengthLevel < config.getStrengthMaxLevel()) {

@@ -7,7 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 
 public class ConfigOptions {
-    private FileConfiguration config;  // Remove `final` so we can update it after loading
+    private FileConfiguration config;
 
     public ConfigOptions(JavaPlugin plugin) {
         plugin.reloadConfig();
@@ -28,7 +28,7 @@ public class ConfigOptions {
     public int getPlayerUniversalMaxLevel() {
         return config.getInt("btd.attributes.upgrades.player.universal.max-level"); // Default value is 5 if not set
     }
-    public int getPlayerUniversalCostMult() {
+    public int getPlayerUniversalCostMult() { // not fully implemented
         return config.getInt("btd.attributes.upgrades.player.universal.cost-multiplier"); // Default value is 1 if not set
     }
 
@@ -87,7 +87,7 @@ public class ConfigOptions {
 
 
     // Getter for the message of the day for the server
-    public String getMOTDOnPlayerJoin(){
+    public String getMOTDOnPlayerJoin(){ // not fully implemented
         if (config.getBoolean("btd.settings.motd.enable")){
             return config.getString("btd.settings.motd.message");
         }
@@ -95,13 +95,12 @@ public class ConfigOptions {
     }
 
     // Getter for the greeting of a player on join-in
-    public String getGreetOnPlayerJoin(){
+    public String getGreetOnPlayerJoin(){ // not fully implemented
         if (config.getBoolean("btd.settings.greet-player.enable")){
             return config.getString("btd.settings.greet-player.message");
         }
         return null;
     }
-
 
     public int getBasicTowerCost(){
         return config.getInt("btd.attributes.upgrades.towers.basic.cost");

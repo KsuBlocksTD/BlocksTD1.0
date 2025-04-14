@@ -21,6 +21,29 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.UUID;
 import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.getPlayerEconomies;
 
+/*
+    ** How PlayerSword is Utilized **
+
+    -- In PlayerUpgrades --
+
+        - private final PlayerSword sword;
+        ----------------------------
+        ~ Null instantiation of a playerSword to be given value only in the PlayerUpgrades constructor
+
+
+        - this.sword = new PlayerSword(player);
+        ---------------------------------------------
+        ~ Player's tracked sword is created inside PlayerUpgrades ONLY
+            * This forcibly ties each player to a single tracked sword
+            * The sword is created here to make access to the sword easier, as since player's Upgrades objects are tracked,
+            the sword is by proxy tracked as well, removing the necessity for an obj to track swords as well
+
+        - public PlayerSword getSword() { return sword; }
+        -------------------------------------------------
+        ~ This allows the sword values/attributes to be retrieved via PlayerUpgrades
+            * ALL values of PlayerSword are trackable by PlayerUpgrades with this implementation
+ */
+
 public class PlayerSword {
 
     private int swordLevel, slownessLevel, sweepingEdgeLevel;

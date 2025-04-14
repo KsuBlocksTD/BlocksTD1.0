@@ -1,4 +1,4 @@
-package ksucapproj.blockstowerdefense1.commands;
+package ksucapproj.blockstowerdefense1.commands.mtd;
 
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
@@ -16,7 +16,10 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import static ksucapproj.blockstowerdefense1.commands.PartyCommand.checkPartyLeaderStatus;
+import static ksucapproj.blockstowerdefense1.commands.mtd.PartyCommand.checkPartyLeaderStatus;
+
+// this function is under the /mtd hierarchy, and is therefore not its own standalone command **
+// "/mtd hub"
 
 public class HubCommand {
     private static TeleportationLogic tpManager;
@@ -24,7 +27,8 @@ public class HubCommand {
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
     private static Location hubSpawn = getHubFromConfig();
 
-
+    // this .register() function is registered under the base command "/mtd <subcommand>" as a subcommand
+    // command hierarchy display exists in MtdCommand
     public static LiteralCommandNode<CommandSourceStack> register() {
         if (tpManager == null) {
             tpManager = new TeleportationLogic(instance);
@@ -36,7 +40,7 @@ public class HubCommand {
                 .build();
     }
 
-
+    // this is the execution logic for the registering of the hub teleportation command
     private static int executeCommandLogic(final CommandContext<CommandSourceStack> ctx){
         if (!(ctx.getSource().getExecutor() instanceof Player player)){
             return Command.SINGLE_SUCCESS;

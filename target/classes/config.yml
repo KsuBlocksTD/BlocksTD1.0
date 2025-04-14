@@ -47,12 +47,13 @@ btd:
       #        - ex: if speed 5 is the desired maximum, choose 5 as the max default
       #
 
-      # these multipliers are not set up yet
-      universal:
-        max-level:
-        cost-multiplier: 1 # 1 # this is not set up yet
-
       player:
+
+        # these multipliers are not set up yet
+        universal:
+          max-level: 5
+          cost-multiplier: 1 # 1 # this is not set up yet
+
         speed:
           max-level: 5 # 5
           cost: 500 # 500

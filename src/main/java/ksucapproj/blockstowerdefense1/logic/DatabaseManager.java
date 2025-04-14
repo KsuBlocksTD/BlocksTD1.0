@@ -9,6 +9,28 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.sql.*;
 
+/*
+    ** How DatabaseManager is Utilized **
+
+    -- In BlocksTowerDefense1 --
+
+        - CompletableFuture.supplyAsync(DatabaseManager::connect)
+                .thenAccept(conn -> {
+                    // sets DBconnection as the initialized conn value
+                    BlocksTowerDefense1.getInstance().setDBConnection(conn);
+                    Bukkit.getLogger().info("[BlocksTowerDefense1.0] DB connection established!");
+                });
+        ------------------------------------------------------------------------------------------
+        ~ Before onEnable(), in the BTD1 class, an object "private Connection dbConnection" is created null
+        to be later fulfilled in onEnable() with this implementation
+        ~ CompletableFuture creates an async thread to have the database's connection to be done off the main thread
+        ~ the aforementioned 'dbConnection' is instantiated with this connection when it is finished
+
+        ~ This connection is saved with getter/setter functions for retrieval at a later time
+
+        ~ This database connection is closed in onDisable() upon server close as well
+ */
+
 public class DatabaseManager {
 
     private static Connection conn;

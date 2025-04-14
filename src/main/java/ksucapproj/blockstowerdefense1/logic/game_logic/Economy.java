@@ -10,6 +10,31 @@ import java.util.HashMap;
 
 import static ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpansion.config;
 
+/*
+    ** How Economy is Utilized **
+
+    -- In StartGame --
+
+        - playerJoin(<player_name>);
+        ----------------------------
+        ~ A player only has an Economy while in a game session, created in StartGame
+
+        ~ Player's economy is created
+            * This is a static reference to playerJoin() in Economy
+
+
+        - PlayerUpgrades.playerDelete(<player_name>);
+        ---------------------------------------------
+        ~ Player's economy is deleted
+            * This is a static reference to playerDelete in PlayerUpgrades
+
+        ~ All the following are deleted in PlayerUpgrades.playerDelete:
+            * Tracked PlayerSword obj.
+            * Player's active potion effects
+            * Player's Economy obj.
+            * Player's PlayerUpgrades HashMap<Player, PlayerUpgrades> instance
+ */
+
 
 public class Economy {
 

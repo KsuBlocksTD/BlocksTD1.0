@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+// this class contains several commands, check each command's build to see its usage
+
 public class MapCommand {
 
     @NullMarked
