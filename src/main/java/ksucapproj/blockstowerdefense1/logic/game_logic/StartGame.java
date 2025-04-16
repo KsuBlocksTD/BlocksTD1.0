@@ -3,6 +3,7 @@ package ksucapproj.blockstowerdefense1.logic.game_logic;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
+import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.Bukkit;
@@ -79,7 +80,6 @@ public class StartGame {
     private static class GameSession {
         int currentRound = 1;
         int zombiesPassed = 0;
-        float multiplier = 1.25F;
         int zombiesPerRound = 5;
         boolean isReady = false;
         AtomicInteger zombiesKilled = new AtomicInteger(0);
@@ -286,6 +286,12 @@ public class StartGame {
             return;
         }
 
+        if ((session.currentRound == 51) && (!session.roundInProgress)){
+
+            gameEndStatus(playerUUID);
+            return;
+        }
+
         // Set the round in progress flag
         session.roundInProgress = true;
 
@@ -405,6 +411,17 @@ public class StartGame {
         Economy econ = getPlayerEconomies().get(Bukkit.getPlayer(playerUUID));
         // gives a round bonus based upon what round they are on
         econ.addMoneyOnRoundEnd(session.currentRound);
+    }
+
+    public void gameEndStatus(UUID playerUUID){
+
+        GameSession session = playerSessions.get(playerUUID);
+        Player player = Bukkit.getPlayer(playerUUID);
+
+        player.sendRichMessage("<light_purple>Congratulations! You won!");
+        DatabaseManager.updatePlayerData(PlayerUpgrades.getPlayerUpgradesMap().get(player), 3);
+
+        cleanupPlayer(playerUUID);
     }
 
 

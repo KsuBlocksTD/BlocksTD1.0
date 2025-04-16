@@ -3,12 +3,16 @@ package ksucapproj.blockstowerdefense1.placeholderAPI;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
+import ksucapproj.blockstowerdefense1.LeaderboardManager;
 import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
@@ -52,7 +56,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         }
 
         // Placeholders all in the format: mtd_<placeholder>
-        // Exs: mtd_coins, mtd_db_Url, mtd_speedMaxLevel
+        // Exs: mtd_coins, mtd_speedMaxLevel
         if (identifier.equalsIgnoreCase("coins")) {
 
             if (Economy.getPlayerEconomies().get(player) == null){
@@ -61,44 +65,62 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
             return String.valueOf(Economy.getPlayerMoney(player)); // Retrieve coins
         }
 
-        if (identifier.equalsIgnoreCase("db_Url")) {
-            // Fetch the URL from the config
-            return plugin.getConfig().getString("database.url");
-        }
-
         if (identifier.equalsIgnoreCase("speedMaxLevel")) {
-            // Fetch the URL from the config
             return String.valueOf(config.getSpeedMaxLevel());
         }
 
         if (identifier.equalsIgnoreCase("slownessMaxLevel")) {
-            // Fetch the URL from the config
             return String.valueOf(config.getSlownessMaxLevel());
         }
 
         if (identifier.equalsIgnoreCase("slownessDuration")) {
-            // Fetch the URL from the config
             return String.valueOf(config.getSlownessDuration());
         }
 
         if (identifier.equalsIgnoreCase("slownessDurationIncreaseOnUpgrade")) {
-            // Fetch the URL from the config
             return String.valueOf(config.getSlownessDurationIncreaseOnUpgrade());
         }
 
         if (identifier.equalsIgnoreCase("strengthMaxLevel")) {
-            // Fetch the URL from the config
             return String.valueOf(config.getStrengthMaxLevel());
         }
 
         if (identifier.equalsIgnoreCase("sweepingEdgeMaxLevel")) {
-            // Fetch the URL from the config
             return String.valueOf(config.getSweepingEdgeMaxLevel());
         }
 
         if (identifier.equalsIgnoreCase("swordMaterialMaxLevel")) {
-            // Fetch the URL from the config
             return String.valueOf(config.getSwordMaterialMaxLevel());
+        }
+
+        if (identifier.equalsIgnoreCase("")){
+            return "";
+        }
+
+        LeaderboardManager leaderboard = BlocksTowerDefense1.getInstance().getLeaderboardManager();
+
+        // Player's personal rank
+        if (identifier.equalsIgnoreCase("top_spent_you")) {
+            return leaderboard.getCoinsSpentBy(player.getUniqueId())
+                    .map(String::valueOf)
+                    .orElse("0");
+        }
+
+        // Match: top_spent_name_1, top_spent_value_1, etc.
+        for (int i = 1; i <= 5; i++) {
+            if (identifier.equalsIgnoreCase("top_spent_name_" + i)) {
+                List<LeaderboardManager.TopSpender> list = leaderboard.getTopSpenders();
+                if (list.size() >= i) {
+                    return Bukkit.getOfflinePlayer(list.get(i - 1).uuid()).getName();
+                } else return "---";
+            }
+
+            if (identifier.equalsIgnoreCase("top_spent_value_" + i)) {
+                List<LeaderboardManager.TopSpender> list = leaderboard.getTopSpenders();
+                if (list.size() >= i) {
+                    return String.valueOf(list.get(i - 1).totalCoinsSpent());
+                } else return "---";
+            }
         }
 
 

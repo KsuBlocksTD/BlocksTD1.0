@@ -22,7 +22,6 @@ public class PlayerUpgrades{
     private int swiftnessLevel, strengthLevel;
     private final Player player;
     private final PlayerSword sword;
-    private int totalUpgradesBought;
     private int currTotal;
     private int cost;
 
@@ -49,7 +48,6 @@ public class PlayerUpgrades{
 
         this.sword = new PlayerSword(player);
 
-        this.totalUpgradesBought = playerUpgradesBought + getSword().getSwordUpgradesBought();
         currTotal = getPlayerEconomies().get(player).getCurrTotal();
     }
 
@@ -142,7 +140,7 @@ public class PlayerUpgrades{
             player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, -1, (strengthLevel-1), false, false));
         }
 
-        //player.sendMessage("Swiftness upgrade tier set to " + strengthLevel);
+        //player.sendMessage("Strength upgrade tier set to " + strengthLevel);
     }
 
     public int getStrengthLevel() {
@@ -162,7 +160,7 @@ public class PlayerUpgrades{
     }
 
     public int getTotalUpgradesBought() {
-        return totalUpgradesBought;
+        return (playerUpgradesBought + getSword().getSwordUpgradesBought());
     }
 
     public static HashMap<Player, PlayerUpgrades> getPlayerUpgradesMap() {

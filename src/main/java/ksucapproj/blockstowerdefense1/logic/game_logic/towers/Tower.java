@@ -22,7 +22,7 @@ import static ksucapproj.blockstowerdefense1.logic.GUI.TowerGUI.*;
 public abstract class Tower {
     protected final JavaPlugin plugin;  // Now an instance variable, not static
     protected static final Map<UUID, BukkitTask> towerTasks = new ConcurrentHashMap<>();
-    protected static final Map<UUID, UUID> towerOwners = new ConcurrentHashMap<>();
+    protected static final Map<UUID, UUID> towerOwners = new ConcurrentHashMap<>(); // <towerEntity, owner>
     private static final Map<UUID, Tower> towerEntityToTowerMap = new HashMap<>();
 
 

@@ -36,6 +36,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     private StartGame gameManager;
     private ConfigOptions config;
     private Connection dbConnection;
+    private LeaderboardManager leaderboardManager;
 
 
     public BlocksTowerDefense1() {
@@ -89,6 +90,19 @@ public class BlocksTowerDefense1 extends JavaPlugin {
                     // sets DBconnection as the initialized conn value
                     BlocksTowerDefense1.getInstance().setDBConnection(conn);
                     Bukkit.getLogger().info("[BlocksTowerDefense1.0] DB connection established!");
+
+
+
+                    // Now that the DB is ready, create the LeaderboardManager
+                    BlocksTowerDefense1.getInstance().leaderboardManager = new LeaderboardManager();
+
+                    // Start updating leaderboard on schedule
+                    Bukkit.getScheduler().runTaskTimerAsynchronously(
+                            BlocksTowerDefense1.getInstance(),
+                            () -> BlocksTowerDefense1.getInstance().getLeaderboardManager().updateLeaderboard(),
+                            0L,
+                            20L * 300
+                    );
                 });
 
 
@@ -114,6 +128,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             commands.registrar().register(gameCommand.startGameCommand());
             commands.registrar().register(gameCommand.readyUpCommand());
             commands.registrar().register(gameCommand.quitGameCommand());
+
+            commands.registrar().register(ReloadLeaderboardsCommand.register());
 
         });
 
@@ -182,4 +198,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         dbConnection = conn;
     }
     public Connection getDBConnection() { return dbConnection;}
+
+    public LeaderboardManager getLeaderboardManager() {
+        return leaderboardManager;
+    }
 }

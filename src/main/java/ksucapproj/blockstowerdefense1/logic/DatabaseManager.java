@@ -275,9 +275,8 @@ public class DatabaseManager {
 
 
 
-        /*
 
-        -- ALREADY ADDED --
+        /*-- ALREADY ADDED --
         * 1, total games played
         * 2, total coins gained
         * 3, total coins spent
@@ -286,7 +285,7 @@ public class DatabaseManager {
 
         -- NEEDS --
         * 4, total towers bought
-        * 5, total wins
+        * 5, total wins*/
 
 
 
@@ -294,13 +293,12 @@ public class DatabaseManager {
         pstmt.setInt(1, 1);
         pstmt.setInt(2, playerEcon.getTotalCoinsGained());
         pstmt.setInt(3, playerEcon.getTotalCoinsSpent());
-        pstmt.setInt(4, );
-        pstmt.setInt(5, );
+        pstmt.setInt(4, 0); // zero as temp value
+        pstmt.setInt(5, 0); // zero as temp value
         pstmt.setInt(6, upgrades.getTotalUpgradesBought());
         pstmt.setString(7, uuidString);
         pstmt.executeUpdate();
 
-        */
 
 
 
