@@ -12,13 +12,25 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.text.NumberFormat;
+import java.util.*;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     private final JavaPlugin plugin;
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
     public static final ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
+    private static final LeaderboardManager leaderboard = BlocksTowerDefense1.getInstance().getLeaderboardManager();
+
+    // Friendly name -> DB column
+    private static final Map<String, String> statAliasMap = Map.of(
+            "spent", "total_coins_spent",
+            "gained", "total_coins_gained",
+            "upgrades", "total_upgrades_bought",
+            "wins", "total_wins",
+            "games", "total_games_played",
+            "fastest", "fastest_win_in_seconds"
+    );
 
     public PlaceholderAPIExpansion(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -26,7 +38,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier() {
-        return "mtd"; // Placeholder identifier
+        return "mtd";
     }
 
     @Override
@@ -41,7 +53,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public boolean persist() {
-        return true; // Keeps the placeholder expansion loaded
+        return true;
     }
 
     @Override
@@ -51,79 +63,83 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String identifier) {
-        if (player == null) {
-            return "";
+        if (player == null) return "";
+
+        // Config values
+        switch (identifier.toLowerCase()) {
+            case "coins":
+                return Economy.getPlayerEconomies().get(player) == null ? "N/A" : formatNumber(Economy.getPlayerMoney(player));
+            case "speedmaxlevel": return String.valueOf(config.getSpeedMaxLevel());
+            case "slownessmaxlevel": return String.valueOf(config.getSlownessMaxLevel());
+            case "slownessduration": return String.valueOf(config.getSlownessDuration());
+            case "slownessdurationincreaseonupgrade": return String.valueOf(config.getSlownessDurationIncreaseOnUpgrade());
+            case "strengthmaxlevel": return String.valueOf(config.getStrengthMaxLevel());
+            case "sweepingedgemaxlevel": return String.valueOf(config.getSweepingEdgeMaxLevel());
+            case "swordmaterialmaxlevel": return String.valueOf(config.getSwordMaterialMaxLevel());
         }
 
-        // Placeholders all in the format: mtd_<placeholder>
-        // Exs: mtd_coins, mtd_speedMaxLevel
-        if (identifier.equalsIgnoreCase("coins")) {
+        // Leaderboard: mtd_top_<stat>_you
+        if (identifier.startsWith("top_") && identifier.endsWith("_you")) {
+            String friendlyStat = identifier.substring(4, identifier.length() - 4);
+            String dbStat = statAliasMap.getOrDefault(friendlyStat, friendlyStat);
 
-            if (Economy.getPlayerEconomies().get(player) == null){
-                return "N/A";
-            }
-            return String.valueOf(Economy.getPlayerMoney(player)); // Retrieve coins
-        }
-
-        if (identifier.equalsIgnoreCase("speedMaxLevel")) {
-            return String.valueOf(config.getSpeedMaxLevel());
-        }
-
-        if (identifier.equalsIgnoreCase("slownessMaxLevel")) {
-            return String.valueOf(config.getSlownessMaxLevel());
-        }
-
-        if (identifier.equalsIgnoreCase("slownessDuration")) {
-            return String.valueOf(config.getSlownessDuration());
-        }
-
-        if (identifier.equalsIgnoreCase("slownessDurationIncreaseOnUpgrade")) {
-            return String.valueOf(config.getSlownessDurationIncreaseOnUpgrade());
-        }
-
-        if (identifier.equalsIgnoreCase("strengthMaxLevel")) {
-            return String.valueOf(config.getStrengthMaxLevel());
-        }
-
-        if (identifier.equalsIgnoreCase("sweepingEdgeMaxLevel")) {
-            return String.valueOf(config.getSweepingEdgeMaxLevel());
-        }
-
-        if (identifier.equalsIgnoreCase("swordMaterialMaxLevel")) {
-            return String.valueOf(config.getSwordMaterialMaxLevel());
-        }
-
-        if (identifier.equalsIgnoreCase("")){
-            return "";
-        }
-
-        LeaderboardManager leaderboard = BlocksTowerDefense1.getInstance().getLeaderboardManager();
-
-        // Player's personal rank
-        if (identifier.equalsIgnoreCase("top_spent_you")) {
-            return leaderboard.getCoinsSpentBy(player.getUniqueId())
-                    .map(String::valueOf)
+            return leaderboard.getStatForPlayer(player.getUniqueId(), dbStat)
+                    .map(val -> formatStat(dbStat, val))
                     .orElse("0");
         }
 
-        // Match: top_spent_name_1, top_spent_value_1, etc.
-        for (int i = 1; i <= 5; i++) {
-            if (identifier.equalsIgnoreCase("top_spent_name_" + i)) {
-                List<LeaderboardManager.TopSpender> list = leaderboard.getTopSpenders();
-                if (list.size() >= i) {
-                    return Bukkit.getOfflinePlayer(list.get(i - 1).uuid()).getName();
-                } else return "---";
-            }
+        // Leaderboard rank: mtd_top_<stat>_you_rank
+        if (identifier.startsWith("top_") && identifier.endsWith("_you_rank")) {
+            String friendlyStat = identifier.substring(4, identifier.length() - "_you_rank".length());
+            String dbStat = statAliasMap.getOrDefault(friendlyStat, friendlyStat);
 
-            if (identifier.equalsIgnoreCase("top_spent_value_" + i)) {
-                List<LeaderboardManager.TopSpender> list = leaderboard.getTopSpenders();
-                if (list.size() >= i) {
-                    return String.valueOf(list.get(i - 1).totalCoinsSpent());
-                } else return "---";
+            return leaderboard.getPlayerRank(player.getUniqueId(), dbStat)
+                    .map(String::valueOf)
+                    .orElse("-");
+        }
+
+        // Leaderboard entries: mtd_top_<stat>_name_1 / mtd_top_<stat>_value_1
+        if (identifier.startsWith("top_")) {
+            String[] parts = identifier.split("_");
+            if (parts.length == 4) {
+                String friendlyStat = parts[1];
+                String dbStat = statAliasMap.getOrDefault(friendlyStat, friendlyStat);
+
+                int index;
+                try {
+                    index = Integer.parseInt(parts[3]) - 1;
+                } catch (NumberFormatException e) {
+                    return "---";
+                }
+
+                List<LeaderboardManager.LeaderboardEntry> entries = leaderboard.getLeaderboard(dbStat);
+                if (index >= entries.size()) return "---";
+
+                LeaderboardManager.LeaderboardEntry entry = entries.get(index);
+
+                if (parts[2].equalsIgnoreCase("name")) {
+                    return Optional.ofNullable(Bukkit.getOfflinePlayer(entry.uuid()).getName()).orElse("---");
+                }
+
+                if (parts[2].equalsIgnoreCase("value")) {
+                    return formatStat(dbStat, entry.value());
+                }
             }
         }
 
+        return null;
+    }
 
-        return null; // Placeholder not found
+    private String formatStat(String stat, int value) {
+        if (stat.equalsIgnoreCase("fastest_win_in_seconds")) {
+            int minutes = value / 60;
+            int seconds = value % 60;
+            return String.format("%02d:%02d", minutes, seconds);
+        }
+        return formatNumber(value);
+    }
+
+    private String formatNumber(int number) {
+        return NumberFormat.getNumberInstance(Locale.US).format(number);
     }
 }

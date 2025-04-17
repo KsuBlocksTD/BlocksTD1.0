@@ -10,79 +10,96 @@ import java.util.*;
 
 public class LeaderboardManager {
 
-    public record TopSpender(UUID uuid, int totalCoinsSpent) { }
+    public record LeaderboardEntry(UUID uuid, int value) { }
 
-    private static Connection conn;
-    private final List<TopSpender> topSpenders = new ArrayList<>();
-    private final Map<UUID, Integer> playerRankMap = new HashMap<>();
+    private final Map<String, List<LeaderboardEntry>> leaderboards = new HashMap<>();
+    private final Map<String, Map<UUID, Integer>> leaderboardRanks = new HashMap<>();
 
-    public LeaderboardManager(){
-        conn = BlocksTowerDefense1.getInstance().getDBConnection();
+    private static final List<String> TRACKED_STATS = List.of(
+            "fastest_win_in_seconds",
+            "total_coins_gained",
+            "total_coins_spent",
+            "total_upgrades_bought",
+            "total_games_played",
+            "total_wins"
+    );
+
+    private Connection getConnection() {
+        return BlocksTowerDefense1.getInstance().getDBConnection();
     }
 
-
-    public void updateLeaderboard() {
-        topSpenders.clear();
-        playerRankMap.clear();
-
-        try {
-            if (conn != null){
-                Bukkit.getLogger().info("DB connection is valid: " + (conn != null));
-                PreparedStatement ps = conn.prepareStatement("SELECT uuid, total_coins_spent FROM players ORDER BY total_coins_spent DESC LIMIT 100");
-                ResultSet rs = ps.executeQuery();
-
-                int rank = 1;
-                while (rs.next()) {
-                    UUID uuid = UUID.fromString(rs.getString("uuid"));
-                    int spent = rs.getInt("total_coins_spent");
-
-                    TopSpender spender = new TopSpender(uuid, spent);
-                    topSpenders.add(spender);
-                    playerRankMap.put(uuid, rank);
-                    rank++;
-                }
-
-            }
-
-            else {
-                Bukkit.getLogger().info("DB connection is valid: " + (conn != null));
-            }
+    public void updateAllLeaderboards() {
+        for (String stat : TRACKED_STATS) {
+            updateLeaderboard(stat);
         }
-
-
-        catch (SQLException e){
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL error: " + e.getMessage());
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Error code: " + e.getErrorCode());
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL state: " + e.getSQLState());
-        }
-
     }
 
-    public Optional<Integer> getCoinsSpentBy(UUID uuid) {
+    public void updateLeaderboard(String statColumn) {
+        List<LeaderboardEntry> entries = new ArrayList<>();
+        Map<UUID, Integer> ranks = new HashMap<>();
+
+        if (getConnection() == null) {
+            Bukkit.getLogger().warning("[BTD] Database connection is null!");
+            return;
+        }
+
         try {
-            PreparedStatement ps = conn.prepareStatement("SELECT total_coins_spent FROM players WHERE uuid = ?");
+            String query = "SELECT uuid, " + statColumn + " FROM players ORDER BY " + statColumn + " DESC LIMIT 100";
+            PreparedStatement ps = getConnection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+
+            int rank = 1;
+            while (rs.next()) {
+                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                int value = rs.getInt(statColumn);
+
+                entries.add(new LeaderboardEntry(uuid, value));
+                ranks.put(uuid, rank++);
+            }
+
+            leaderboards.put(statColumn, entries);
+            leaderboardRanks.put(statColumn, ranks);
+
+        } catch (SQLException e) {
+            Bukkit.getLogger().severe("[BTD] SQL error updating leaderboard for '" + statColumn + "': " + e.getMessage());
+        }
+    }
+
+    public Optional<Integer> getStatForPlayer(UUID uuid, String statColumn) {
+        if (getConnection() == null) return Optional.empty();
+
+        try {
+            String query = "SELECT " + statColumn + " FROM players WHERE uuid = ?";
+            PreparedStatement ps = getConnection().prepareStatement(query);
             ps.setString(1, uuid.toString());
 
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return Optional.of(rs.getInt("total_coins_spent"));
+                return Optional.of(rs.getInt(statColumn));
             }
         } catch (SQLException e) {
-            Bukkit.getLogger().severe("[BTD] SQL error fetching coins spent for " + uuid + ": " + e.getMessage());
+            Bukkit.getLogger().severe("[BTD] SQL error fetching stat '" + statColumn + "' for player " + uuid + ": " + e.getMessage());
         }
 
         return Optional.empty();
     }
 
-    public List<TopSpender> getTopSpenders() {
-        return topSpenders;
+    public List<LeaderboardEntry> getLeaderboard(String statColumn) {
+        return leaderboards.getOrDefault(statColumn, Collections.emptyList());
     }
 
-    public Optional<Integer> getPlayerRank(UUID uuid) {
-        return Optional.ofNullable(playerRankMap.get(uuid));
+    public Optional<Integer> getPlayerRank(UUID uuid, String statColumn) {
+        Map<UUID, Integer> ranks = leaderboardRanks.get(statColumn);
+        return ranks != null ? Optional.ofNullable(ranks.get(uuid)) : Optional.empty();
     }
 
-    public Optional<TopSpender> getPlayerEntry(UUID uuid) {
-        return topSpenders.stream().filter(ts -> ts.uuid().equals(uuid)).findFirst();
+    public Optional<LeaderboardEntry> getPlayerEntry(UUID uuid, String statColumn) {
+        return getLeaderboard(statColumn).stream()
+                .filter(entry -> entry.uuid().equals(uuid))
+                .findFirst();
+    }
+
+    public List<String> getTrackedStats() {
+        return TRACKED_STATS;
     }
 }

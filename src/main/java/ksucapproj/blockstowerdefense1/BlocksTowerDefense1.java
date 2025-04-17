@@ -49,7 +49,6 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         getLogger().info("[BlocksTowerDefense1.0] Initializing BlocksTowerDefense1");
         api = Parties.getApi(); // For static api getter
 
-
         saveResource("config.yml", /* replace */ false);
         instance.reloadConfig();       // Ensures the latest config is loaded
 
@@ -62,9 +61,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             getLogger().info("[BlocksTowerDefense1] ConfigOptions initialized successfully.");
         }
 
-
         gameManager = new StartGame(this, api);
-
 
         // Use the same gameManager instance for PlayerEventHandler
         new MobHandler(gameManager, this);
@@ -73,38 +70,31 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         MapData.loadMaps(this);
 
-
-
-
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
-        // initializes PLaceholderAPI to be used in its class
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new PlaceholderAPIExpansion(this).register();
-        }
+        // Initialize LeaderboardManager here
+        leaderboardManager = new LeaderboardManager();
 
 
-        // Creates connection to the DB asynchronously
+        // Ensure the leaderboard update only happens once DB connection is ready
         CompletableFuture.supplyAsync(DatabaseManager::connect)
                 .thenAccept(conn -> {
-                    // sets DBconnection as the initialized conn value
+                    // Set DB connection
                     BlocksTowerDefense1.getInstance().setDBConnection(conn);
                     Bukkit.getLogger().info("[BlocksTowerDefense1.0] DB connection established!");
 
-
-
-                    // Now that the DB is ready, create the LeaderboardManager
-                    BlocksTowerDefense1.getInstance().leaderboardManager = new LeaderboardManager();
-
-                    // Start updating leaderboard on schedule
-                    Bukkit.getScheduler().runTaskTimerAsynchronously(
-                            BlocksTowerDefense1.getInstance(),
-                            () -> BlocksTowerDefense1.getInstance().getLeaderboardManager().updateLeaderboard(),
-                            0L,
-                            20L * 300
-                    );
+                    // Now that DB connection is ready, we can safely start updating the leaderboard
+                    startLeaderboardUpdateTask();
+                })
+                .exceptionally(ex -> {
+                    getLogger().severe("[BlocksTowerDefense1.0] Failed to connect to DB: " + ex.getMessage());
+                    return null;
                 });
 
+        // Register PlaceholderAPI expansion immediately
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PlaceholderAPIExpansion(this).register();
+        }
 
         // **** This might be better off moved to the game session creation ****
         // needed for instantiating proper mob killing & economy function
@@ -113,10 +103,6 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             // register main commands here
-//            commands.registrar().register(TestCommand.flightCommand()); // is a test cmd
-//            commands.registrar().register(TestCommand.constructGiveItemCommand()); // is a test cmd
-//            commands.registrar().register(TestCommand.addCoinsCommand());
-//            commands.registrar().register(TestCommand.giveCoinsCommand());
             commands.registrar().register(CoinsCommand.addCoinsCommand()); // has btd functionality
             commands.registrar().register(CoinsCommand.giveCoinsCommand()); // has btd functionality
             commands.registrar().register(MtdCommand.register());
@@ -201,5 +187,24 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     public LeaderboardManager getLeaderboardManager() {
         return leaderboardManager;
+    }
+
+
+    // New method to start the leaderboard update task
+    private void startLeaderboardUpdateTask() {
+        // Check if the DB connection is still available
+        if (getDBConnection() != null) {
+            // Schedule the leaderboard update task to run asynchronously
+            Bukkit.getScheduler().runTaskTimerAsynchronously(
+                    this,
+                    () -> {
+                        getLeaderboardManager().updateAllLeaderboards();
+                    },
+                    0L,
+                    20L * 300 // Update every 5 minutes
+            );
+        } else {
+            getLogger().warning("[BlocksTowerDefense1.0] DB connection is null. Leaderboard update will not run.");
+        }
     }
 }

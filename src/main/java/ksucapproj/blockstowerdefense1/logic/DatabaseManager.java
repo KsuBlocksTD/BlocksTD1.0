@@ -75,9 +75,9 @@ public class DatabaseManager {
 
             // just a confirmation msg
             if (isNew) { // if the db file does not already exist
-                Bukkit.getLogger().severe("[BlocksTowerDefense1.0] Database file does not exist! Creating new file.");
+                Bukkit.getLogger().severe("[BlocksTowerDefense] Database file does not exist! Creating new file.");
             } else { // if db file previously exists
-                Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Using existing database file.");
+                Bukkit.getLogger().warning("[BlocksTowerDefense] Using existing database file.");
             }
 
             // if not already created, attempts to create the database table
@@ -89,13 +89,13 @@ public class DatabaseManager {
         // catches: JDBC driver DNE or SQL Exception
 
         catch (ClassNotFoundException e) {
-            Bukkit.getLogger().severe("[BlocksTowerDefense1.0] SQLite JDBC driver not found.");
+            Bukkit.getLogger().severe("[BlocksTowerDefense] SQLite JDBC driver not found.");
             e.printStackTrace();
         }
         catch (SQLException e) {
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL error: " + e.getMessage());
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Error code: " + e.getErrorCode());
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL state: " + e.getSQLState());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] SQL error: " + e.getMessage());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] Error code: " + e.getErrorCode());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] SQL state: " + e.getSQLState());
         }
 
         return conn;
@@ -126,9 +126,9 @@ public class DatabaseManager {
         }
 
         catch (SQLException e){
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL error: " + e.getMessage());
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Error code: " + e.getErrorCode());
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL state: " + e.getSQLState());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] SQL error: " + e.getMessage());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] Error code: " + e.getErrorCode());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] SQL state: " + e.getSQLState());
         }
 
         tableCreated = true;
@@ -157,7 +157,7 @@ public class DatabaseManager {
         pstmt.executeUpdate();
 
         // confirmation message
-        Bukkit.getLogger().info("[BlocksTowerDefense1.0] Inserted: " + uuidAsString + " (username = " + name + ")"); // confirmation msg
+        Bukkit.getLogger().info("[BlocksTowerDefense] Inserted: " + uuidAsString + " (username = " + name + ")"); // confirmation msg
     }
 
 
@@ -180,7 +180,7 @@ public class DatabaseManager {
     public static void checkPlayerInDB(Player player, int maxRetries){
 
         if (maxRetries <= 0){
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Check if " + player.getName() + " is in database failed.");
+            Bukkit.getLogger().warning("[BlocksTowerDefense] Check if " + player.getName() + " is in database failed.");
             return;
         }
 
@@ -189,11 +189,11 @@ public class DatabaseManager {
 
         try {
             if (conn != null) { // if database connection works, continue
-                Bukkit.getLogger().info("[BlocksTowerDefense1.0] Connected to SQLite database."); // confirmation msg
+                Bukkit.getLogger().info("[BlocksTowerDefense] Connected to SQLite database."); // confirmation msg
 
                 // helper method
                 if (DatabaseManager.userExists(conn, uuidString)){ // if player exists, finish
-                    Bukkit.getLogger().info("[BlocksTowerDefense1.0] Player exists in database, returning.");// confirmation msg
+                    Bukkit.getLogger().info("[BlocksTowerDefense] Player exists in database, returning.");// confirmation msg
                 }
 
                 // helper method
@@ -210,9 +210,9 @@ public class DatabaseManager {
         }
 
         catch (SQLException e){
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL error: " + e.getMessage());
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Error code: " + e.getErrorCode());
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL state: " + e.getSQLState());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] SQL error: " + e.getMessage());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] Error code: " + e.getErrorCode());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] SQL state: " + e.getSQLState());
         }
     }
 
@@ -222,13 +222,13 @@ public class DatabaseManager {
     public static void updatePlayerData(PlayerUpgrades upgrades, int maxRetries){
 
         if (maxRetries <= 0){
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Update to " + upgrades.getPlayer().getName() + "'s data failed.");
+            Bukkit.getLogger().warning("[BlocksTowerDefense] Update to " + upgrades.getPlayer().getName() + "'s data failed.");
             return;
         }
 
         try {
             if (conn != null){ // if database connection works, continue
-                Bukkit.getLogger().info("[BlocksTowerDefense1.0] Connected to SQLite database."); // confirmation msg
+                Bukkit.getLogger().info("[BlocksTowerDefense] Connected to SQLite database."); // confirmation msg
 
                 // if player exists, continue, if not, insert them into db before updating their attributes
                 // this check is only done in case the player somehow does not exist
@@ -245,9 +245,9 @@ public class DatabaseManager {
         }
 
         catch (SQLException e) {
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL error: " + e.getMessage());
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] Error code: " + e.getErrorCode());
-            Bukkit.getLogger().warning("[BlocksTowerDefense1.0] SQL state: " + e.getSQLState());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] SQL error: " + e.getMessage());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] Error code: " + e.getErrorCode());
+            Bukkit.getLogger().warning("[BlocksTowerDefense] SQL state: " + e.getSQLState());
         }
     }
 

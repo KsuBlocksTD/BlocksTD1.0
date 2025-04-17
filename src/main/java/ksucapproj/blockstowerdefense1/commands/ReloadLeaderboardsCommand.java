@@ -7,6 +7,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.LeaderboardManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -33,12 +34,9 @@ public class ReloadLeaderboardsCommand {
 
         LeaderboardManager lb = BlocksTowerDefense1.getInstance().getLeaderboardManager();
 
-        lb.updateLeaderboard();
-
-        player.sendMessage("Top Spenders:");
-        for (LeaderboardManager.TopSpender ts : lb.getTopSpenders()) {
-            player.sendMessage("- " + ts.uuid() + ": " + ts.totalCoinsSpent());
-        }
+        lb.updateAllLeaderboards();
+        Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> player.performCommand("dh reload"));
+//        player.sendMessage(lb.getLeaderboard(""));
 
         return Command.SINGLE_SUCCESS;
     }

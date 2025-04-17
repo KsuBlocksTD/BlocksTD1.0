@@ -37,6 +37,8 @@ public class StartGame {
     private final JavaPlugin plugin;
     private final Map<UUID, GameSession> playerSessions = new ConcurrentHashMap<>();
     private static final Map<String, Boolean> healingDisabledMaps = new HashMap<>();
+    private long stopwatchStart = 0;
+    private long stopwatchEnd = 0;
 
 
     public boolean isInplayerSessions(UUID uuid) {
