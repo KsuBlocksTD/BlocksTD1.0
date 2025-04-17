@@ -8,8 +8,6 @@ import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.LeaderboardManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
@@ -28,15 +26,23 @@ public class ReloadLeaderboardsCommand {
 
     // executes the logic for setting the spawn for HubCommand
     private static int executeReloadLogic(final CommandContext<CommandSourceStack> ctx){
-        if (!(ctx.getSource().getExecutor() instanceof Player player)){
-            return Command.SINGLE_SUCCESS;
-        }
 
         LeaderboardManager lb = BlocksTowerDefense1.getInstance().getLeaderboardManager();
 
+        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+
+            lb.updateAllLeaderboards();
+            Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () ->
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "dh reload")
+            );
+
+//            Bukkit.getLogger().info("[BlocksTowerDefense] Leaderboards loaded via console.");
+            return Command.SINGLE_SUCCESS;
+        }
+
         lb.updateAllLeaderboards();
         Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> player.performCommand("dh reload"));
-//        player.sendMessage(lb.getLeaderboard(""));
+//        player.sendRichMessage("<green>[BlocksTowerDefense] Leaderboards reloaded and holograms updated.");
 
         return Command.SINGLE_SUCCESS;
     }

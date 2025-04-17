@@ -81,7 +81,7 @@ public class GameCommand {
         }
 
         // Clean game session
-        this.gameManager.cleanupPlayer(sender.getUniqueId());
+        this.gameManager.gameEndStatus(sender.getUniqueId(), false);
 
         sender.sendRichMessage("<red>You have quit the game.");
         return Command.SINGLE_SUCCESS;

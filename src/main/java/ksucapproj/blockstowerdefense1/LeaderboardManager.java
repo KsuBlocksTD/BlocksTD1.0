@@ -53,6 +53,8 @@ public class LeaderboardManager {
                 UUID uuid = UUID.fromString(rs.getString("uuid"));
                 int value = rs.getInt(statColumn);
 
+                if (!isValidStatValue(statColumn, value)) continue; // <- Skip invalid/default values
+
                 entries.add(new LeaderboardEntry(uuid, value));
                 ranks.put(uuid, rank++);
             }
@@ -60,10 +62,14 @@ public class LeaderboardManager {
             leaderboards.put(statColumn, entries);
             leaderboardRanks.put(statColumn, ranks);
 
-        } catch (SQLException e) {
+        }
+
+        catch (SQLException e) {
             Bukkit.getLogger().severe("[BTD] SQL error updating leaderboard for '" + statColumn + "': " + e.getMessage());
         }
     }
+
+
 
     public Optional<Integer> getStatForPlayer(UUID uuid, String statColumn) {
         if (getConnection() == null) return Optional.empty();
@@ -77,7 +83,9 @@ public class LeaderboardManager {
             if (rs.next()) {
                 return Optional.of(rs.getInt(statColumn));
             }
-        } catch (SQLException e) {
+        }
+
+        catch (SQLException e) {
             Bukkit.getLogger().severe("[BTD] SQL error fetching stat '" + statColumn + "' for player " + uuid + ": " + e.getMessage());
         }
 
@@ -101,5 +109,12 @@ public class LeaderboardManager {
 
     public List<String> getTrackedStats() {
         return TRACKED_STATS;
+    }
+
+    private boolean isValidStatValue(String stat, int value) {
+        return switch (stat) {
+            case "fastest_win_in_seconds" -> value > 0 && value < 9999; // Avoid uninitialized or absurdly long times
+            default -> value > 0; // For everything else, 0 is meaningless
+        };
     }
 }

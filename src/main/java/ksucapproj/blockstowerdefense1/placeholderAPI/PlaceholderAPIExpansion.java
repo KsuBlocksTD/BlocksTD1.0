@@ -13,7 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
@@ -99,6 +102,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         }
 
         // Leaderboard entries: mtd_top_<stat>_name_1 / mtd_top_<stat>_value_1
+        // mtd is not counted in the identifier because it is added after (mtd is not in String[])
         if (identifier.startsWith("top_")) {
             String[] parts = identifier.split("_");
             if (parts.length == 4) {
@@ -108,7 +112,9 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
                 int index;
                 try {
                     index = Integer.parseInt(parts[3]) - 1;
-                } catch (NumberFormatException e) {
+                }
+
+                catch (NumberFormatException e) {
                     return "---";
                 }
 
@@ -117,6 +123,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
                 LeaderboardManager.LeaderboardEntry entry = entries.get(index);
 
+                // Handles top_stat_name, top: [0], stat: [1], name: [2]
                 if (parts[2].equalsIgnoreCase("name")) {
                     return Optional.ofNullable(Bukkit.getOfflinePlayer(entry.uuid()).getName()).orElse("---");
                 }
@@ -130,6 +137,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         return null;
     }
 
+    // Leaderboard: Format Seconds to time format of xx:xx (minutes, seconds)
     private String formatStat(String stat, int value) {
         if (stat.equalsIgnoreCase("fastest_win_in_seconds")) {
             int minutes = value / 60;
@@ -139,6 +147,7 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         return formatNumber(value);
     }
 
+    // Leaderboard: Format large numbers with commas every 10^3 (1000 -> 1,000)
     private String formatNumber(int number) {
         return NumberFormat.getNumberInstance(Locale.US).format(number);
     }

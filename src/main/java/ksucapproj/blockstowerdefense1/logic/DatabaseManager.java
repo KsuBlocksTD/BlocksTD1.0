@@ -219,7 +219,7 @@ public class DatabaseManager {
 
 
     // this function is designed to update a player's information in the db at the end of a game
-    public static void updatePlayerData(PlayerUpgrades upgrades, int maxRetries){
+    public static void updatePlayerData(PlayerUpgrades upgrades, boolean victoryStatus, int maxRetries){
 
         if (maxRetries <= 0){
             Bukkit.getLogger().warning("[BlocksTowerDefense] Update to " + upgrades.getPlayer().getName() + "'s data failed.");
@@ -235,12 +235,12 @@ public class DatabaseManager {
                 checkPlayerInDB(upgrades.getPlayer(), maxRetries);
 
                 // calls the method to total player values on game end
-                insertPlayerTotalsOnGameEnd(conn, upgrades);
+                insertPlayerTotalsOnGameEnd(conn, upgrades, victoryStatus);
             }
 
             else { // if conn is null, attempt 3 tries to establish and retry database call
                 conn = connect();
-                updatePlayerData(upgrades, maxRetries - 1);
+                updatePlayerData(upgrades, victoryStatus,maxRetries - 1);
             }
         }
 
@@ -254,7 +254,7 @@ public class DatabaseManager {
 
     // NEEDS
     // this takes the player's totals from the game they played and updates their current db values
-    private static void insertPlayerTotalsOnGameEnd(Connection conn, PlayerUpgrades upgrades) throws SQLException{
+    private static void insertPlayerTotalsOnGameEnd(Connection conn, PlayerUpgrades upgrades, boolean victory) throws SQLException{
         String sql = """
             UPDATE players
             SET
@@ -277,15 +277,15 @@ public class DatabaseManager {
 
 
         /*-- ALREADY ADDED --
-        * 1, total games played
-        * 2, total coins gained
-        * 3, total coins spent
-        * 6, total upgrades bought
-        * 7, uuid
+        * 1, total games played // leaderboard
+        * 2, total coins gained // leaderboard
+        * 3, total coins spent // leaderboard
+        * 6, total upgrades bought // leaderboard
+        * 7, uuid // needed for leaderboard
 
         -- NEEDS --
-        * 4, total towers bought
-        * 5, total wins*/
+        * 4, total towers bought // not a leaderboard yet
+        * 5, total wins*/ // leaderboard
 
 
 
@@ -294,7 +294,10 @@ public class DatabaseManager {
         pstmt.setInt(2, playerEcon.getTotalCoinsGained());
         pstmt.setInt(3, playerEcon.getTotalCoinsSpent());
         pstmt.setInt(4, 0); // zero as temp value
-        pstmt.setInt(5, 0); // zero as temp value
+
+        // zero if the player loses, one if they win
+        pstmt.setInt(5, victory ? 1 : 0);
+
         pstmt.setInt(6, upgrades.getTotalUpgradesBought());
         pstmt.setString(7, uuidString);
         pstmt.executeUpdate();

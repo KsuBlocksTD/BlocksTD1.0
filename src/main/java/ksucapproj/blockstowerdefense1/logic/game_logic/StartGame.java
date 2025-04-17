@@ -290,7 +290,7 @@ public class StartGame {
 
         if ((session.currentRound == 51) && (!session.roundInProgress)){
 
-            gameEndStatus(playerUUID);
+            gameEndStatus(playerUUID, true);
             return;
         }
 
@@ -415,13 +415,21 @@ public class StartGame {
         econ.addMoneyOnRoundEnd(session.currentRound);
     }
 
-    public void gameEndStatus(UUID playerUUID){
+    public void gameEndStatus(UUID playerUUID, boolean victory){
 
         GameSession session = playerSessions.get(playerUUID);
         Player player = Bukkit.getPlayer(playerUUID);
 
-        player.sendRichMessage("<light_purple>Congratulations! You won!");
-        DatabaseManager.updatePlayerData(PlayerUpgrades.getPlayerUpgradesMap().get(player), 3);
+        String msg;
+        if (victory) {
+            player.sendRichMessage("<light_purple>Congratulations! You won!");
+
+        }
+        else {
+            player.sendRichMessage("<light_purple>You lost! Game over..");
+        }
+
+        DatabaseManager.updatePlayerData(PlayerUpgrades.getPlayerUpgradesMap().get(player), victory, 3);
 
         cleanupPlayer(playerUUID);
     }
