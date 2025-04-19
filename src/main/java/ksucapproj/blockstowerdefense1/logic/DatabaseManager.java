@@ -180,7 +180,7 @@ public class DatabaseManager {
     public static void checkPlayerInDB(Player player, int maxRetries){
 
         if (maxRetries <= 0){
-            Bukkit.getLogger().warning("[BlocksTowerDefense] Check if '" + player.getName() + "' is in database failed.");
+            Bukkit.getLogger().warning("[BlocksTowerDefense] Check if " + player.getName() + " is in database failed.");
             return;
         }
 
@@ -189,11 +189,11 @@ public class DatabaseManager {
 
         try {
             if (conn != null) { // if database connection works, continue
-                Bukkit.getLogger().info("[BlocksTowerDefense] Connected to SQLite database. (CPIDB)"); // confirmation msg
+                Bukkit.getLogger().info("[BlocksTowerDefense] Connected to SQLite database."); // confirmation msg
 
                 // helper method
                 if (DatabaseManager.userExists(conn, uuidString)){ // if player exists, finish
-                    Bukkit.getLogger().info("[BlocksTowerDefense] Player '" +player.getName()+ "' exists in database, returning.");// confirmation msg
+                    Bukkit.getLogger().info("[BlocksTowerDefense] Player exists in database, returning.");// confirmation msg
                 }
 
                 // helper method
@@ -228,7 +228,7 @@ public class DatabaseManager {
 
         try {
             if (conn != null){ // if database connection works, continue
-                Bukkit.getLogger().info("[BlocksTowerDefense] Connected to SQLite database. (UPD)"); // confirmation msg
+                Bukkit.getLogger().info("[BlocksTowerDefense] Connected to SQLite database."); // confirmation msg
 
                 // if player exists, continue, if not, insert them into db before updating their attributes
                 // this check is only done in case the player somehow does not exist
@@ -275,6 +275,7 @@ public class DatabaseManager {
 
 
 
+        /*
 
         /*-- ALREADY ADDED --
         * 1, total games played // leaderboard
@@ -299,9 +300,9 @@ public class DatabaseManager {
         pstmt.setInt(5, victory ? 1 : 0);
 
         pstmt.setInt(6, upgrades.getTotalUpgradesBought());
-//        Bukkit.getLogger().warning("player '"+player.getName()+"' total upgrades bought: " + upgrades.getTotalUpgradesBought());
         pstmt.setString(7, uuidString);
         pstmt.executeUpdate();
+
 
 
 

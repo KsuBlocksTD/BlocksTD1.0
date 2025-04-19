@@ -67,7 +67,7 @@ public enum CreateEgg {
             // Correct key with plugin
             NamespacedKey key = new NamespacedKey(plugin, "tower_type");
 
-            // Store enum name
+            // Store enum name (e.g., BASIC, SNIPER, etc.)
             meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, this.name());
             meta.lore(lore);
             // Set egg meta

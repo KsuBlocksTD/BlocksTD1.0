@@ -8,9 +8,11 @@ import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -21,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static ksucapproj.blockstowerdefense1.commands.mtd.HubCommand.getHubFromConfig;
 import static ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI.giveCompass;
 import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.getPlayerEconomies;
 import static ksucapproj.blockstowerdefense1.logic.game_logic.Economy.playerJoin;
@@ -30,6 +33,7 @@ public class StartGame {
     private final JavaPlugin plugin;
     private final Map<Set<UUID>, GameSession> playerSessions = new ConcurrentHashMap<>();
     private static final Map<String, Boolean> healingDisabledMaps = new HashMap<>();
+    private static Location hubSpawn = getHubFromConfig();
 
     private Set<UUID> getSetFromPlayer(UUID playerUUID) {
         Set<UUID> Partyuuid = new HashSet<>();
@@ -198,13 +202,6 @@ public class StartGame {
         GameSession session = playerSessions.get(partyUUIDs);
         if (session.roundInProgress) return;
 
-        if (session.currentRound == 51) {
-            for (UUID uuid : partyUUIDs) {
-                gameEndStatus(uuid);
-            }
-            return;
-        }
-
         session.roundInProgress = true;
         session.totalZombiesThisRound = session.zombiesPerRound = session.currentRound * 5;
         session.zombiesKilled.set(0);
@@ -331,6 +328,8 @@ public class StartGame {
 
         setPlayerHealingDisabled(player, false);
 
+        player.teleport(hubSpawn);
+
         plugin.getLogger().info("Game session cleaned up for player " + player.getName());
     }
 
@@ -356,15 +355,42 @@ public class StartGame {
         // gives a round bonus based upon what round they are on
         econ.addMoneyOnRoundEnd(session.currentRound);
     }
-    public void gameEndStatus(UUID playerUUID){
 
-        GameSession session = playerSessions.get(getSetFromPlayer(playerUUID));
+    public void gameEndStatus(UUID playerUUID, boolean victory){
         Player player = Bukkit.getPlayer(playerUUID);
 
-        player.sendRichMessage("<light_purple>Congratulations! You won!");
-        DatabaseManager.updatePlayerData(PlayerUpgrades.getPlayerUpgradesMap().get(player), 3);
+        String msg;
+        if (victory) {
+            player.sendRichMessage("<light_purple>Congratulations! You won!");
+            spawnFirework(player);
+
+        }
+        else {
+            player.sendRichMessage("<light_purple>You lost! Game over..");
+        }
+
+        DatabaseManager.updatePlayerData(PlayerUpgrades.getPlayerUpgradesMap().get(player), victory, 3);
 
         cleanupPlayer(playerUUID);
+    }
+
+    public void spawnFirework(Player player) {
+        Location loc = player.getLocation(); // player’s feet
+        World world = player.getWorld();
+
+        Firework firework = world.spawn(loc, Firework.class);
+        FireworkMeta meta = firework.getFireworkMeta();
+
+        meta.addEffect(FireworkEffect.builder()
+                .withColor(Color.AQUA)
+                .withFade(Color.BLUE)
+                .with(FireworkEffect.Type.BALL_LARGE)
+                .flicker(true)
+                .trail(true)
+                .build());
+
+        meta.setPower(0); // power 0 = instant-ish
+        firework.setFireworkMeta(meta);
     }
 
 // various getters and setters

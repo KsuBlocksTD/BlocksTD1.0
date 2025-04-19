@@ -10,6 +10,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
 import ksucapproj.blockstowerdefense1.logic.GUI.TowerGUI;
 import ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI;
@@ -32,6 +33,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -51,6 +53,7 @@ public class PlayerEventHandler implements Listener {
     private final StartGame gameManager;
 
     public static final PartiesAPI api = BlocksTowerDefense1.getApi();
+    ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
 
     public PlayerEventHandler(JavaPlugin plugin, StartGame gameManager) {
         this.plugin = plugin;
@@ -420,6 +423,8 @@ public class PlayerEventHandler implements Listener {
     }
 
 
+
+
     // This event is for game logic when a zombie or special mob is killed
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
@@ -496,12 +501,18 @@ public class PlayerEventHandler implements Listener {
                 for (UUID listOfPlayer : listOfPlayers) {
                     Player currentPlayer = Bukkit.getPlayer(listOfPlayer);
                     GlowingTotem.reduceRoundsLeft(currentPlayer);
+                    if(currentRound == 51) {
+                        gameManager.gameEndStatus(currentPlayer.getUniqueId(), true);
+                    }
                     currentPlayer.sendRichMessage("<gold>Round " + (currentRound - 1) + " completed!");
                     currentPlayer.sendRichMessage("<green>Type /readyup for Round " + currentRound);
                 }
             }
         }
     }
+
+
+
 
     // This event is for economy logic when a mob is killed
     /// can maybe be merged with the event above
