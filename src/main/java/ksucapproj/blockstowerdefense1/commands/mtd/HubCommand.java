@@ -9,6 +9,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.logic.GUI.StartGameGUI;
 import ksucapproj.blockstowerdefense1.logic.TeleportationLogic;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -54,7 +55,9 @@ public class HubCommand {
 
         //sends player confirmation msg
         player.sendMessage("Teleporting to the hub...");
-
+        if(!StartGameGUI.hasCompass(player)) {
+            StartGameGUI.giveMapSelectorCompass(player);
+        }
 
         // if the player is not in a party or is not the party leader
         if (!Boolean.TRUE.equals(checkPartyLeaderStatus(player))) {

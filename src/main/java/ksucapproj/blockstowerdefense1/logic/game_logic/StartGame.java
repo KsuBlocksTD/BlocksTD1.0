@@ -4,6 +4,7 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
+import ksucapproj.blockstowerdefense1.logic.GUI.StartGameGUI;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
@@ -270,6 +271,27 @@ public class StartGame {
     }
 
 
+    public void checkIfEndRoundMessage(int round, Player player) {
+        String message = null;
+        Set<UUID> partyUUIDs = getSetFromPlayer(player.getUniqueId());
+
+        switch (round) {
+            case 2 -> message = "§aWatch out for those Iron Golems... they seem to be be shielding the zombies!";
+            case 11 -> message = "§bWitches inbound! I heard that they heal the undead!";
+            case 21 -> message = "§cWatch the floors! Silverfish are slippery buggers.";
+            case 31 -> message = "§6Piglins are certainly a morale boost for the enemy.";
+            case 41 -> message = "§4Be weary of Blazes! Towers seem to hate them.";
+        }
+
+        if (message != null) {
+            for (UUID uuid : partyUUIDs) {
+                Player currentPlayer = Bukkit.getPlayer(uuid);
+                if (currentPlayer == null) continue;
+                currentPlayer.sendRichMessage(message);
+            }
+        }
+    }
+
 
     //Removes all zombies that are part of a specific game session.
 
@@ -329,8 +351,11 @@ public class StartGame {
         setPlayerHealingDisabled(player, false);
 
         player.teleport(hubSpawn);
+        if(!StartGameGUI.hasCompass(player)) {
+            StartGameGUI.giveMapSelectorCompass(player);
+        }
 
-        plugin.getLogger().info("Game session cleaned up for player " + player.getName());
+        //plugin.getLogger().info("Game session cleaned up for player " + player.getName());
     }
 
     public boolean isPlayerInGame(UUID playerUUID) {
@@ -354,6 +379,7 @@ public class StartGame {
         Economy econ = getPlayerEconomies().get(Bukkit.getPlayer(playerUUID));
         // gives a round bonus based upon what round they are on
         econ.addMoneyOnRoundEnd(session.currentRound);
+        checkIfEndRoundMessage(session.currentRound, Bukkit.getPlayer(playerUUID));
     }
 
     public void gameEndStatus(UUID playerUUID, boolean victory){

@@ -199,7 +199,7 @@ public class Economy {
     // removes the player from the hashmap, takes their money,
     // and splits evenly it among all remaining players in the game
     public static void playerLeave(Player leaver){
-        Bukkit.broadcastMessage(leaver.getName() + " has left the game! Reallocating coins..");
+        leaver.sendRichMessage(leaver.getName() + " has left the game! Reallocating coins..");
 
 
 

@@ -12,6 +12,7 @@ import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
+import ksucapproj.blockstowerdefense1.logic.GUI.StartGameGUI;
 import ksucapproj.blockstowerdefense1.logic.GUI.TowerGUI;
 import ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI;
 import ksucapproj.blockstowerdefense1.logic.game_logic.Items.GlowingTotem;
@@ -20,6 +21,7 @@ import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerEggPurchase;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -34,7 +36,9 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -114,6 +118,7 @@ public class PlayerEventHandler implements Listener {
 
         // Clean up game data if player was in a game
         if (gameManager.isPlayerInGame(playerUUID)) {
+            player.getInventory().clear();
             gameManager.cleanupPlayer(playerUUID);
         }
     }
@@ -125,7 +130,7 @@ public class PlayerEventHandler implements Listener {
 
     // This event checks what the player clicked in the upgradeGUI
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClickopenChestGUI(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
         Inventory clickedInventory = event.getInventory();
@@ -209,7 +214,7 @@ public class PlayerEventHandler implements Listener {
     TowerGUI towerGUI = new TowerGUI();
 
     @EventHandler
-    public void onInventoryClick2(InventoryClickEvent event) {
+    public void onInventoryClickTowerGUI(InventoryClickEvent event) {
         // Check if it's one of our GUIs
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (!event.getView().title().equals(Component.text("Tower Control"))) return;
@@ -242,6 +247,47 @@ public class PlayerEventHandler implements Listener {
         towerGUI.openTowerGUI(player, tower, towerEntity);
         player.closeInventory();
     }
+
+    @EventHandler
+    public void onMapInteract(PlayerInteractEvent event) {
+        if (event.getItem() == null || event.getItem().getType() != Material.COMPASS) return;
+        if (!event.getAction().isRightClick()) return;
+
+        ItemMeta meta = event.getItem().getItemMeta();
+        if (meta == null) return;
+
+        NamespacedKey key = new NamespacedKey(BlocksTowerDefense1.getInstance(), "map_selector");
+        if (!meta.getPersistentDataContainer().has(key, PersistentDataType.BYTE)) return;
+
+        StartGameGUI.startGameGUI(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onMapSelectClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (event.getView().title().equals(Component.text("Select a Map").color(TextColor.color(100, 255, 100)))) {
+            event.setCancelled(true);
+
+            ItemStack clicked = event.getCurrentItem();
+
+            NamespacedKey mapKey = new NamespacedKey(BlocksTowerDefense1.getInstance(), "map_name");
+
+            if (clicked != null && clicked.getType() == Material.PAPER && clicked.hasItemMeta()) {
+                ItemMeta meta = clicked.getItemMeta();
+                PersistentDataContainer container = meta.getPersistentDataContainer();
+                if (!container.has(mapKey, PersistentDataType.STRING)) return;
+
+                // Handle map selection logic
+                String mapName = container.get(mapKey, PersistentDataType.STRING);
+                if (mapName == null) return;
+
+                player.closeInventory();
+                player.sendMessage("You selected map: " + mapName);
+                player.performCommand("startgame " + mapName);
+            }
+        }
+    }
+
 
 //    @EventHandler
 //    public void onInventoryClose2(org.bukkit.event.inventory.InventoryCloseEvent event) {
@@ -494,13 +540,14 @@ public class PlayerEventHandler implements Listener {
 
                 // Set round as no longer in progress
                 gameManager.setRoundInProgress(playerUUID, false);
-                gameManager.roundEndMoney(playerUUID);
+
                 List<UUID> listOfPlayers = gameManager.getListOfPlayersInGame(player.getUniqueId());
 
                 // Do all logic to all players in the game
                 for (UUID listOfPlayer : listOfPlayers) {
                     Player currentPlayer = Bukkit.getPlayer(listOfPlayer);
                     GlowingTotem.reduceRoundsLeft(currentPlayer);
+                    gameManager.roundEndMoney(currentPlayer.getUniqueId());
                     if(currentRound == 51) {
                         gameManager.gameEndStatus(currentPlayer.getUniqueId(), true);
                     }
