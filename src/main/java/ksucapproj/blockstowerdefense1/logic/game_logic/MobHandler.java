@@ -1,6 +1,6 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
-import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Items.GlowingTotem;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.*;
@@ -23,11 +23,12 @@ public class MobHandler {
     private static JavaPlugin plugin;
     // Track zombie movement tasks for cleanup
     private static final Map<UUID, BukkitTask> zombieMovementTasks = new ConcurrentHashMap<>();
+    // Track zombie healthbars
     private static final Map<UUID, BukkitTask> healthBarTasks = new ConcurrentHashMap<>();
     private static final double K = 0.059; // Growth rate factor
     private static final Random random = new Random();
-    private static StartGame gameManager;
-    //private static final Map<UUID, UUID> zombieOwners = new ConcurrentHashMap<>();
+    private static StartGame gameManager; // Get the gameManager from startgame
+
 
     public MobHandler(StartGame gameManager, JavaPlugin plugin) {
         MobHandler.plugin = plugin;
@@ -35,7 +36,7 @@ public class MobHandler {
     }
 
 
-
+    // Recursive formula to check how many armor pieces each zombie that spawns will have
     public static boolean checkIfBuffed(int round) {
         if (round < 1) return false; // Ensure round is valid
 
@@ -46,6 +47,7 @@ public class MobHandler {
         return random.nextDouble() < probability;
     }
 
+    // Every time a zombie is spawned it checks if there should be a special zombie spawned instead
     public static boolean checkifSpawnSpecial(int round) {
         // Calculate probability using the formula
         double probability = (0.14 / (1 + Math.exp(-0.1 * (round - 1)))) + 0.01;
@@ -55,6 +57,7 @@ public class MobHandler {
     }
 
 
+    // If a zombie rolls armor this will equip them with the correct armor
     public static void zombieEquip(int count, int currentRound, Zombie zombie) {
         // Chestplate logic
         Material chestplate = getArmorForRound(currentRound, "chestplate");
@@ -143,7 +146,7 @@ public class MobHandler {
         // Determine available mobs based on round
         if (currentRound >= 2) availableMobs.add(EntityType.IRON_GOLEM);
         if (currentRound >= 11) availableMobs.add(EntityType.WITCH);
-        if (currentRound >= 21) availableMobs.add(EntityType.ENDERMAN);
+        if (currentRound >= 21) availableMobs.add(EntityType.SILVERFISH);
         if (currentRound >= 31) availableMobs.add(EntityType.PIGLIN);
         if (currentRound >= 41) availableMobs.add(EntityType.BLAZE);
 
@@ -159,25 +162,25 @@ public class MobHandler {
 
         for (Entity entity : zombieLocation.getWorld().getNearbyEntities(zombieLocation, radius, radius, radius)) {
             if (entity instanceof IronGolem) {
-                zombie.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 10, 3));
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 10, 3)); // IronGolems apply  a 60% damage reduction
                 return;
             } else if (entity instanceof Witch) {
-                zombie.addPotionEffect(new PotionEffect(PotionEffectType.INSTANT_DAMAGE, 1, 1));
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.INSTANT_DAMAGE, 1, 1)); // Will heal nearby zombies every 20 ticks
                 return;
-            } else if (entity instanceof Enderman) {
-                zombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1));
+            } else if (entity instanceof Silverfish) {
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1)); // Doubles the speed of zombies
                 return;
             } else if (entity instanceof Piglin) {
-                zombie.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 1000, 2));
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 1000, 3)); // Gives nearby zombies 6 temporary HP
                 return;
             } else if (entity instanceof Blaze) {
-                zombie.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 18, 1)); // make them invulnerable until blaze is killed
+                zombie.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 18, 1)); // Make them invulnerable until blaze is killed
                 return;
             }
         }
     }
 
-
+    // Called in order to spawn the special or regular zombie
     public static Mob spawnMob(World world, String mapId, int currentRound) {
         // Count for random buffs loop
         int count = 0;
@@ -186,7 +189,7 @@ public class MobHandler {
         String randomPathId = MapData.getRandomPathId(mapId);
 
         // Get the starting location for this specific path
-        Location spawnPoint = MapData.getWaypoints(world, mapId, randomPathId).get(0);
+        Location spawnPoint = MapData.getWaypoints(world, mapId, randomPathId).getFirst();
         // If there are no waypoints, fall back to default start location
         if (spawnPoint == null) {
             spawnPoint = MapData.getPathStartLocation(world, mapId, String.valueOf(1));
@@ -194,15 +197,15 @@ public class MobHandler {
 
         // Spawn special mobs for difficulty increase
         if (checkifSpawnSpecial(currentRound)) {
-            EntityType type = getMob(currentRound);
+            EntityType type = getMob(currentRound); // Get random mob from list that can spawn currently
 
-            Entity entity = world.spawnEntity(spawnPoint, type);
+            Entity entity = world.spawnEntity(spawnPoint, type); // spawn the mob
 
             if (entity instanceof Mob mob) {
                 // Set spawn restrictions
                 mob.setAI(false);
                 mob.setCustomNameVisible(true);
-                if (mob instanceof Ageable ageable) {
+                if (mob instanceof Ageable ageable) { // ensure no baby piglins
                     ageable.setAdult();
                 }
 
@@ -217,11 +220,11 @@ public class MobHandler {
             }
         }
 
-        // Spawn zombie
+        // Spawn zombie if spawnspecial fails
         Zombie zombie = (Zombie) world.spawnEntity(spawnPoint, EntityType.ZOMBIE);
 
         // Loop to add buffs on the current zombie that scales with the current round
-        while (checkIfBuffed(currentRound)) {
+        while (checkIfBuffed(currentRound)) { // will loop up to 3 times to determine how much armor to give them
             if (count > 3) {break;}
             count++;
             zombieEquip(count, currentRound, zombie);
@@ -246,35 +249,26 @@ public class MobHandler {
         return zombie;
     }
 
-    // Modified followPath method to accept a specific pathId
+    // Follow the randomly selected path for the current map
     private static BukkitTask followPath(Mob zombie, World world, String mapId, String initialPathId) {
-        // Use the provided path ID instead of getting a random one
-        String currentPathId = initialPathId;
-
-        // Track which paths this zombie has already visited to prevent loops
-        Set<String> visitedPaths = new HashSet<>();
-        visitedPaths.add(currentPathId);
-
         // Get waypoints for the initial path
-        List<Location> waypoints = MapData.getWaypoints(world, mapId, currentPathId);
+        List<Location> waypoints = MapData.getWaypoints(world, mapId, initialPathId);
 
         if (waypoints == null || waypoints.isEmpty()) {
-            plugin.getLogger().warning("No waypoints found for map " + mapId + " path " + currentPathId);
+            plugin.getLogger().warning("No waypoints found for map " + mapId + " path " + initialPathId);
             return null;
         }
 
         return new BukkitRunnable() {
-            int waypointIndex = 0;
-            String pathId = currentPathId;
-            List<Location> currentWaypoints = waypoints;
-            final double baseStepDistance = 0.2;
+            int waypointIndex = 0; // The current waypoint the zombie is at
+            final List<Location> currentWaypoints = waypoints; // The waypoints for the current path
+            final double baseStepDistance = 0.2; // How far the zombie moves every tick
             final double slownessMultiplier = 0.5; // Reduces speed by half when slowed
             final double speedMultiplier = 2.0;// Doubles speed when applied
-            private int tickcounter = 0; // Used to execute some logic at a different rate than the rate of run()
+            private int tickcounter = 0; // Used to execute some logic at a different rate than the tick rate of run()
 
             @Override
             public void run() {
-                // Rest of the method remains unchanged
                 // If zombie is dead or invalid, clean up
                 if (zombie == null || zombie.isDead() || !zombie.isValid()) {
                     cancel();
@@ -287,13 +281,22 @@ public class MobHandler {
                     applyEffectBasedOnNearbyMob((Zombie) zombie);
                     tickcounter = 0;
                 }
+                // applying glowing effect to special mobs only every 10 ticks
+                else if(zombie.getType() != EntityType.ZOMBIE & tickcounter % 10 == 0){
+                    String playerUuidString0 = zombie.getMetadata("gameSession").getFirst().asString(); // Get one of the player's UUID's from the zombie meta
+                    UUID playerUUID0 = UUID.fromString(playerUuidString0);
+                    if(GlowingTotem.hasGlowingTotem(Bukkit.getPlayer(playerUUID0))) {
+                        zombie.addPotionEffect(PotionEffectType.GLOWING.createEffect(40, 6));
+                    }
+                }
+
 
                 // Calculate current step distance based on current effect
                 double stepDistance = baseStepDistance * (zombie.hasPotionEffect(PotionEffectType.SLOWNESS) ? slownessMultiplier : 1.0);
                 stepDistance = stepDistance * (zombie.hasPotionEffect(PotionEffectType.SPEED) ? speedMultiplier : 1.0);
 
                 if(zombie.hasPotionEffect(PotionEffectType.SLOWNESS) && tickcounter % 12 == 0) {
-                    // Visual effect of slowing
+                    // Visual effect of ALL slowness effects
                     zombie.getWorld().playSound(zombie.getLocation(), Sound.BLOCK_HONEY_BLOCK_STEP, 1f, 1f);
                     zombie.getWorld().spawnParticle(
                             Particle.FALLING_HONEY,
@@ -304,69 +307,41 @@ public class MobHandler {
                     );
                 }
 
-                // Check if we're done with the current path
+                // Check if we're done with the current path - end of path is always the end point
                 if (waypointIndex >= currentWaypoints.size()) {
-                    // If we reached the end of a path, check if it's an end location
-                    boolean isEndLocation = true;
+                    // Check if we have the player information to handle game end
+                    if (zombie.hasMetadata("gameSession")) {
+                        // Get required info to update values
+                        String playerUuidString = zombie.getMetadata("gameSession").getFirst().asString(); // Get one of the player's UUID's from the zombie meta
+                        UUID playerUUID = UUID.fromString(playerUuidString);
+                        List<UUID> listOfPlayers = gameManager.getListOfPlayersInGame(playerUUID); // Get all players in game from one player's UUID
 
-                    // Check if we're at a branch point and can take a new path
-                    if (MapData.hasPathBranches(mapId, pathId)) {
-                        List<MapData.BranchPoint> branchPoints = MapData.getPathBranches(mapId, pathId);
-
-                        for (MapData.BranchPoint branch : branchPoints) {
-                            // Check if this branch occurs at our current waypoint and we haven't visited the target path yet
-                            if (branch.getWaypointIndex() == waypointIndex - 1 && !visitedPaths.contains(branch.getTargetPathId())) {
-                                // Determine if we should take this branch based on its probability
-                                float random = new Random().nextFloat();
-                                if (random <= branch.getBranchChance()) {
-                                    // Take this branch
-                                    String newPathId = branch.getTargetPathId();
-                                    List<Location> newWaypoints = MapData.getWaypoints(world, mapId, newPathId);
-
-                                    if (newWaypoints != null && !newWaypoints.isEmpty()) {
-                                        // Switch to the new path
-                                        pathId = newPathId;
-                                        currentWaypoints = newWaypoints;
-                                        waypointIndex = 0;
-                                        visitedPaths.add(newPathId);
-                                        isEndLocation = false;
-                                        break;
-                                    }
-                                }
-                            }
+                        for (UUID listOfPlayer : listOfPlayers) { // Do all logic to all players in the game
+                            Player currentPlayer = Bukkit.getPlayer(listOfPlayer);
+                        if (gameManager.getZombiesPassed(playerUUID) > 9) {
+                            // If there have been more than 9 zombies that have passed the player
+                            handleGameEnd(currentPlayer, mapId);
+                            gameManager.cleanupPlayer(playerUUID);
+                            zombieMovementTasks.remove(zombie.getUniqueId());
+                            zombie.remove();
+                            cancel();
                         }
-                    }
-
-                    // If we didn't branch to a new path and reached the end of a path
-                    if (isEndLocation) {
-                        // Check if we have the player information to handle game end
-                        if (zombie.hasMetadata("gameSession")) {
-                            String playerUuidString = zombie.getMetadata("gameSession").getFirst().asString();
-                            UUID playerUUID = UUID.fromString(playerUuidString);
-                            Player player = Bukkit.getPlayer(playerUUID);
-
-                            if (player != null && player.isOnline() && gameManager.getZombiesPassed(playerUUID) > 9) {
-                                handleGameEnd(zombie, player, mapId);
-                                gameManager.cleanupPlayer(playerUUID);
-                                zombieMovementTasks.remove(zombie.getUniqueId());
-                                zombie.remove();
-                                cancel();
-                            }
-                            else {
-                                player.setInvulnerable(false);
-                                player.damage(2);
-                                player.setInvulnerable(true);
+                        else {
+                            // if a zombie passed but the player is still alive
+                                currentPlayer.setInvulnerable(false);
+                                currentPlayer.damage(2);
+                                currentPlayer.setInvulnerable(true);
                                 gameManager.setOneZombiesPassed(playerUUID);
-                                zombie.setKiller(null);
+                                zombie.setKiller(null); // As of 4/17 it counts this as a player kill still - needs better handling
                                 zombie.damage(9999);
-                                player.sendRichMessage("<red>A zombie has gotten past your defenses!");
+                                currentPlayer.sendRichMessage("<red>A zombie has gotten past your defenses!");
                             }
                         }
-
-                        cancel();
-                        zombieMovementTasks.remove(zombie.getUniqueId());
-                        return;
                     }
+
+                    cancel();
+                    zombieMovementTasks.remove(zombie.getUniqueId());
+                    return;
                 }
 
                 // Get the current target waypoint
@@ -393,28 +368,6 @@ public class MobHandler {
                 if (zombie.getLocation().distance(target) < stepDistance) {
                     waypointIndex++;
 
-                    // Check if we've reached a branch point and should consider taking it
-                    if (MapData.hasPathBranches(mapId, pathId)) {
-                        for (MapData.BranchPoint branch : MapData.getPathBranches(mapId, pathId)) {
-                            // Only consider branches at our current position that we haven't visited yet
-                            if (branch.getWaypointIndex() == waypointIndex - 1 && !visitedPaths.contains(branch.getTargetPathId())) {
-                                float random = new Random().nextFloat();
-                                if (random <= branch.getBranchChance()) {
-                                    // Switch paths
-                                    String newPathId = branch.getTargetPathId();
-                                    List<Location> newWaypoints = MapData.getWaypoints(world, mapId, newPathId);
-
-                                    if (newWaypoints != null && !newWaypoints.isEmpty()) {
-                                        pathId = newPathId;
-                                        currentWaypoints = newWaypoints;
-                                        waypointIndex = 0;
-                                        visitedPaths.add(newPathId);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
 
                 tickcounter++;
@@ -458,10 +411,7 @@ public class MobHandler {
         }.runTaskTimer(plugin, 0, 5); // Update every 1/4 second (5 ticks)
     }
 
-    private static void handleGameEnd(Mob zombie, Player player, String mapId) {
-        // Get the StartGame instance
-        StartGame gameManager = BlocksTowerDefense1.getInstance().getGameManager();
-
+    private static void handleGameEnd(Player player, String mapId) {
         // Notify the player
         player.sendRichMessage("<red>GAME OVER! A zombie reached the endpoint!");
         player.sendRichMessage("<red>All your progress has been reset!");
@@ -478,20 +428,16 @@ public class MobHandler {
         // Remove all zombies from this player's game
         removeZombiesForPlayer(player);
 
-        // Reset the player's game state
-        gameManager.resetPlayerGame(player, mapId);
-
     }
 
-    /**
-     * Remove all zombies associated with a player's game
-     */
+
+    //Remove all zombies associated with a player's game
     public static void removeZombiesForPlayer(Player player) {
         UUID playerUUID = player.getUniqueId();
 
         for (Entity entity : player.getWorld().getEntities()) {
             if (entity instanceof Mob && entity.hasMetadata("gameSession")) {
-                String sessionId = entity.getMetadata("gameSession").get(0).asString();
+                String sessionId = entity.getMetadata("gameSession").getFirst().asString();
                 if (sessionId.equals(playerUUID.toString())) {
                     // Cancel any tasks for this zombie
                     BukkitTask movementTask = zombieMovementTasks.get(entity.getUniqueId());
@@ -515,17 +461,16 @@ public class MobHandler {
         }
     }
 
-    /**
-     * Cancel all tasks for a player's game
-     */
+
+    // Cancel all tasks for a player's game
     public static void cancelTasksForPlayer(UUID playerUUID) {
         // Convert UUID to string for comparison
         String playerUuidString = playerUUID.toString();
 
         // Find and cancel tasks for zombies that belong to this player
-        for (Entity entity : Bukkit.getWorlds().get(0).getEntities()) {
+        for (Entity entity : Bukkit.getWorlds().getFirst().getEntities()) {
             if (entity instanceof Zombie && entity.hasMetadata("gameSession")) {
-                String sessionId = entity.getMetadata("gameSession").get(0).asString();
+                String sessionId = entity.getMetadata("gameSession").getFirst().asString();
                 if (sessionId.equals(playerUuidString)) {
                     UUID zombieUUID = entity.getUniqueId();
 

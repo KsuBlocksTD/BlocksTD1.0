@@ -25,28 +25,24 @@ public class TowerFactory {
         SPLASH(SplashTower.class),
         SLOW(SlowTower.class);
 
-        //private final int cost;
+
         private final Class<? extends Tower> towerClass;
 
         TowerType(Class<? extends Tower> towerClass) {
-            //this.cost = cost;
             this.towerClass = towerClass;
         }
-
-       // public int getCost() {
-//            return cost;
-//        }
 
         public Class<? extends Tower> getTowerClass() {
             return towerClass;
         }
     }
 
-    // Get the entities within the specified radius of the location
+    // Used to make sure you cant spam towers all on one block
     public static boolean nearbyTower(Location placementLocation, double radius) {
-        if(placementLocation == null) {return false;}
+        if(placementLocation == null) {return false;} // Handle null
         Collection<Villager> entities = placementLocation.getNearbyEntitiesByType(Villager.class, radius);
-        try {return !entities.isEmpty();} catch (Exception e) {
+        try {return !entities.isEmpty();} // If there's a nearby tower return false
+        catch (Exception e) {
             return false;
         }
 
@@ -54,13 +50,9 @@ public class TowerFactory {
 
 
     public static void placeTower(TowerType towerType, Player player, Location placementLocation, String mapId, JavaPlugin plugin, ItemStack item) {
-        // Check economy synchronously
-        //int coins = Economy.getPlayerMoney(player);
-
             boolean towerNearby = nearbyTower(placementLocation, .5);
 
-
-             //make sure you cant stack towers
+             // Make sure you cant stack towers
             if (towerNearby) {
                 player.sendRichMessage("<red>Invalid Tower location");
                 return;
@@ -70,10 +62,7 @@ public class TowerFactory {
                 // Use reflection to create the tower instance
                 towerType.getTowerClass().getConstructor(Location.class, Player.class, String.class, JavaPlugin.class).newInstance(placementLocation, player, mapId, plugin);
 
-                // Deduct coins -- coins are deducted when egg is purchased now
-                //Economy.spendMoney(player, towerType.getCost());
-
-                // Reduce item stack
+                // Remove egg used
                 item.setAmount(item.getAmount() - 1);
 
                 // Send success message
@@ -83,7 +72,7 @@ public class TowerFactory {
 
             } catch (Exception e) {
                 player.sendRichMessage("<red>Invalid Tower location exception");
-                //e.printStackTrace();
+                //e.printStackTrace(); - just clogs the server logs
             }
 
     }

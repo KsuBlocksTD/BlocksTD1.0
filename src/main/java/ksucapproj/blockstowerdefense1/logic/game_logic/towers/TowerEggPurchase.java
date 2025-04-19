@@ -15,8 +15,7 @@ public class TowerEggPurchase {
 
     private static final JavaPlugin plugin = BlocksTowerDefense1.getInstance();
 
-
-
+    // Allows eggs to be purchased instead of starting in player inventory
     public static boolean processPurchase(Player player, ItemStack clickedItem) {
 
         // Get the item meta
@@ -37,7 +36,7 @@ public class TowerEggPurchase {
             return false;  // No tower type data present
         }
 
-        // Get the tower type as a string (BASIC, SNIPER, etc.)
+        // Get the tower type as a string
         String typeName = container.get(key, PersistentDataType.STRING);
         CreateEgg towerType = CreateEgg.valueOf(typeName);
 
@@ -50,17 +49,15 @@ public class TowerEggPurchase {
             return false;  // Not enough coins
         }
 
-        // Deduct coins from the player (add your own logic for subtracting coins)
+        // Deduct coins from the player
         Economy.spendMoney(player, towerCost);
 
-        // Step 4: Give the player the egg
-        ItemStack towerEgg = towerType.createTowerEgg(CreateEgg.valueOf(typeName));  // You already have this method in CreateEgg
-
-        // Give the egg to the player
+        // Give the player the egg
+        ItemStack towerEgg = towerType.createTowerEgg(CreateEgg.valueOf(typeName));
         player.getInventory().addItem(towerEgg);
         player.sendMessage("§aYou bought a " + towerType.getDisplayName() + " for " + towerCost + " coins!");
 
-        return true;  // Successful purchase
+        return true;
     }
 
 

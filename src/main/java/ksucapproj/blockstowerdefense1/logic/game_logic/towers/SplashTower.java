@@ -3,10 +3,7 @@ package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
@@ -33,12 +30,15 @@ public class SplashTower extends Tower {
         // make it throw a potion eventually  this crap is obnoxious
 //        Sound sound = Sound.sound(Key.key("entity.splash_potion.throw"), Sound.Source.NEUTRAL, 1, 1);
 //        playSound(sound, towerEntity.getLocation(),  1f, 1f);
+
+        // add nearby entities into a queue based on distance
         PriorityQueue<Entity> targetQueue = new PriorityQueue<>(
                 Comparator.comparingDouble(e -> e.getLocation().distance(towerEntity.getLocation()))
         );
 
         List<Entity> nearbyEntities = towerEntity.getNearbyEntities(scanRadius, scanRadius, scanRadius);
         for (Entity entity : nearbyEntities) {
+            // we need to ensure the entitiy it grabs isnt another tower, and to ensure that the tower that kills the zombie gets credit
             if (entity instanceof Mob & entity.getType() != EntityType.VILLAGER) {
                 if (entity.hasMetadata("gameSession") && towerEntity.hasMetadata("owner")) {
                     String zombieOwner = entity.getMetadata("gameSession").getFirst().asString();
@@ -54,14 +54,14 @@ public class SplashTower extends Tower {
 
         if (!targetQueue.isEmpty()) {
             Entity target = targetQueue.poll();
-            faceTarget(target);
+            faceTarget(target); // to make sure it doesnt just stand there
             if (target instanceof Mob primaryZombie) {
                 // Damage primary target
-                if(primaryZombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
+                if(primaryZombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) { //Ensure that it can't kill zombies with fire resistance (from blazes)
                     primaryZombie.damage(0.0);
                 } else {primaryZombie.damage(config.getSplashTowerDamage());}
 
-                primaryZombie.getWorld().spawnParticle(Particle.EXPLOSION, primaryZombie.getLocation(), 8);
+                primaryZombie.getWorld().spawnParticle(Particle.EXPLOSION, primaryZombie.getLocation(), 8); //spawn attack effect
                 primaryZombie.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
 
                 // Damage nearby zombies within 2 blocks
@@ -69,10 +69,10 @@ public class SplashTower extends Tower {
                     if (entity instanceof Mob nearbyZombie &&
                             entity.getLocation().distance(primaryZombie.getLocation()) <= 2.0) {
 
-                        if(nearbyZombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
+                        if(nearbyZombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE) || nearbyZombie instanceof Silverfish) { //Ensure that it can't kill zombies with fire resistance (from blazes) or silverfish
                             nearbyZombie.damage(0.0);
                         } else {nearbyZombie.damage(config.getSplashTowerAOEDamage());}
-                        nearbyZombie.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
+                        nearbyZombie.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId()))); // This is for kill tracking credit
 
                     }
                 }

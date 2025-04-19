@@ -79,7 +79,7 @@ public class Economy {
 //        Bukkit.getLogger().warning(String.valueOf(config.getZombieReward()));
         mobKillRewards.put(EntityType.IRON_GOLEM, config.getGolemReward());
         mobKillRewards.put(EntityType.WITCH, config.getWitchReward());
-        mobKillRewards.put(EntityType.ENDERMAN, config.getEmanReward());
+        mobKillRewards.put(EntityType.SILVERFISH, config.getSfishReward());
         mobKillRewards.put(EntityType.PIGLIN, config.getPiglinReward());
         mobKillRewards.put(EntityType.BLAZE, config.getBlazeReward());
     }

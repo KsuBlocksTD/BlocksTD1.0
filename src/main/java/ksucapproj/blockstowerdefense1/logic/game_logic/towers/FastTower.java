@@ -29,12 +29,14 @@ public class FastTower extends Tower {
 
     @Override
     protected void attack() {
+        // add nearby entities into a queue based on distance
         PriorityQueue<Entity> targetQueue = new PriorityQueue<>(
                 Comparator.comparingDouble(e -> e.getLocation().distance(towerEntity.getLocation()))
         );
 
         List<Entity> nearbyEntities = towerEntity.getNearbyEntities(scanRadius, scanRadius, scanRadius);
         for (Entity entity : nearbyEntities) {
+            // we need to ensure the entitiy it grabs isnt another tower, and to ensure that the tower that kills the zombie gets credit
             if (entity instanceof Mob & entity.getType() != EntityType.VILLAGER) {
                 if (entity.hasMetadata("gameSession") && towerEntity.hasMetadata("owner")) {
                     String zombieOwner = entity.getMetadata("gameSession").getFirst().asString();
@@ -50,16 +52,16 @@ public class FastTower extends Tower {
 
         if (!targetQueue.isEmpty()) {
             Entity target = targetQueue.poll();
-            faceTarget(target);
+            faceTarget(target); // to make sure it doesnt just stand there
             if (target instanceof Mob zombie) {
-                // Particle effect for fast attacks
+                //spawn attack effect
                 zombie.getWorld().spawnParticle(Particle.SMOKE, zombie.getLocation(), 10);
-                // Low damage but rapid attacks
-                if(zombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
+
+                if(zombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) { //Ensure that it can't kill zombies with fire resistance (from blazes)
                     zombie.damage(0.0);
                 } else {zombie.damage(config.getFastTowerDamage());}
-                //                 this is the code for setting ownership for a tower:
-                target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
+                //this is the code for setting ownership for a tower:
+                target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId()))); // This is for kill tracking credit
             }
         }
     }
