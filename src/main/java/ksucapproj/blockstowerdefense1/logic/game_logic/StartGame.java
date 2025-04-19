@@ -287,6 +287,7 @@ public class StartGame {
             for (UUID uuid : partyUUIDs) {
                 Player currentPlayer = Bukkit.getPlayer(uuid);
                 if (currentPlayer == null) continue;
+                currentPlayer.sendRichMessage("=========================");
                 currentPlayer.sendRichMessage("<yellow>" + message);
             }
         }
@@ -379,7 +380,6 @@ public class StartGame {
         Economy econ = getPlayerEconomies().get(Bukkit.getPlayer(playerUUID));
         // gives a round bonus based upon what round they are on
         econ.addMoneyOnRoundEnd(session.currentRound);
-        checkIfEndRoundMessage(session.currentRound, Bukkit.getPlayer(playerUUID));
     }
 
     public void gameEndStatus(UUID playerUUID, boolean victory){
