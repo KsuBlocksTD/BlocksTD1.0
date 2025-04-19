@@ -276,18 +276,18 @@ public class StartGame {
         Set<UUID> partyUUIDs = getSetFromPlayer(player.getUniqueId());
 
         switch (round) {
-            case 2 -> message = "§aWatch out for those Iron Golems... they seem to be be shielding the zombies!";
-            case 11 -> message = "§bWitches inbound! I heard that they heal the undead!";
-            case 21 -> message = "§cWatch the floors! Silverfish are slippery buggers.";
-            case 31 -> message = "§6Piglins are certainly a morale boost for the enemy.";
-            case 41 -> message = "§4Be weary of Blazes! Towers seem to hate them.";
+            case 2 -> message = "Watch out for those Iron Golems... they seem to be be shielding the zombies!";
+            case 11 -> message = "Witches inbound! I heard that they heal the undead!";
+            case 21 -> message = "Watch the floors! Silverfish are slippery buggers.";
+            case 31 -> message = "Piglins are certainly a morale boost for the enemy.";
+            case 41 -> message = "Be weary of Blazes! Towers seem to hate them.";
         }
 
         if (message != null) {
             for (UUID uuid : partyUUIDs) {
                 Player currentPlayer = Bukkit.getPlayer(uuid);
                 if (currentPlayer == null) continue;
-                currentPlayer.sendRichMessage(message);
+                currentPlayer.sendRichMessage("<yellow>" + message);
             }
         }
     }
