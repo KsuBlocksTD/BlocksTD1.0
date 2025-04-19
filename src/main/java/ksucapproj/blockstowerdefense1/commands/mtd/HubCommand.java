@@ -107,9 +107,9 @@ public class HubCommand {
         }
 
         // creates the coordinates for the spawn location from the config
-        int x = config.getInt("btd.spawn.x");
+        double x = config.getDouble("btd.spawn.x");
         int y = config.getInt("btd.spawn.y");
-        int z = config.getInt("btd.spawn.z");
+        double z = config.getDouble("btd.spawn.z");
         float yaw = (float) config.getDouble("btd.spawn.yaw");
         float pitch = (float) config.getDouble("btd.spawn.pitch");
 

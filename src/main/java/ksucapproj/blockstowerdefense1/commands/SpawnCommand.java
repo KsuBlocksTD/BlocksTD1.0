@@ -53,9 +53,9 @@ public class SpawnCommand {
 
         // sets existing spawn config values to the player's world coordinate values
         config.set("btd.spawn.world", location.getWorld().getName());
-        config.set("btd.spawn.x", location.getBlockX());
+        config.set("btd.spawn.x", location.getX());
         config.set("btd.spawn.y", location.getBlockY());
-        config.set("btd.spawn.z", location.getBlockZ());
+        config.set("btd.spawn.z", location.getZ());
         config.set("btd.spawn.yaw", location.getYaw());
         config.set("btd.spawn.pitch", location.getPitch());
 //        player.sendMessage("World name: " + location.getWorld().getName());

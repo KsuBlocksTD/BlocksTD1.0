@@ -36,6 +36,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
     private StartGame gameManager;
     private ConfigOptions config;
     private Connection dbConnection;
+    private LeaderboardManager leaderboardManager;
 
 
     public BlocksTowerDefense1() {
@@ -45,9 +46,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("[BlocksTowerDefense1.0] Initializing BlocksTowerDefense1");
+        getLogger().info("[BlocksTowerDefense] Initializing BlocksTowerDefense1");
         api = Parties.getApi(); // For static api getter
-
 
         saveResource("config.yml", /* replace */ false);
         instance.reloadConfig();       // Ensures the latest config is loaded
@@ -56,14 +56,12 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         // confirmation msgs if config is initialized as null ICE
         if (config == null) {
-            getLogger().severe("[BlocksTowerDefense1] ERROR: ConfigOptions failed to initialize!");
+            getLogger().severe("[BlocksTowerDefense] ERROR: ConfigOptions failed to initialize!");
         } else {
-            getLogger().info("[BlocksTowerDefense1] ConfigOptions initialized successfully.");
+            getLogger().info("[BlocksTowerDefense] ConfigOptions initialized successfully.");
         }
 
-
         gameManager = new StartGame(this, api);
-
 
         // Use the same gameManager instance for PlayerEventHandler
         new MobHandler(gameManager, this);
@@ -72,25 +70,31 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         MapData.loadMaps(this);
 
-
-
-
         BukkitScheduler scheduler = this.getServer().getScheduler(); // For async tasking
 
-        // initializes PLaceholderAPI to be used in its class
+        // Initialize LeaderboardManager here
+        leaderboardManager = new LeaderboardManager();
+
+
+        // Ensure the leaderboard update only happens once DB connection is ready
+        CompletableFuture.supplyAsync(DatabaseManager::connect)
+                .thenAccept(conn -> {
+                    // Set DB connection
+                    BlocksTowerDefense1.getInstance().setDBConnection(conn);
+                    Bukkit.getLogger().info("[BlocksTowerDefense] DB connection established!");
+
+                    // Now that DB connection is ready, we can safely start updating the leaderboard
+                    startLeaderboardUpdateTask();
+                })
+                .exceptionally(ex -> {
+                    getLogger().severe("[BlocksTowerDefense] Failed to connect to DB: " + ex.getMessage());
+                    return null;
+                });
+
+        // Register PlaceholderAPI expansion immediately
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new PlaceholderAPIExpansion(this).register();
         }
-
-
-        // Creates connection to the DB asynchronously
-        CompletableFuture.supplyAsync(DatabaseManager::connect)
-                .thenAccept(conn -> {
-                    // sets DBconnection as the initialized conn value
-                    BlocksTowerDefense1.getInstance().setDBConnection(conn);
-                    Bukkit.getLogger().info("[BlocksTowerDefense1.0] DB connection established!");
-                });
-
 
         // **** This might be better off moved to the game session creation ****
         // needed for instantiating proper mob killing & economy function
@@ -99,10 +103,6 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             // register main commands here
-//            commands.registrar().register(TestCommand.flightCommand()); // is a test cmd
-//            commands.registrar().register(TestCommand.constructGiveItemCommand()); // is a test cmd
-//            commands.registrar().register(TestCommand.addCoinsCommand());
-//            commands.registrar().register(TestCommand.giveCoinsCommand());
             commands.registrar().register(CoinsCommand.addCoinsCommand()); // has btd functionality
             commands.registrar().register(CoinsCommand.giveCoinsCommand()); // has btd functionality
             commands.registrar().register(MtdCommand.register());
@@ -115,6 +115,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             commands.registrar().register(gameCommand.readyUpCommand());
             commands.registrar().register(gameCommand.quitGameCommand());
 
+            commands.registrar().register(ReloadLeaderboardsCommand.register());
+
         });
 
         scheduler.runTaskTimerAsynchronously(this, new AsyncTest(this), 20, Tick.tick().fromDuration(Duration.ofMinutes(15)));
@@ -126,10 +128,10 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
             world.setGameRule(GameRule.DO_MOB_LOOT, false);
             world.setTime(1000);
-            getLogger().info("[BlocksTowerDefense1.0] Weather and daylight cycle auto-disabled.");
+            getLogger().info("[BlocksTowerDefense] Weather and daylight cycle auto-disabled.");
         }
 
-        getLogger().warning("[BlocksTowerDefense1.0] Plugin injected");
+        getLogger().warning("[BlocksTowerDefense] Plugin injected");
     }
 
 
@@ -154,7 +156,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             PlayerUpgrades.getPlayerUpgradesMap().remove(player);
         }
 
-        getLogger().info("[BlocksTowerDefense1.0] Disabled BlocksTowerDefense1");
+        getLogger().info("[BlocksTowerDefense] Disabled BlocksTowerDefense1");
     }
 
 
@@ -168,8 +170,8 @@ public class BlocksTowerDefense1 extends JavaPlugin {
 
     public static BlocksTowerDefense1 getInstance() {
         if (instance == null) {
-            Bukkit.getLogger().severe("[BlocksTowerDefense1] ERROR: getInstance() was called before initialization!");
-            throw new IllegalStateException("BlocksTowerDefense1 instance is not yet initialized!");
+            Bukkit.getLogger().severe("[BlocksTowerDefense] ERROR: getInstance() was called before initialization!");
+            throw new IllegalStateException("BlocksTowerDefense instance is not yet initialized!");
         }
         return instance;
     }
@@ -182,4 +184,27 @@ public class BlocksTowerDefense1 extends JavaPlugin {
         dbConnection = conn;
     }
     public Connection getDBConnection() { return dbConnection;}
+
+    public LeaderboardManager getLeaderboardManager() {
+        return leaderboardManager;
+    }
+
+
+    // New method to start the leaderboard update task
+    private void startLeaderboardUpdateTask() {
+        // Check if the DB connection is still available
+        if (getDBConnection() != null) {
+            // Schedule the leaderboard update task to run asynchronously
+            Bukkit.getScheduler().runTaskTimerAsynchronously(
+                    this,
+                    () -> {
+                        getLeaderboardManager().updateAllLeaderboards();
+                    },
+                    0L,
+                    20L * 300 // Update every 5 minutes
+            );
+        } else {
+            getLogger().severe("[BlocksTowerDefense] DB connection is null. Leaderboard update will not run.");
+        }
+    }
 }
