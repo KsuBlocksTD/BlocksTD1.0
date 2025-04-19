@@ -133,7 +133,7 @@ btd:
         effect-radius: 5.0
 
       zombie:
-        reward: 15
+        reward: 16
 
       iron-golem:
         reward: 30
@@ -141,7 +141,7 @@ btd:
       witch:
         reward: 40
 
-      enderman:
+      silverfish:
         reward: 50
 
       piglin:

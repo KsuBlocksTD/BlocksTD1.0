@@ -186,8 +186,8 @@ public class ConfigOptions {
         return config.getInt("btd.attributes.mobs.witch.reward");
     }
 
-    public Integer getEmanReward() {
-        return config.getInt("btd.attributes.mobs.enderman.reward");
+    public Integer getSfishReward() {
+        return config.getInt("btd.attributes.mobs.silverfish.reward");
     }
 
     public Integer getPiglinReward() {

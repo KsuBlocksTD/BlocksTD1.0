@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,11 +57,12 @@ public class UpgradeGUI {
         gui.setItem(5, createGuiItem(Material.FEATHER, Component.text("Upgrade Speed Level").color(TextColor.color(155, 255, 155)), player));
         gui.setItem(7, createGuiItem(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, Component.text("Upgrade Sweeping edge Level").color(TextColor.color(255, 50, 50)), player));
         gui.setItem(10, createGuiItem(Material.SPIDER_EYE, Component.text("Upgrade Slowness Level").color(TextColor.color(5, 50, 250)), player));
-        gui.setItem(12, CreateEgg.BASIC.createTowerEgg(CreateEgg.BASIC));
-        gui.setItem(14, CreateEgg.SPLASH.createTowerEgg(CreateEgg.SPLASH));
-        gui.setItem(16, CreateEgg.SLOW.createTowerEgg(CreateEgg.SLOW));
-        gui.setItem(21, CreateEgg.SNIPER.createTowerEgg(CreateEgg.SNIPER));
-        gui.setItem(23, CreateEgg.FAST.createTowerEgg(CreateEgg.FAST));
+        gui.setItem(12, createGuiItem(Material.LIGHTNING_ROD, Component.text("Glowing Totem").color(TextColor.color(200, 176, 25)), player));
+        gui.setItem(14, CreateEgg.BASIC.createTowerEgg(CreateEgg.BASIC));
+        gui.setItem(16, CreateEgg.SPLASH.createTowerEgg(CreateEgg.SPLASH));
+        gui.setItem(21, CreateEgg.SLOW.createTowerEgg(CreateEgg.SLOW));
+        gui.setItem(23, CreateEgg.SNIPER.createTowerEgg(CreateEgg.SNIPER));
+        gui.setItem(25, CreateEgg.FAST.createTowerEgg(CreateEgg.FAST));
 
         openInventories.put(player, gui);
         player.openInventory(gui);
@@ -91,6 +93,11 @@ public class UpgradeGUI {
             }
             if(material == Material.SPIDER_EYE) {
                 lore.add(Component.text("Cost: " + (PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword().getSlownessLevel() +1)* config.getSlownessBaseCost()));
+                meta.lore(lore);
+            }
+            if(material == Material.LIGHTNING_ROD) {
+                lore.add(Component.text("Cost: 1000"));
+                lore.add(Component.text("Use to give Special Mobs the Glowing effect for 5 rounds"));
                 meta.lore(lore);
             }
             item.setItemMeta(meta);

@@ -17,6 +17,7 @@ import static ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpans
 
 
 public enum CreateEgg {
+    // Set meta for each egg
     BASIC("Wizard Tower", "A lightning tower with moderate damage and range", config.getBasicTowerCost()),
     FAST("Fast Tower",  "Rapid-fire tower with low damage but high attack speed", config.getFastTowerCost()),
     SNIPER("Sniper Tower", "Long-range tower with high damage but slow attack speed", config.getSniperTowerCost()),
@@ -49,7 +50,7 @@ public enum CreateEgg {
     }
 
 
-
+    // Used to put each egg inside the GUI
     public ItemStack createTowerEgg(CreateEgg type) {
         if (type == null) {
             return null;
@@ -66,10 +67,10 @@ public enum CreateEgg {
             // Correct key with plugin
             NamespacedKey key = new NamespacedKey(plugin, "tower_type");
 
-            // Store enum name (e.g., BASIC, SNIPER, etc.)
+            // Store enum name
             meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, this.name());
             meta.lore(lore);
-
+            // Set egg meta
             towerEgg.setItemMeta(meta);
         }
         return towerEgg;

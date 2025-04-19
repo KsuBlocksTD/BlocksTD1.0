@@ -10,10 +10,10 @@ import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
-import ksucapproj.blockstowerdefense1.ConfigOptions;
 import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
 import ksucapproj.blockstowerdefense1.logic.GUI.TowerGUI;
 import ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI;
+import ksucapproj.blockstowerdefense1.logic.game_logic.Items.GlowingTotem;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.Tower;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerEggPurchase;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerFactory;
@@ -51,7 +51,6 @@ public class PlayerEventHandler implements Listener {
     private final StartGame gameManager;
 
     public static final PartiesAPI api = BlocksTowerDefense1.getApi();
-    ConfigOptions config = BlocksTowerDefense1.getInstance().getBTDConfig();
 
     public PlayerEventHandler(JavaPlugin plugin, StartGame gameManager) {
         this.plugin = plugin;
@@ -60,36 +59,42 @@ public class PlayerEventHandler implements Listener {
     }
 
     // This event is for actions when the player joins the server
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event){
-        // activates the player join event for economy
-        Player player = event.getPlayer();
-
-        player.setHealth(20);
-        player.setSaturation(999999999);
-        player.setGameMode(GameMode.ADVENTURE);
-        player.setInvulnerable(true);
-
-
-//        // checks if msg on join is enabled
-//        // if so, send player the specified message
-//        if (config.getMOTDOnPlayerJoin() != null){
-//            player.sendMessage(config.getMOTDOnPlayerJoin());
-//        }
-
-        // this will eventually be the default greeting on player join
-//        event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
-
-        // this checks if a player is in the db already, if not, adds them to it
-        DatabaseManager.checkPlayerInDB(player, 2);
-
-    }
+//    @EventHandler
+//    public void onPlayerJoin(PlayerJoinEvent event){
+//        // activates the player join event for economy
+//        Player player = event.getPlayer();
+//
+//        player.setHealth(20);
+//        player.setSaturation(999999999);
+//        player.setGameMode(GameMode.ADVENTURE);
+//        player.setInvulnerable(true);
+//
+//
+////        // checks if msg on join is enabled
+////        // if so, send player the specified message
+////        if (config.getMOTDOnPlayerJoin() != null){
+////            player.sendMessage(config.getMOTDOnPlayerJoin());
+////        }
+//
+//        // this will eventually be the default greeting on player join
+////        event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
+//
+//        // this checks if a player is in the db already, if not, adds them to it
+//        DatabaseManager.checkPlayerInDB(player, 2);
+//
+//    }
 
     // This event handles players leaving mid-game
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
+
+        if(!gameManager.isInplayerSessions(playerUUID)) {
+            return;
+        }
+
 
         // Handle party system
         PartyPlayer partyPlayer = api.getPartyPlayer(playerUUID);
@@ -122,7 +127,6 @@ public class PlayerEventHandler implements Listener {
 
         Inventory clickedInventory = event.getInventory();
         if (openChestGUI.openInventories.get(player) != clickedInventory) return;
-
         event.setCancelled(true); // Prevent item movement
         if (event.getCurrentItem() == null) return;
 
@@ -142,17 +146,12 @@ public class PlayerEventHandler implements Listener {
             // applying upgrade and spending coins
             playerSword.applySwordMaterialUpgrade();
 
-            // returning new level of upgrade selected
-//            player.sendRichMessage("Your Sword Level Is Now <s_material>",
-//                    Placeholder.component("s_material", Component.text(String.valueOf(playerSword.getSwordLevel()))));
         }
         if (Objects.equals(clickedItem.getItemMeta().displayName(),
                 Component.text("Upgrade Strength Level").color(TextColor.color(100, 255, 255)))) {
 
             PlayerUpgrades playerUpgrades = PlayerUpgrades.getPlayerUpgradesMap().get(player);
             playerUpgrades.applyStrengthUpgrade();
-//            player.sendRichMessage("Your Strength Level Is Now <s_lvl>",
-//                    Placeholder.component("s_lvl", Component.text(String.valueOf(PlayerUpgrades.getPlayerUpgradesMap().get(player).getStrengthLevel()))));
 
         }
         if (Objects.equals(clickedItem.getItemMeta().displayName(),
@@ -160,8 +159,6 @@ public class PlayerEventHandler implements Listener {
 
             PlayerUpgrades playerUpgrades = PlayerUpgrades.getPlayerUpgradesMap().get(player);
             playerUpgrades.applySwiftnessUpgrade();
-//            player.sendRichMessage("Your Speed Level Is Now <s_lvl>",
-//                    Placeholder.component("s_lvl", Component.text(String.valueOf(PlayerUpgrades.getPlayerUpgradesMap().get(player).getSwiftnessLevel()))));
 
         }
         if (Objects.equals(clickedItem.getItemMeta().displayName(),
@@ -169,8 +166,6 @@ public class PlayerEventHandler implements Listener {
 
             PlayerSword playerSword = PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword();
             playerSword.applySweepingEdgeUpgrade();
-//            player.sendRichMessage("Your Sweeping edge Level Is Now <s_lvl>",
-//                    Placeholder.component("s_lvl", Component.text(String.valueOf(PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword().getSweepingEdgeLevel()))));
 
         }
         if (Objects.equals(clickedItem.getItemMeta().displayName(),
@@ -178,13 +173,30 @@ public class PlayerEventHandler implements Listener {
 
             PlayerSword playerSword = PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword();
             playerSword.applySlownessUpgrade();
-//            player.sendRichMessage("Your Slowness Level Is Now <s_lvl>",
-//                    Placeholder.component("s_lvl", Component.text(String.valueOf(PlayerUpgrades.getPlayerUpgradesMap().get(player).getSword().getSlownessLevel()))));
 
         }
         if(clickedItem.getType() == Material.ZOMBIE_SPAWN_EGG){
             boolean tf = TowerEggPurchase.processPurchase(player, clickedItem);
-           // if (tf) {player.sendMessage("Purchased " + clickedItem.displayName());} else {player.sendMessage("Purchased failed for " + clickedItem.displayName());}
+        }
+        if(clickedItem.getType() == Material.LIGHTNING_ROD) {
+            if(Economy.getPlayerMoney(player) < 1000) {
+                player.sendRichMessage("<red>You dont have enough coins for this!");
+                openChestGUI.openInventories.remove(player);
+                player.closeInventory();
+                return;
+            }
+            if(!GlowingTotem.hasGlowingTotem(player)) {
+                Economy.spendMoney(player, 1000);
+                // Get all players in game from one player's UUID
+                List<UUID> listOfPlayers = gameManager.getListOfPlayersInGame(player.getUniqueId());
+
+                // Do all logic to all players in the game
+                for (UUID listOfPlayer : listOfPlayers) {
+                    Player currentPlayer = Bukkit.getPlayer(listOfPlayer);
+                    currentPlayer.getInventory().addItem(GlowingTotem.createGTotem(currentPlayer.getUniqueId()));
+                    player.sendRichMessage("You purchased a Totem of Glowing!");
+                }
+            } else player.sendRichMessage("You already have a Totem of Glowing");
         }
         openChestGUI.openInventories.remove(player);
         player.closeInventory();
@@ -228,12 +240,12 @@ public class PlayerEventHandler implements Listener {
         player.closeInventory();
     }
 
-    @EventHandler
-    public void onInventoryClose2(org.bukkit.event.inventory.InventoryCloseEvent event) {
-        if (event.getPlayer() instanceof Player) {
-            openGUIs.remove(event.getPlayer().getUniqueId());
-        }
-    }
+//    @EventHandler
+//    public void onInventoryClose2(org.bukkit.event.inventory.InventoryCloseEvent event) {
+//        if (event.getPlayer() instanceof Player) {
+//            openGUIs.remove(event.getPlayer().getUniqueId());
+//        }
+//    }
 
     @EventHandler
     public void onTowerInteract(PlayerInteractEntityEvent event) {
@@ -246,9 +258,9 @@ public class PlayerEventHandler implements Listener {
             return;
         }
 
-        // Check if player owns the tower or is an admin
+        // Check if player owns the tower
         Player player = event.getPlayer();
-        if (!isOwnerOrAdmin(player, villager)) {
+        if (!isTowerOwner(player, villager)) {
             player.sendMessage("§cYou don't own this tower!");
             return;
         }
@@ -265,12 +277,7 @@ public class PlayerEventHandler implements Listener {
         towerGUI.openTowerGUI(player, tower, villager);
     }
 
-    private boolean isOwnerOrAdmin(Player player, Villager villager) {
-        // Check if player is an admin (has permission)
-        if (player.hasPermission("blockstowerdefense.admin")) {
-            return true;
-        }
-
+    private boolean isTowerOwner(Player player, Villager villager) {
         // Check if player is the owner
         List<MetadataValue> metadata = villager.getMetadata("owner");
         if (metadata.isEmpty()) {
@@ -286,7 +293,7 @@ public class PlayerEventHandler implements Listener {
         }
     }
 
-    /// can maybe be removed?
+    // can maybe be removed?
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         openChestGUI.openInventories.remove(event.getPlayer());
@@ -405,8 +412,6 @@ public class PlayerEventHandler implements Listener {
             // Cancel normal regeneration sources
             EntityRegainHealthEvent.RegainReason reason = event.getRegainReason();
 
-            // We can allow certain types of healing if needed by not cancelling specific reasons
-            // For example, to allow commands to heal players:
             if (reason != EntityRegainHealthEvent.RegainReason.CUSTOM) {
                 event.setCancelled(true);
             }
@@ -425,6 +430,8 @@ public class PlayerEventHandler implements Listener {
         if (!zombie.hasMetadata("gameSession")) {
             return;
         }
+        zombie.customName(null);
+        zombie.setCustomNameVisible(false);
 
         String gameSessionId = zombie.getMetadata("gameSession").getFirst().asString();
         UUID playerUUID = UUID.fromString(gameSessionId);
@@ -454,10 +461,15 @@ public class PlayerEventHandler implements Listener {
                 // Set round as no longer in progress
                 gameManager.setRoundInProgress(playerUUID, false);
                 gameManager.roundEndMoney(playerUUID);
+                List<UUID> listOfPlayers = gameManager.getListOfPlayersInGame(player.getUniqueId());
 
-
-                Bukkit.broadcastMessage(ChatColor.GOLD + "Round " + (currentRound - 1) + " completed!");
-                Bukkit.broadcastMessage(ChatColor.GREEN + "Type /readyup for Round " + currentRound);
+                // Do all logic to all players in the game
+                for (UUID listOfPlayer : listOfPlayers) {
+                    Player currentPlayer = Bukkit.getPlayer(listOfPlayer);
+                    GlowingTotem.reduceRoundsLeft(currentPlayer);
+                    currentPlayer.sendRichMessage("<gold>Round " + (currentRound - 1) + " completed!");
+                    currentPlayer.sendRichMessage("<green>Type /readyup for Round " + currentRound);
+                }
             }
         }
     }

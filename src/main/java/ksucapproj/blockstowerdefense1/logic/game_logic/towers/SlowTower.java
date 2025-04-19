@@ -19,7 +19,6 @@ import static ksucapproj.blockstowerdefense1.placeholderAPI.PlaceholderAPIExpans
 
 public class SlowTower extends Tower {
     public SlowTower(Location location, Player owner, String mapId, JavaPlugin plugin) {
-        // Medium scan radius, medium attack interval, apply slowness
         super(location, owner, mapId, config.getSlowTowerRadius(), config.getSlowTowerAttacksp(), plugin);
     }
 
@@ -30,12 +29,14 @@ public class SlowTower extends Tower {
 
     @Override
     protected void attack() {
+        // add nearby entities into a queue based on distance
         PriorityQueue<Entity> targetQueue = new PriorityQueue<>(
                 Comparator.comparingDouble(e -> e.getLocation().distance(towerEntity.getLocation()))
         );
 
         List<Entity> nearbyEntities = towerEntity.getNearbyEntities(scanRadius, scanRadius, scanRadius);
         for (Entity entity : nearbyEntities) {
+            // we need to ensure the entitiy it grabs isnt another tower, and to ensure that the tower that kills the zombie gets credit
             if (entity instanceof Mob & entity.getType() != EntityType.VILLAGER) {
                 if (entity.hasMetadata("gameSession") && towerEntity.hasMetadata("owner")) {
                     String zombieOwner = entity.getMetadata("gameSession").getFirst().asString();
@@ -51,22 +52,22 @@ public class SlowTower extends Tower {
 
         if (!targetQueue.isEmpty()) {
             Entity target = targetQueue.poll();
-            faceTarget(target);
+            faceTarget(target); // to make sure it doesnt just stand there
             if (target instanceof Mob zombie) {
-                // Minimal direct damage
-                if(zombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
+
+                if(zombie.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) { //Ensure that it can't kill zombies with fire resistance (from blazes)
                     zombie.damage(0.0);
                 } else {zombie.damage(config.getSlowTowerDamage());}
-                target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId())));
+                target.setMetadata("attacker", new FixedMetadataValue(plugin, getTowerOwner(towerEntity.getUniqueId()))); // This is for kill tracking credit
 
                 // Apply slowness effect
                 zombie.addPotionEffect(new PotionEffect(
                         PotionEffectType.SLOWNESS,
                         100,  // Duration (5 seconds)
-                        2     //
+                        2
                 ));
 
-//                // Visual effect of slowing
+//                // Visual effect of slowing THIS IS DONE FOR ALL SLOWNESS EFFECTS INSIDE MOBHANDLER NOW
 //                zombie.getWorld().spawnParticle(
 //                        Particle.DRIPPING_HONEY,
 //                        zombie.getLocation(),

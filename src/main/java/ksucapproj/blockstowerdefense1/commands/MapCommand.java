@@ -90,28 +90,6 @@ public class MapCommand {
                         )
                 )
 
-                // Add a branch point
-                .then(Commands.literal("addbranch")
-                        .then(Commands.argument("map_id", StringArgumentType.word())
-                                .suggests(MapCommand::getAvailableMapsSuggestions)
-                                .then(Commands.argument("source_path", StringArgumentType.word())
-                                        .suggests(MapCommand::getAvailablePathsSuggestions)
-                                        .then(Commands.argument("waypoint_index", IntegerArgumentType.integer(0))
-                                                .then(Commands.argument("target_path", StringArgumentType.word())
-                                                        .suggests(MapCommand::getAvailablePathsSuggestions)
-                                                        .executes(context -> executeAddBranch(context, 0.5f))
-                                                        .then(Commands.argument("chance", FloatArgumentType.floatArg(0, 1))
-                                                                .executes(context -> executeAddBranch(
-                                                                        context,
-                                                                        FloatArgumentType.getFloat(context, "chance")
-                                                                ))
-                                                        )
-                                                )
-                                        )
-                                )
-                        )
-                )
-
                 // Clear waypoints from a specific path
                 .then(Commands.literal("clearwp")
                         .then(Commands.argument("map_id", StringArgumentType.word())
@@ -354,33 +332,6 @@ public class MapCommand {
         return 1;
     }
 
-    // Add a branch point
-    private static int executeAddBranch(final CommandContext<CommandSourceStack> ctx, float chance) {
-        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
-            return 1;
-        }
-
-        String mapId = StringArgumentType.getString(ctx, "map_id");
-        String sourcePath = StringArgumentType.getString(ctx, "source_path");
-        int waypointIndex = IntegerArgumentType.getInteger(ctx, "waypoint_index");
-        String targetPath = StringArgumentType.getString(ctx, "target_path");
-
-        if (MapData.addBranchPoint(mapId, sourcePath, waypointIndex, targetPath, chance)) {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(
-                    "Added branch from path <green>" + sourcePath +
-                            "</green> at waypoint <yellow>#" + waypointIndex +
-                            "</yellow> to path <green>" + targetPath +
-                            "</green> with <yellow>" + (int)(chance * 100) +
-                            "%</yellow> chance."
-            ));
-        } else {
-            player.sendMessage(MiniMessage.miniMessage().deserialize(
-                    "Failed to add branch. Check that all paths exist and the waypoint index is valid."
-            ));
-        }
-        return 1;
-    }
-
     // Clear specific path
     private static int executeClearSpecificPath(final CommandContext<CommandSourceStack> ctx) {
         if (!(ctx.getSource().getExecutor() instanceof Player player)) {
@@ -422,14 +373,10 @@ public class MapCommand {
         player.sendMessage(Component.text("==== Paths for map " + mapId + " (" + pathIds.size() + ") ====", NamedTextColor.GOLD));
         for (String pathId : pathIds) {
             int waypointCount = MapData.getWaypointCount(mapId, pathId);
-            boolean hasBranches = MapData.hasPathBranches(mapId, pathId);
 
             Component pathInfo = Component.text("- " + pathId, NamedTextColor.GREEN)
                     .append(Component.text(" (" + waypointCount + " waypoints)", NamedTextColor.YELLOW));
 
-            if (hasBranches) {
-                pathInfo = pathInfo.append(Component.text(" [has branches]", NamedTextColor.AQUA));
-            }
 
             player.sendMessage(pathInfo);
         }
@@ -462,7 +409,6 @@ public class MapCommand {
         }
 
         List<Location> waypoints = pathData.getWaypoints();
-        List<MapData.BranchPoint> branches = pathData.getBranchPoints();
 
         player.sendMessage(Component.text("==== Path: " + pathId + " on Map: " + mapId + " ====", NamedTextColor.GOLD));
 
@@ -490,18 +436,6 @@ public class MapCommand {
                     .append(Component.text("X: " + formatCoordinate(wp.getX()) +
                             ", Y: " + formatCoordinate(wp.getY()) +
                             ", Z: " + formatCoordinate(wp.getZ()), NamedTextColor.GRAY)));
-        }
-
-        if (!branches.isEmpty()) {
-            player.sendMessage(Component.text("Branch Points: " + branches.size(), NamedTextColor.AQUA));
-            for (MapData.BranchPoint branch : branches) {
-                int wpIndex = branch.getWaypointIndex();
-                String targetPath = branch.getTargetPathId();
-                float chance = branch.getBranchChance();
-
-                player.sendMessage(Component.text("  At waypoint #" + wpIndex +
-                        " → " + targetPath + " (" + (int)(chance * 100) + "% chance)", NamedTextColor.AQUA));
-            }
         }
 
         return 1;
@@ -532,14 +466,10 @@ public class MapCommand {
         for (String pathId : pathIds) {
             List<Location> waypoints = map.getWaypoints(pathId);
             int wpCount = waypoints.size();
-            boolean hasBranches = MapData.hasPathBranches(mapId, pathId);
 
             Component pathInfo = Component.text("  " + pathId + ": ", NamedTextColor.GREEN)
                     .append(Component.text((wpCount > 0 ? wpCount - 1 : 0) + " waypoints", NamedTextColor.GRAY));
 
-            if (hasBranches) {
-                pathInfo = pathInfo.append(Component.text(" [has branches]", NamedTextColor.AQUA));
-            }
 
             // Show start and end points if available
             if (wpCount > 0) {
@@ -587,8 +517,6 @@ public class MapCommand {
                 .append(Component.text(" - Add waypoint to path", NamedTextColor.GRAY)));
         player.sendMessage(Component.text("/tdmap removepath <map_id> <path_id>", NamedTextColor.YELLOW)
                 .append(Component.text(" - Remove a path", NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/tdmap addbranch <map_id> <source_path> <wp_index> <target_path> [chance]", NamedTextColor.YELLOW)
-                .append(Component.text(" - Add branch between paths", NamedTextColor.GRAY)));
         player.sendMessage(Component.text("/tdmap clearwp <map_id> <path_id>", NamedTextColor.YELLOW)
                 .append(Component.text(" - Clear waypoints from path", NamedTextColor.GRAY)));
         player.sendMessage(Component.text("/tdmap paths <map_id>", NamedTextColor.YELLOW)

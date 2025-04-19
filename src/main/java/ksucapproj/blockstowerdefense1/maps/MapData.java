@@ -37,24 +37,9 @@ public class MapData {
 
         // Add a path with its starting point and waypoints
         public void addPath(String pathId, Location startLocation, List<Location> waypoints) {
-            paths.put(pathId, new PathData(pathId, startLocation, waypoints, new ArrayList<>()));
+            paths.put(pathId, new PathData(pathId, startLocation, waypoints));
         }
 
-        // Add a branch from a path to another path at a specific waypoint index
-        public boolean addBranchPoint(String sourcePathId, int waypointIndex, String targetPathId, float chance) {
-            PathData sourcePath = paths.get(sourcePathId);
-            if (sourcePath == null || !paths.containsKey(targetPathId)) {
-                return false;
-            }
-
-            if (waypointIndex < 0 || waypointIndex >= sourcePath.getWaypoints().size()) {
-                return false;
-            }
-
-            BranchPoint branchPoint = new BranchPoint(waypointIndex, targetPathId, chance);
-            sourcePath.addBranchPoint(branchPoint);
-            return true;
-        }
 
         // Get waypoints for a specific path
         public List<Location> getWaypoints(String pathId) {
@@ -65,29 +50,6 @@ public class MapData {
             return path.getWaypoints();
         }
 
-        // Get all end locations (final waypoint of each path)
-        public List<Location> getEndLocations() {
-            List<Location> endLocations = new ArrayList<>();
-            for (PathData path : paths.values()) {
-                Location endLoc = path.getEndLocation();
-                if (endLoc != null) {
-                    endLocations.add(endLoc.clone());
-                }
-            }
-            return endLocations;
-        }
-
-        // Get all start locations (one per path)
-        public List<Location> getStartLocations() {
-            List<Location> startLocations = new ArrayList<>();
-            for (PathData path : paths.values()) {
-                Location startLoc = path.getStartLocation();
-                if (startLoc != null) {
-                    startLocations.add(startLoc.clone());
-                }
-            }
-            return startLocations;
-        }
 
         // Get a random path ID
         public String getRandomPathId() {
@@ -116,78 +78,26 @@ public class MapData {
             }
             return paths.remove(pathId) != null;
         }
-
-        // Update path start location
-        public boolean updatePathStart(String pathId, Location startLocation) {
-            PathData path = paths.get(pathId);
-            if (path == null) {
-                return false;
-            }
-            path.setStartLocation(startLocation.clone());
-            return true;
-        }
     }
 
-    // Class to represent branch points in a path
-    public static class BranchPoint {
-        private final int waypointIndex;
-        private final String targetPathId;
-        private float branchChance; // Probability of taking this branch (0.0 - 1.0)
 
-        public BranchPoint(int waypointIndex, String targetPathId) {
-            this(waypointIndex, targetPathId, 0.5f); // Default 50% chance
-        }
-
-        public BranchPoint(int waypointIndex, String targetPathId, float branchChance) {
-            this.waypointIndex = waypointIndex;
-            this.targetPathId = targetPathId;
-            this.branchChance = branchChance;
-        }
-
-        public int getWaypointIndex() {
-            return waypointIndex;
-        }
-
-        public String getTargetPathId() {
-            return targetPathId;
-        }
-
-        public float getBranchChance() {
-            return branchChance;
-        }
-
-        public void setBranchChance(float chance) {
-            this.branchChance = Math.max(0.0f, Math.min(1.0f, chance));
-        }
-    }
-
-    // Class to represent a path with a start location, waypoints and branch points
+    // Class to represent a path with a start location and waypoints
     public static class PathData {
         private final String pathId;
         private Location startLocation;
         private final List<Location> waypoints;
-        private final List<BranchPoint> branchPoints;
 
-        public PathData(String pathId, Location startLocation, List<Location> waypoints, List<BranchPoint> branchPoints) {
+        public PathData(String pathId, Location startLocation, List<Location> waypoints) {
             this.pathId = pathId;
             this.startLocation = startLocation != null ? startLocation.clone() : null;
             this.waypoints = new ArrayList<>();
             for (Location waypoint : waypoints) {
                 this.waypoints.add(waypoint.clone());
             }
-            this.branchPoints = branchPoints != null ? new ArrayList<>(branchPoints) : new ArrayList<>();
-        }
-
-        public String getPathId() {
-            return pathId;
         }
 
         public Location getStartLocation() {
             return startLocation != null ? startLocation.clone() : null;
-        }
-
-        public void setStartLocation(Location location) {
-            this.startLocation = location.clone();
         }
 
         public List<Location> getWaypoints() {
@@ -198,34 +108,14 @@ public class MapData {
             return waypointsCopy;
         }
 
-        public List<BranchPoint> getBranchPoints() {
-            return new ArrayList<>(branchPoints);
-        }
 
         public void addWaypoint(Location location) {
             waypoints.add(location.clone());
         }
 
-        public void addBranchPoint(BranchPoint branchPoint) {
-            branchPoints.add(branchPoint);
-        }
-
-        public void removeBranchPoint(int index) {
-            if (index >= 0 && index < branchPoints.size()) {
-                branchPoints.remove(index);
-            }
-        }
 
         public void clearWaypoints() {
             waypoints.clear();
-            branchPoints.clear();
-        }
-
-        public Location getEndLocation() {
-            if (waypoints.isEmpty()) {
-                return null;
-            }
-            return waypoints.get(waypoints.size() - 1).clone();
         }
     }
 
@@ -294,29 +184,12 @@ public class MapData {
                             }
 
                             // Create path data
-                            PathData pathData = new PathData(pathId, startLocation, waypoints, new ArrayList<>());
+                            PathData pathData = new PathData(pathId, startLocation, waypoints);
 
-                            // Load branch points
-                            if (config.contains(pathPath + ".branches")) {
-                                for (String branchKey : config.getConfigurationSection(pathPath + ".branches").getKeys(false)) {
-                                    String branchPath = pathPath + ".branches." + branchKey;
-
-                                    int waypointIndex = config.getInt(branchPath + ".waypointIndex");
-                                    String targetPathId = config.getString(branchPath + ".targetPath");
-                                    float chance = (float) config.getDouble(branchPath + ".chance", 0.5);
-
-                                    BranchPoint branchPoint = new BranchPoint(waypointIndex, targetPathId, chance);
-                                    pathData.addBranchPoint(branchPoint);
-                                }
-                            }
 
                             // Add path to map
                             mapDetails.addPath(pathId, startLocation, pathData.getWaypoints());
 
-                            // Add branch points after all paths are loaded
-                            for (BranchPoint branch : pathData.getBranchPoints()) {
-                                mapDetails.addBranchPoint(pathId, branch.getWaypointIndex(), branch.getTargetPathId(), branch.getBranchChance());
-                            }
                         }
                     }
 
@@ -395,17 +268,6 @@ public class MapData {
                         config.set("maps." + mapId + ".paths." + pathId + ".waypoints." + wpKey + ".z", wp.getZ());
                         config.set("maps." + mapId + ".paths." + pathId + ".waypoints." + wpKey + ".yaw", wp.getYaw());
                         config.set("maps." + mapId + ".paths." + pathId + ".waypoints." + wpKey + ".pitch", wp.getPitch());
-                    }
-
-                    // Save branch points
-                    List<BranchPoint> branchPoints = pathData.getBranchPoints();
-                    for (int i = 0; i < branchPoints.size(); i++) {
-                        BranchPoint branch = branchPoints.get(i);
-                        String branchKey = "branch" + (i + 1);
-
-                        config.set("maps." + mapId + ".paths." + pathId + ".branches." + branchKey + ".waypointIndex", branch.getWaypointIndex());
-                        config.set("maps." + mapId + ".paths." + pathId + ".branches." + branchKey + ".targetPath", branch.getTargetPathId());
-                        config.set("maps." + mapId + ".paths." + pathId + ".branches." + branchKey + ".chance", branch.getBranchChance());
                     }
                 }
             }
@@ -503,20 +365,6 @@ public class MapData {
         return true;
     }
 
-    // Add a branch point to a path
-    public static boolean addBranchPoint(String mapId, String sourcePathId, int waypointIndex, String targetPathId, float chance) {
-        MapDetails map = maps.get(mapId);
-        if (map == null) {
-            return false; // Map doesn't exist
-        }
-
-        if (map.addBranchPoint(sourcePathId, waypointIndex, targetPathId, chance)) {
-            saveMaps();
-            return true;
-        }
-        return false;
-    }
-
     // Clear all waypoints from a specific path
     public static boolean clearPath(String mapId, String pathId) {
         MapDetails map = maps.get(mapId);
@@ -545,20 +393,6 @@ public class MapData {
         return false;
     }
 
-    // Update the start location for a path
-    public static boolean updatePathStart(String mapId, String pathId, Location startLocation) {
-        MapDetails map = maps.get(mapId);
-        if (map == null) {
-            return false; // Map doesn't exist
-        }
-
-        if (map.updatePathStart(pathId, startLocation)) {
-            saveMaps();
-            return true;
-        }
-        return false;
-    }
-
     // Get available map IDs
     public static List<String> getAvailableMaps() {
         return new ArrayList<>(maps.keySet());
@@ -578,11 +412,6 @@ public class MapData {
     // Get map details by ID
     public static MapDetails getMap(String mapId) {
         return maps.get(mapId);
-    }
-
-    // Get default map details
-    public static MapDetails getDefaultMap() {
-        return defaultMap != null ? maps.get(defaultMap) : null;
     }
 
     // Get the number of waypoints in a specific path of a map
@@ -605,40 +434,6 @@ public class MapData {
         return map.getPathIds();
     }
 
-    // Get all end locations for a map
-    public static List<Location> getEndLocations(World world, String mapId) {
-        MapDetails map = maps.get(mapId);
-        if (map == null) {
-            return new ArrayList<>();
-        }
-
-        List<Location> endLocations = map.getEndLocations();
-        for (Location loc : endLocations) {
-            loc.setWorld(world); // Update the world
-        }
-
-        return endLocations;
-    }
-
-    // Get end location for a specific path
-    public static Location getEndLocation(World world, String mapId, String pathId) {
-        MapDetails map = maps.get(mapId);
-        if (map == null) {
-            return null;
-        }
-
-        PathData path = map.getPathData(pathId);
-        if (path == null || path.getWaypoints().isEmpty()) {
-            return null;
-        }
-
-        Location endLoc = path.getEndLocation();
-        if (endLoc != null) {
-            endLoc.setWorld(world); // Update the world
-        }
-
-        return endLoc;
-    }
 
     // Get start location for a specific path
     public static Location getPathStartLocation(World world, String mapId, String pathId) {
@@ -670,27 +465,6 @@ public class MapData {
         return map != null ? map.getRandomPathId() : null;
     }
 
-    // Check if a path has branch points
-    public static boolean hasPathBranches(String mapId, String pathId) {
-        MapDetails map = maps.get(mapId);
-        if (map == null) {
-            return false;
-        }
-
-        PathData path = map.getPathData(pathId);
-        return path != null && !path.getBranchPoints().isEmpty();
-    }
-
-    // Get all branch points for a path
-    public static List<BranchPoint> getPathBranches(String mapId, String pathId) {
-        MapDetails map = maps.get(mapId);
-        if (map == null) {
-            return new ArrayList<>();
-        }
-
-        PathData path = map.getPathData(pathId);
-        return path != null ? path.getBranchPoints() : new ArrayList<>();
-    }
 
     // Get waypoints for a specific path
     public static List<Location> getWaypoints(World world, String mapId, String pathId) {

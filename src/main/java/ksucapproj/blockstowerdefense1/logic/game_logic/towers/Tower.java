@@ -20,21 +20,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import static ksucapproj.blockstowerdefense1.logic.GUI.TowerGUI.*;
 
 public abstract class Tower {
-    protected final JavaPlugin plugin;  // Now an instance variable, not static
+    protected final JavaPlugin plugin;
     protected static final Map<UUID, BukkitTask> towerTasks = new ConcurrentHashMap<>();
-    protected static final Map<UUID, UUID> towerOwners = new ConcurrentHashMap<>(); // <towerEntity, owner>
+    // towerEntity uuid and the BukkitTast its running
+    protected static final Map<UUID, UUID> towerOwners = new ConcurrentHashMap<>();
+    // towerEntity uuid, owner uuid
     private static final Map<UUID, Tower> towerEntityToTowerMap = new HashMap<>();
+    // towerEntity uuid and tower entity
 
+    protected final Location location; // location of tower
+    protected final Player owner; // player who spawned the tower
+    protected final String mapId; // mapid of tower - I think this is unused
+    protected final Villager towerEntity; // Entity of the tower
 
-    protected final Location location;
-    protected final Player owner;
-    protected final String mapId;
-    protected final Villager towerEntity;
-
-    protected double scanRadius;
-    protected double attackInterval;
-    protected double attackLevel = 0;
-    protected double rangeLevel = 0;
+    protected double scanRadius; // radius the tower can attack in - pulled from config
+    protected double attackInterval; // how often the tower attacks - pulled from config
+    protected double attackLevel = 0; // current level of the tower's attack interval
+    protected double rangeLevel = 0; // current level of the tower's scanRadius
 
     public UUID getTowerOwner(UUID towerUUID) {
         for (Map.Entry<UUID, UUID> entry : towerOwners.entrySet()) {
@@ -45,6 +47,8 @@ public abstract class Tower {
         return null;
     }
 
+
+    // our Tower object
     public Tower(Location location, Player owner, String mapId, double scanRadius, long attackInterval, JavaPlugin plugin) {
         this.plugin = plugin;
         this.location = location;
@@ -55,11 +59,12 @@ public abstract class Tower {
 
 
 
-        this.towerEntity = spawnTowerEntity();
-        towerEntityToTowerMap.put(towerEntity.getUniqueId(), this);
-        BukkitTask task = startTowerBehavior();
-        towerTasks.put(towerEntity.getUniqueId(), task);
-        towerOwners.put(towerEntity.getUniqueId(), owner.getUniqueId());
+        this.towerEntity = spawnTowerEntity(); // spawn the tower entity when its created
+
+        towerEntityToTowerMap.put(towerEntity.getUniqueId(), this); // track the uuid and entity
+        BukkitTask task = startTowerBehavior(); // start the tower behavior when created
+        towerTasks.put(towerEntity.getUniqueId(), task); // track the task for this tower
+        towerOwners.put(towerEntity.getUniqueId(), owner.getUniqueId()); // track who placed this tower
     }
 
 
@@ -82,55 +87,15 @@ public abstract class Tower {
                     oldTask.cancel();
                 }
 
-                BukkitTask newTask = tower.startTowerBehavior();
-                towerTasks.put(towerUUID, newTask);
+                BukkitTask newTask = tower.startTowerBehavior(); // start the new task with updated values
+                towerTasks.remove(towerUUID);
+                towerTasks.put(towerUUID, newTask); // update the hashmap
 
-                // Don't try to send a message to the player here - do that from the GUI handler
             }
         }
     }
 
-    // New getters and setters for upgrade levels
-    public double getRangeLevel() {
-        return rangeLevel;
-    }
-
-    public void setRangeLevel(double level) {
-        this.rangeLevel = level;
-    }
-
-    public double getAttackLevel() {
-        return attackLevel;
-    }
-
-    public void setAttackLevel(double level) {
-        this.attackLevel = level;
-    }
-
-    // Getters for tower attributes
-    public double getScanRadius() {
-        return scanRadius;
-    }
-
-    public void setScanRadius(double scanRadius) {
-        this.scanRadius = scanRadius;
-    }
-
-    public double getAttackInterval() {
-        return attackInterval;
-    }
-
-    public void setAttackInterval(double attackInterval) {
-        this.attackInterval = attackInterval;
-    }
-
-    // Calculate sell value based on upgrade levels
-    public int getSellValue() {
-        // Base value + additional value for each upgrade
-        //return baseSellValue + (rangeLevel - 1) * 75 + (speedLevel - 1) * 100;
-        return 500;
-    }
-
+    // Upgrading tower's attackRadius
     public void handleRangeUpgrade(Player player, Tower tower, Villager towerEntity) {
         double currentLevel = tower.getRangeLevel();
 
@@ -161,6 +126,7 @@ public abstract class Tower {
         player.sendMessage("§aTower range upgraded successfully!");
     }
 
+    // Upgrading tower's attackInterval
     public void handleSpeedUpgrade(Player player, Tower tower, Villager towerEntity) {
         double currentLevel = tower.getAttackLevel();
 
@@ -210,6 +176,8 @@ public abstract class Tower {
         return towerEntityToTowerMap.get(towerEntity.getUniqueId());
     }
 
+
+    // Used with custom datapack for tower skins
     private static Villager.Profession getProfessionForTower(String type) {
         return switch (type) {
             case "Wizard Tower" -> Villager.Profession.LIBRARIAN;
@@ -222,10 +190,14 @@ public abstract class Tower {
     }
 
 
-
+    // called when making a tower object to spawn it in the map
     protected Villager spawnTowerEntity() {
-        Location towerLocation = location.clone().toCenterLocation().add(0, -.5, 0);
+        Location towerLocation = location.clone().toCenterLocation().add(0, -.5, 0); // Ensure location is centered on the block
         Villager tower = (Villager) towerLocation.getWorld().spawnEntity(towerLocation, EntityType.VILLAGER);
+
+        // Set custom meta for the villager behavior and tags
+
+        // Behavior
         tower.setProfession(getProfessionForTower(getTowerName()));
         tower.setAI(false);
         tower.setInvulnerable(true);
@@ -233,11 +205,7 @@ public abstract class Tower {
         tower.customName(Component.text(getTowerName()));
         tower.setCustomNameVisible(true);
 
-
-
-        //this is the code for setting ownership for a tower:
-        //towerEntity.setMetadata("owner", new FixedMetadataValue(plugin, owner.getUniqueId().toString()));
-
+        // Tags
         tower.setMetadata("tower", new FixedMetadataValue(plugin, "true"));
         tower.setMetadata("owner", new FixedMetadataValue(plugin, owner.getUniqueId().toString()));
         tower.setMetadata("mapId", new FixedMetadataValue(plugin, mapId));
@@ -245,14 +213,12 @@ public abstract class Tower {
         return tower;
     }
 
-
-
-
+    // Run for each tower
     protected BukkitTask startTowerBehavior() {
         return new BukkitRunnable() {
             @Override
             public void run() {
-                if (towerEntity.isDead()) {
+                if (towerEntity.isDead()) { // Remove tower from everything if its dead
                     cancel();
                     towerTasks.remove(towerEntity.getUniqueId());
                     towerOwners.remove(towerEntity.getUniqueId());
@@ -266,18 +232,18 @@ public abstract class Tower {
     public abstract String getTowerName();
     protected abstract void attack();
 
+    // So the tower can look at the current target
     protected void faceTarget(Entity target) {
         if (target == null) return;
         Vector direction = target.getLocation().toVector().subtract(towerEntity.getLocation().toVector());
         float yaw = (float) Math.toDegrees(Math.atan2(-direction.getX(), direction.getZ()));
         yaw = (yaw + 360) % 360;
-        towerEntity.setRotation(yaw, 0);
+        towerEntity.setRotation(yaw, 0); // set look direction
 
     }
 
 
     //Cancel all tower tasks for a specific player
-
     public static void cancelTasksForPlayer(UUID playerUUID) {
         Set<UUID> towersToRemove = new HashSet<>();
 
@@ -301,7 +267,6 @@ public abstract class Tower {
 
 
     //Remove all towers for a specific player and map
-
     public static void removeTowersForPlayer(Player player, String mapId) {
         UUID playerUUID = player.getUniqueId();
 
@@ -311,8 +276,8 @@ public abstract class Tower {
                     entity.hasMetadata("owner") &&
                     entity.hasMetadata("mapId")) {
 
-                String owner = entity.getMetadata("owner").get(0).asString();
-                String map = entity.getMetadata("mapId").get(0).asString();
+                String owner = entity.getMetadata("owner").getFirst().asString();
+                String map = entity.getMetadata("mapId").getFirst().asString();
 
                 if (owner.equals(playerUUID.toString()) && map.equals(mapId)) {
                     UUID entityUUID = entity.getUniqueId();
@@ -360,4 +325,43 @@ public abstract class Tower {
         towerOwners.clear();
     }
 
+
+    // Various getters and setters
+    public double getRangeLevel() {
+        return rangeLevel;
+    }
+
+    public void setRangeLevel(double level) {
+        this.rangeLevel = level;
+    }
+
+    public double getAttackLevel() {
+        return attackLevel;
+    }
+
+    public void setAttackLevel(double level) {
+        this.attackLevel = level;
+    }
+
+    public double getScanRadius() {
+        return scanRadius;
+    }
+
+    public void setScanRadius(double scanRadius) {
+        this.scanRadius = scanRadius;
+    }
+
+    public double getAttackInterval() {
+        return attackInterval;
+    }
+
+    public void setAttackInterval(double attackInterval) {
+        this.attackInterval = attackInterval;
+    }
+
+    // Eventually calculate sell value from the total value put into the tower
+    public int getSellValue() {
+        //return baseSellValue + (rangeLevel - 1) * 75 + (speedLevel - 1) * 100;
+        return 500; //temp
+    }
 }
