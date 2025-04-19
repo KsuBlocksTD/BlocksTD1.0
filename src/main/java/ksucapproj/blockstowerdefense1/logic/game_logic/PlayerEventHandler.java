@@ -289,15 +289,16 @@ public class PlayerEventHandler implements Listener {
             UUID ownerUUID = UUID.fromString(ownerUUIDString);
             return player.getUniqueId().equals(ownerUUID);
         } catch (IllegalArgumentException e) {
+            Bukkit.getLogger().warning("Player accessed unowned tower");
             return false;
         }
     }
 
     // can maybe be removed?
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event) {
-        openChestGUI.openInventories.remove(event.getPlayer());
-    }
+//    @EventHandler
+//    public void onInventoryClose(InventoryCloseEvent event) {
+//        openChestGUI.openInventories.remove(event.getPlayer());
+//    }
 
 
     // This event is for opening GUI when compass is used
@@ -307,7 +308,7 @@ public class PlayerEventHandler implements Listener {
         ItemStack item = event.getItem();
         // debug
         //player.sendMessage(item.getItemMeta().displayName());
-        if (item != null && item.getType() == Material.COMPASS &&
+        if (gameManager.isInplayerSessions(player.getUniqueId()) && item != null && item.getType() == Material.COMPASS &&
                 Objects.equals(item.getItemMeta().displayName(), Component.text("Upgrade Menu").color(TextColor.color(0, 255, 255)))) {
             openChestGUI.openChestGUI(player);
         }
@@ -323,7 +324,7 @@ public class PlayerEventHandler implements Listener {
 
 
         // Check if this is a valid tower placement attempt
-        if (item != null && item.getType() == Material.ZOMBIE_SPAWN_EGG && item.getItemMeta() != null) {
+        if (item != null && item.getType() == Material.ZOMBIE_SPAWN_EGG && item.getItemMeta() != null && gameManager.isInplayerSessions(player.getUniqueId())) {
             String itemName = String.valueOf(item.getItemMeta().displayName());
 
 
@@ -402,7 +403,7 @@ public class PlayerEventHandler implements Listener {
     }
 
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler()
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
         if (!(event.getEntity() instanceof Player player)) {
             return;
@@ -422,9 +423,10 @@ public class PlayerEventHandler implements Listener {
     // This event is for game logic when a zombie or special mob is killed
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        if (!(event.getEntity() instanceof Mob zombie)) {
-            return;
-        }
+//        if (!(event.getEntity() instanceof Mob zombie)) {
+//            return;
+//        }
+        Entity zombie = event.getEntity();
 
 
         if (!zombie.hasMetadata("gameSession")) {
@@ -432,6 +434,33 @@ public class PlayerEventHandler implements Listener {
         }
         zombie.customName(null);
         zombie.setCustomNameVisible(false);
+
+
+        // activates the entity death event for economy
+
+        EntityType mobType = event.getEntityType();
+        Player killer = event.getEntity().getKiller();
+
+        // Handle null killer by assigning death to nearby player
+        if(killer == null) {
+                @NotNull Collection<Player> kill = zombie.getLocation().getNearbyPlayers(50);
+                killer = kill.iterator().next();
+        }
+        String playerID;
+
+        if (event.getEntity() instanceof Mob zomb){
+
+            if (zomb.hasMetadata("attacker")){
+                playerID = zomb.getMetadata("attacker").getFirst().asString();
+                killer = Bukkit.getPlayer(playerID);
+                Economy.earnMoney(killer, mobType);
+            }else {
+                Economy.earnMoney(killer, mobType);
+            }
+
+
+
+        }
 
         String gameSessionId = zombie.getMetadata("gameSession").getFirst().asString();
         UUID playerUUID = UUID.fromString(gameSessionId);
@@ -476,36 +505,36 @@ public class PlayerEventHandler implements Listener {
 
     // This event is for economy logic when a mob is killed
     /// can maybe be merged with the event above
-    @EventHandler
-    public void onMobKill(EntityDeathEvent event){
-        // activates the entity death event for economy
-
-        EntityType mobType = event.getEntityType();
-        Player killer = event.getEntity().getKiller();
-
-        // Handle null killer by assigning death to nearby player
-        if(killer == null) {
-            if (event.getEntity() instanceof Mob zombie){
-                @NotNull Collection<Player> kill = zombie.getLocation().getNearbyPlayers(50);
-                killer = kill.iterator().next();
-
-            }
-        }
-        String playerID;
-
-        if (event.getEntity() instanceof Mob zomb){
-
-            if (zomb.hasMetadata("attacker")){
-                playerID = zomb.getMetadata("attacker").getFirst().asString();
-                killer = Bukkit.getPlayer(playerID);
-                Economy.earnMoney(killer, mobType);
-                return;
-            }
-
-            Economy.earnMoney(killer, mobType);
-
-        }
-    }
+//    @EventHandler
+//    public void onMobKill(EntityDeathEvent event){
+//        // activates the entity death event for economy
+//
+//        EntityType mobType = event.getEntityType();
+//        Player killer = event.getEntity().getKiller();
+//
+//        // Handle null killer by assigning death to nearby player
+//        if(killer == null) {
+//            if (event.getEntity() instanceof Mob zombie){
+//                @NotNull Collection<Player> kill = zombie.getLocation().getNearbyPlayers(50);
+//                killer = kill.iterator().next();
+//
+//            }
+//        }
+//        String playerID;
+//
+//        if (event.getEntity() instanceof Mob zomb){
+//
+//            if (zomb.hasMetadata("attacker")){
+//                playerID = zomb.getMetadata("attacker").getFirst().asString();
+//                killer = Bukkit.getPlayer(playerID);
+//                Economy.earnMoney(killer, mobType);
+//                return;
+//            }
+//
+//            Economy.earnMoney(killer, mobType);
+//
+//        }
+//    }
 
 
     // This event is for disallowing item drops
@@ -527,7 +556,7 @@ public class PlayerEventHandler implements Listener {
     // This event is for applying slowness when you have the slowness upgrade
     @EventHandler
     public void onPlayerHit(EntityDamageByEntityEvent event){
-        if (event.getDamager() instanceof Player){
+        if (event.getDamager() instanceof Player & PlayerUpgrades.getPlayerUpgradesMap().containsKey(event.getDamager())){
 
             PlayerUpgrades player = PlayerUpgrades.getPlayerUpgradesMap().get(event.getDamager());
 
@@ -544,7 +573,7 @@ public class PlayerEventHandler implements Listener {
     // The following events are for simple party actions
     @EventHandler
     public void onPartyCreatePre(BukkitPartiesPartyPreCreateEvent event) {
-        Bukkit.getLogger().info("[PartiesExample] This event is called when a party is being created");
+        //Bukkit.getLogger().info("[PartiesExample] This event is called when a party is being created");
 
         //if (false)
           //  event.setCancelled(true); // You can cancel it
@@ -552,7 +581,7 @@ public class PlayerEventHandler implements Listener {
 
     @EventHandler
     public void onPartyCreatePost(BukkitPartiesPartyPostCreateEvent event) {
-        Bukkit.getLogger().info("[PartiesExample] This event is called when a party has been created");
+        //Bukkit.getLogger().info("[PartiesExample] This event is called when a party has been created");
 
         // You cannot cancel it
     }
@@ -570,13 +599,13 @@ public class PlayerEventHandler implements Listener {
             return;
         }
 
-        Bukkit.getLogger().info("[PartiesExample] This event is called when a player is getting invited");
+        //Bukkit.getLogger().info("[PartiesExample] This event is called when a player is getting invited");
     }
 
     @EventHandler
     public void onPlayerInvitePost(BukkitPartiesPlayerPostInviteEvent event) {
 
 
-        Bukkit.getLogger().info("[PartiesExample] This event is called when a player has been invited");
+        //Bukkit.getLogger().info("[PartiesExample] This event is called when a player has been invited");
     }
 }
