@@ -553,6 +553,7 @@ public class PlayerEventHandler implements Listener {
                     }
                     currentPlayer.sendRichMessage("<gold>Round " + (currentRound - 1) + " completed!");
                     currentPlayer.sendRichMessage("<green>Type /readyup for Round " + currentRound);
+                    gameManager.checkIfEndRoundMessage(currentRound, currentPlayer);
                 }
             }
         }
