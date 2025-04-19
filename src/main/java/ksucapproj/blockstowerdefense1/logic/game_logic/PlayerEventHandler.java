@@ -11,7 +11,6 @@ import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.ConfigOptions;
-import ksucapproj.blockstowerdefense1.logic.DatabaseManager;
 import ksucapproj.blockstowerdefense1.logic.GUI.StartGameGUI;
 import ksucapproj.blockstowerdefense1.logic.GUI.TowerGUI;
 import ksucapproj.blockstowerdefense1.logic.GUI.UpgradeGUI;
@@ -21,21 +20,22 @@ import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerEggPurchase;
 import ksucapproj.blockstowerdefense1.logic.game_logic.towers.TowerFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -311,6 +311,7 @@ public class PlayerEventHandler implements Listener {
         Player player = event.getPlayer();
         if (!isTowerOwner(player, villager)) {
             player.sendMessage("§cYou don't own this tower!");
+            event.setCancelled(true);
             return;
         }
 
@@ -528,18 +529,18 @@ public class PlayerEventHandler implements Listener {
         int killed = gameManager.incrAndGetZombiesKilled(playerUUID);
         int zombiesThisRound = gameManager.getZombiesThisRound(playerUUID);
 
-        if (killed >= zombiesThisRound) {
+        if (killed >= zombiesThisRound && gameManager.getRoundInProgress(playerUUID)) {
             Player player = Bukkit.getPlayer(playerUUID);
             if (player != null && player.isOnline()) {
+                // Set round as no longer in progress
+                gameManager.setRoundInProgress(playerUUID, false);
+
                 int currentRound = gameManager.getCurrentRound(playerUUID);
                 // Process round completion
                 currentRound++;
                 gameManager.setCurrentRound(currentRound, playerUUID);
                 gameManager.setZombiesPerRound(playerUUID);
                 gameManager.setIsReady(playerUUID, false);
-
-                // Set round as no longer in progress
-                gameManager.setRoundInProgress(playerUUID, false);
 
                 List<UUID> listOfPlayers = gameManager.getListOfPlayersInGame(player.getUniqueId());
 
@@ -655,7 +656,6 @@ public class PlayerEventHandler implements Listener {
     @EventHandler
     public void onPlayerInvitePre(BukkitPartiesPlayerPreInviteEvent event) {
         if (event.isCancelled()) {
-            return;
         }
 
         //Bukkit.getLogger().info("[PartiesExample] This event is called when a player is getting invited");

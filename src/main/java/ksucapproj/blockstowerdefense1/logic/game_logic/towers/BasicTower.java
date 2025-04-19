@@ -1,6 +1,5 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic.towers;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -36,7 +35,7 @@ public class BasicTower extends Tower {
         List<Entity> nearbyEntities = towerEntity.getNearbyEntities(scanRadius, scanRadius, scanRadius);
         for (Entity entity : nearbyEntities) {
             // we need to ensure the entitiy it grabs isnt another tower, and to ensure that the tower that kills the zombie gets credit
-            if (entity instanceof Mob & entity.getType() != EntityType.VILLAGER) {
+            if (entity instanceof Mob && entity.getType() != EntityType.VILLAGER && entity.getType() != EntityType.PANDA) {
                 if (entity.hasMetadata("gameSession") && towerEntity.hasMetadata("owner")) {
                     String zombieOwner = entity.getMetadata("gameSession").getFirst().asString();
                     String towerOwner = towerEntity.getMetadata("owner").getFirst().asString();

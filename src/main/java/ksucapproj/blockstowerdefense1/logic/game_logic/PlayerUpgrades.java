@@ -22,7 +22,7 @@ public class PlayerUpgrades{
     private int swiftnessLevel, strengthLevel;
     private final Player player;
     private final PlayerSword sword;
-    private int totalUpgradesBought;
+    private final int totalUpgradesBought;
     private int currTotal;
     private int cost;
 

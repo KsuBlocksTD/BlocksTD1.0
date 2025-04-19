@@ -12,7 +12,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,7 +33,7 @@ public class StartGame {
     private final JavaPlugin plugin;
     private final Map<Set<UUID>, GameSession> playerSessions = new ConcurrentHashMap<>();
     private static final Map<String, Boolean> healingDisabledMaps = new HashMap<>();
-    private static Location hubSpawn = getHubFromConfig();
+    private static final Location hubSpawn = getHubFromConfig();
 
     private Set<UUID> getSetFromPlayer(UUID playerUUID) {
         Set<UUID> Partyuuid = new HashSet<>();
@@ -231,23 +230,23 @@ public class StartGame {
                     return;
                 }
 
-                // Spawn mobs for each player in the party
-                for (UUID uuid : partyUUIDs) {
-                    Player player = Bukkit.getPlayer(uuid);
+
+                Player player = Bukkit.getPlayer(initiatingUUID);
                     if (player != null) {
                         Mob zombie = MobHandler.spawnMob(world, session.currentMapId, session.currentRound);
                         if (zombie != null) {
                             // Tie mob to game session and attacker
-                            zombie.setMetadata("gameSession", new FixedMetadataValue(plugin, uuid.toString()));
-                            zombie.setMetadata("attacker", new FixedMetadataValue(plugin, uuid.toString()));
+                            zombie.setMetadata("gameSession", new FixedMetadataValue(plugin, initiatingUUID.toString()));
+                            zombie.setMetadata("attacker", new FixedMetadataValue(plugin, initiatingUUID.toString()));
                             session.activeZombies.add(zombie.getUniqueId());
                         }
                     }
-                }
+
                 spawned++;
             }
         }.runTaskTimer(plugin, 0, 10);
     }
+
 
     private static class GameSession {
         int currentRound = 1;
@@ -318,6 +317,11 @@ public class StartGame {
         session.activeZombies.clear();
     }
 
+    public void removePlayerSession(UUID playerUUID) {
+        // Remove session tracking
+        playerSessions.remove(getSetFromPlayer(playerUUID));
+    }
+
     // cleans up player data
     public void cleanupPlayer(UUID playerUUID) {
         Player player = Bukkit.getPlayer(playerUUID);
@@ -345,9 +349,6 @@ public class StartGame {
 
         // Clear inventory
         player.getInventory().clear();
-
-        // Remove session tracking
-        playerSessions.remove(getSetFromPlayer(playerUUID));
 
         setPlayerHealingDisabled(player, false);
 
@@ -430,6 +431,11 @@ public class StartGame {
     public List<UUID> getListOfPlayersInGame(UUID playerUUID) {
         GameSession session = playerSessions.get(getSetFromPlayer(playerUUID));
         return session.players;
+    }
+
+    public boolean getRoundInProgress(UUID playerUUID) {
+        GameSession session = playerSessions.get(getSetFromPlayer(playerUUID));
+        return session.roundInProgress;
     }
 
 
