@@ -25,10 +25,10 @@ import java.util.UUID;
 
 public class GlowingTotem {
 
-    private static JavaPlugin plugin = BlocksTowerDefense1.getInstance();
-    private static HashMap<UUID, ItemStack> totemTracker = new HashMap<>();
+    private static final JavaPlugin plugin = BlocksTowerDefense1.getInstance();
+    private static final HashMap<UUID, ItemStack> totemTracker = new HashMap<>();
     private static final NamespacedKey NUMBER_KEY = new NamespacedKey(plugin, "rounds_left");
-    private static NamespacedKey notDroppableKey = new NamespacedKey(BlocksTowerDefense1.getInstance(), "not_droppable");
+    private static final NamespacedKey notDroppableKey = new NamespacedKey(BlocksTowerDefense1.getInstance(), "not_droppable");
 
 
     // This class will create a totem of glowing, and set the meta for it including how many rounds the totem has left
