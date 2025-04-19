@@ -384,6 +384,10 @@ public class StartGame {
 
     public void gameEndStatus(UUID playerUUID, boolean victory){
         Player player = Bukkit.getPlayer(playerUUID);
+        if(player == null) {
+            return;
+        }
+
 
         String msg;
         if (victory) {
@@ -394,7 +398,9 @@ public class StartGame {
         else {
             player.sendRichMessage("<light_purple>You lost! Game over..");
         }
-
+        if (PlayerUpgrades.getPlayerUpgradesMap().get(player) == null) {
+            return;
+        }
         DatabaseManager.updatePlayerData(PlayerUpgrades.getPlayerUpgradesMap().get(player), victory, 3);
 
         cleanupPlayer(playerUUID);

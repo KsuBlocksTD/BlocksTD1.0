@@ -140,6 +140,7 @@ public class Economy {
     // this is for manual admin command
     public static void addPlayerMoney(Player player, int amt){
         Economy playerEconomy = playerEconomies.get(player);
+        if(playerEconomy == null){return;}
         playerEconomy.currTotal += amt;
     }
 
