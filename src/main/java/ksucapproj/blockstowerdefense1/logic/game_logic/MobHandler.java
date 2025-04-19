@@ -149,6 +149,7 @@ public class MobHandler {
         if (currentRound >= 21) availableMobs.add(EntityType.SILVERFISH);
         if (currentRound >= 31) availableMobs.add(EntityType.PIGLIN);
         if (currentRound >= 41) availableMobs.add(EntityType.BLAZE);
+        if(availableMobs.isEmpty()) { return EntityType.ZOMBIE;}
 
         // Select a random mob from the available ones
         return availableMobs.get(random.nextInt(availableMobs.size()));

@@ -5,6 +5,7 @@ import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.*;
@@ -33,6 +34,7 @@ import java.sql.*;
 
 public class DatabaseManager {
 
+    private static JavaPlugin plugin = BlocksTowerDefense1.getInstance();
     private static Connection conn;
     private static boolean tableCreated;
 
@@ -220,6 +222,9 @@ public class DatabaseManager {
 
     // this function is designed to update a player's information in the db at the end of a game
     public static void updatePlayerData(PlayerUpgrades upgrades, boolean victoryStatus, int maxRetries){
+        if (upgrades == null) {
+            return;
+        }
 
         if (maxRetries <= 0){
             Bukkit.getLogger().warning("[BlocksTowerDefense] Update to " + upgrades.getPlayer().getName() + "'s data failed.");
@@ -232,6 +237,8 @@ public class DatabaseManager {
 
                 // if player exists, continue, if not, insert them into db before updating their attributes
                 // this check is only done in case the player somehow does not exist
+
+
                 checkPlayerInDB(upgrades.getPlayer(), maxRetries);
 
                 // calls the method to total player values on game end
