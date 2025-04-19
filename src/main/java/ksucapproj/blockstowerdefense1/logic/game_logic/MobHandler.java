@@ -32,7 +32,7 @@ public class MobHandler {
 
     public MobHandler(StartGame gameManager, JavaPlugin plugin) {
         MobHandler.plugin = plugin;
-        this.gameManager = gameManager;
+        MobHandler.gameManager = gameManager;
     }
 
 
@@ -209,6 +209,9 @@ public class MobHandler {
                 if (mob instanceof Ageable ageable) { // ensure no baby piglins
                     ageable.setAdult();
                 }
+                if(mob instanceof Zombie zombie) {
+                    zombie.setShouldBurnInDay(false);
+                }
 
                 // Start health bar display
                 BukkitTask healthTask = displayHealthBar(mob);
@@ -310,6 +313,7 @@ public class MobHandler {
 
                 // Check if we're done with the current path - end of path is always the end point
                 if (waypointIndex >= currentWaypoints.size()) {
+                    boolean lost = false;
                     // Check if we have the player information to handle game end
                     if (zombie.hasMetadata("gameSession")) {
                         // Get required info to update values
@@ -326,6 +330,7 @@ public class MobHandler {
                             zombieMovementTasks.remove(zombie.getUniqueId());
                             zombie.remove();
                             cancel();
+                            lost = true;
                         }
                         else {
                             // if a zombie passed but the player is still alive
@@ -337,6 +342,9 @@ public class MobHandler {
                                 zombie.damage(9999);
                                 currentPlayer.sendRichMessage("<red>A zombie has gotten past your defenses!");
                             }
+                        }
+                        if(lost) {
+                            gameManager.removePlayerSession(playerUUID);
                         }
                     }
 

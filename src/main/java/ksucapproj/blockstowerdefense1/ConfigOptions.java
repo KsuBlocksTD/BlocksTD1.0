@@ -4,7 +4,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ConfigOptions {
-    private FileConfiguration config;
+    private final FileConfiguration config;
 
     public ConfigOptions(JavaPlugin plugin) {
         plugin.reloadConfig();

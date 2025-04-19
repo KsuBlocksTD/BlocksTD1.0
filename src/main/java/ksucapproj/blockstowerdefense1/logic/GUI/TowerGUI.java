@@ -73,7 +73,7 @@ public class TowerGUI {
         ItemStack sellTower = createGuiItem(
                 Material.EMERALD,
                 Component.text("Sell Tower").color(TextColor.color(255, 215, 0)),
-                Arrays.asList(
+                List.of(
                         Component.text("Sell Value: " + tower.getSellValue()).color(TextColor.color(0, 255, 0))
                 )
         );

@@ -84,7 +84,7 @@ public class MapData {
     // Class to represent a path with a start location and waypoints
     public static class PathData {
         private final String pathId;
-        private Location startLocation;
+        private final Location startLocation;
         private final List<Location> waypoints;
 
         public PathData(String pathId, Location startLocation, List<Location> waypoints) {

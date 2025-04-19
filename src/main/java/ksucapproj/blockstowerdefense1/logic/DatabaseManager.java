@@ -34,7 +34,7 @@ import java.sql.*;
 
 public class DatabaseManager {
 
-    private static JavaPlugin plugin = BlocksTowerDefense1.getInstance();
+    private static final JavaPlugin plugin = BlocksTowerDefense1.getInstance();
     private static Connection conn;
     private static boolean tableCreated;
 

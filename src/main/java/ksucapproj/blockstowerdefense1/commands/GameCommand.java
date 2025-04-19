@@ -17,6 +17,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 // this class contains several commands, check each command's build to see its usage
@@ -79,11 +82,12 @@ public class GameCommand {
         if (!(ctx.getSource().getExecutor() instanceof Player sender)) {
             return Command.SINGLE_SUCCESS;
         }
-
-        // Clean game session
-        this.gameManager.gameEndStatus(sender.getUniqueId(), false);
-
-        sender.sendRichMessage("<red>You have quit the game.");
+        List<UUID> partyUUIDs = gameManager.getListOfPlayersInGame(sender.getUniqueId());
+        for (UUID uuid : partyUUIDs) {
+            // Clean game session
+            this.gameManager.gameEndStatus(uuid, false);
+            Bukkit.getPlayer(uuid).sendRichMessage("<red>You have quit the game.");
+        }
         return Command.SINGLE_SUCCESS;
     }
 
