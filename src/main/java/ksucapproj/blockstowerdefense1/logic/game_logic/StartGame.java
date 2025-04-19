@@ -58,7 +58,7 @@ public class StartGame {
     }
 
     public static boolean isHealingDisabled(String mapId) {
-        return healingDisabledMaps.getOrDefault(mapId, true);
+        return healingDisabledMaps.getOrDefault(mapId, false);
     }
 
     public static boolean isPlayerHealingDisabled(Player player) {
@@ -68,7 +68,7 @@ public class StartGame {
         }
 
         // Default to the global setting
-        return healingDisabledMaps.getOrDefault("default", true);
+        return healingDisabledMaps.getOrDefault("default", false);
     }
 
     public StartGame(JavaPlugin plugin, PartiesAPI api) {
@@ -147,6 +147,8 @@ public class StartGame {
             Player currentPlayer = Bukkit.getPlayer(uuid);
             if (currentPlayer == null) continue;
 
+
+            setPlayerHealingDisabled(currentPlayer, true);
             onPlayerStartGame(currentPlayer);
             playerJoin(currentPlayer);
             currentPlayer.getInventory().clear();
@@ -327,6 +329,7 @@ public class StartGame {
         // Remove session tracking
         playerSessions.remove(getSetFromPlayer(playerUUID));
 
+        setPlayerHealingDisabled(player, false);
 
         plugin.getLogger().info("Game session cleaned up for player " + player.getName());
     }
