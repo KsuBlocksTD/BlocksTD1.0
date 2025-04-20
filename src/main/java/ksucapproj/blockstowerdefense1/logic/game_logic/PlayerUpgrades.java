@@ -101,10 +101,15 @@ public class PlayerUpgrades{
 
     // deletes the playerUpgrades object along with their playerSword and economy
     public static void playerDelete(Player player){
+        if(!playerUpgradesMap.containsKey(player)) {
+            return;
+        }
         PlayerUpgrades leaver = playerUpgradesMap.get(player);
 
         // Deletes player's tracked sword
-        leaver.getSword().removeTrackedSword();
+        if(leaver.getSword() != null) {
+            leaver.getSword().removeTrackedSword();
+        }
         // Deletes player's potion effects
         player.clearActivePotionEffects();
         // Deletes player's economy

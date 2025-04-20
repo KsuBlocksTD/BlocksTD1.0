@@ -39,11 +39,11 @@ public class SlowTower extends Tower {
             // we need to ensure the entitiy it grabs isnt another tower, and to ensure that the tower that kills the zombie gets credit
             if (entity instanceof Mob & entity.getType() != EntityType.VILLAGER && entity.getType() != EntityType.PANDA) {
                 if (entity.hasMetadata("gameSession") && towerEntity.hasMetadata("owner")) {
-                    String zombieOwner = entity.getMetadata("gameSession").getFirst().asString();
-                    String towerOwner = towerEntity.getMetadata("owner").getFirst().asString();
-                    if (zombieOwner.equals(towerOwner)) {
+                    //String zombieOwner = entity.getMetadata("gameSession").getFirst().asString();
+                    //String towerOwner = towerEntity.getMetadata("owner").getFirst().asString();
+                    //if (zombieOwner.equals(towerOwner)) {
                         targetQueue.add(entity);
-                    }
+                    //}
                 } else {
                     targetQueue.add(entity);
                 }

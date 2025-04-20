@@ -9,6 +9,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
+import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import ksucapproj.blockstowerdefense1.logic.game_logic.StartGame;
 import ksucapproj.blockstowerdefense1.maps.MapData;
 import org.bukkit.Bukkit;
@@ -83,11 +84,13 @@ public class GameCommand {
             return Command.SINGLE_SUCCESS;
         }
         List<UUID> partyUUIDs = gameManager.getListOfPlayersInGame(sender.getUniqueId());
+        UUID uuid1 = partyUUIDs.getFirst();
         for (UUID uuid : partyUUIDs) {
             // Clean game session
             this.gameManager.gameEndStatus(uuid, false);
+            PlayerUpgrades.playerDelete(Bukkit.getPlayer(uuid));
             Bukkit.getPlayer(uuid).sendRichMessage("<red>You have quit the game.");
-        }
+        }gameManager.removePlayerSession(uuid1);
         return Command.SINGLE_SUCCESS;
     }
 

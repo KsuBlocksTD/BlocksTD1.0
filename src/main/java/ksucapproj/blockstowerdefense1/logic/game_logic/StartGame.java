@@ -230,14 +230,16 @@ public class StartGame {
                     return;
                 }
 
-
+                List<UUID> partyUUID = session.players;
                 Player player = Bukkit.getPlayer(initiatingUUID);
                     if (player != null) {
                         Mob zombie = MobHandler.spawnMob(world, session.currentMapId, session.currentRound);
                         if (zombie != null) {
-                            // Tie mob to game session and attacker
-                            zombie.setMetadata("gameSession", new FixedMetadataValue(plugin, initiatingUUID.toString()));
-                            zombie.setMetadata("attacker", new FixedMetadataValue(plugin, initiatingUUID.toString()));
+                            for(UUID uuid : partyUUID) {
+                                // Tie mob to game session and attacker
+                                zombie.setMetadata("gameSession", new FixedMetadataValue(plugin, uuid));
+                                zombie.setMetadata("attacker", new FixedMetadataValue(plugin, uuid));
+                            }
                             session.activeZombies.add(zombie.getUniqueId());
                         }
                     }
