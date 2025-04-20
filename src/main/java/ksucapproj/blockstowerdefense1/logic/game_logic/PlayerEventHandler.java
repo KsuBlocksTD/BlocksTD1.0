@@ -398,6 +398,8 @@ public class PlayerEventHandler implements Listener {
 
                 // Check which egg was used
                 if (itemName.contains("Fast Tower")) {
+                    //debug
+//                    Bukkit.getLogger().warning("tower placed by " + player.getName());
                     TowerFactory.placeTower(
                             TowerFactory.TowerType.FAST,
                             player,
@@ -554,8 +556,8 @@ public class PlayerEventHandler implements Listener {
                     }
                     currentPlayer.sendRichMessage("<gold>Round " + (currentRound - 1) + " completed!");
                     currentPlayer.sendRichMessage("<green>Type /readyup for Round " + currentRound);
-                    gameManager.checkIfEndRoundMessage(currentRound, currentPlayer);
                 }
+                gameManager.checkIfEndRoundMessage(currentRound, player);
             }
         }
     }
@@ -656,6 +658,7 @@ public class PlayerEventHandler implements Listener {
     @EventHandler
     public void onPlayerInvitePre(BukkitPartiesPlayerPreInviteEvent event) {
         if (event.isCancelled()) {
+            return;
         }
 
         //Bukkit.getLogger().info("[PartiesExample] This event is called when a player is getting invited");

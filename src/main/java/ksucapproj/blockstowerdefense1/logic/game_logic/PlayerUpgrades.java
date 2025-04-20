@@ -22,7 +22,6 @@ public class PlayerUpgrades{
     private int swiftnessLevel, strengthLevel;
     private final Player player;
     private final PlayerSword sword;
-    private final int totalUpgradesBought;
     private int currTotal;
     private int cost;
 
@@ -49,7 +48,6 @@ public class PlayerUpgrades{
 
         this.sword = new PlayerSword(player);
 
-        this.totalUpgradesBought = playerUpgradesBought + getSword().getSwordUpgradesBought();
         currTotal = getPlayerEconomies().get(player).getCurrTotal();
     }
 
@@ -103,10 +101,15 @@ public class PlayerUpgrades{
 
     // deletes the playerUpgrades object along with their playerSword and economy
     public static void playerDelete(Player player){
+        if(!playerUpgradesMap.containsKey(player)) {
+            return;
+        }
         PlayerUpgrades leaver = playerUpgradesMap.get(player);
 
         // Deletes player's tracked sword
-        leaver.getSword().removeTrackedSword();
+        if(leaver.getSword() != null) {
+            leaver.getSword().removeTrackedSword();
+        }
         // Deletes player's potion effects
         player.clearActivePotionEffects();
         // Deletes player's economy
@@ -162,7 +165,7 @@ public class PlayerUpgrades{
     }
 
     public int getTotalUpgradesBought() {
-        return totalUpgradesBought;
+        return (playerUpgradesBought + getSword().getSwordUpgradesBought());
     }
 
     public static HashMap<Player, PlayerUpgrades> getPlayerUpgradesMap() {

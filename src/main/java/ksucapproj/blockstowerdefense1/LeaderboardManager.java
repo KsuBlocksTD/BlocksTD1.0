@@ -25,6 +25,7 @@ public class LeaderboardManager {
     );
 
     private Connection getConnection() {
+
         return BlocksTowerDefense1.getInstance().getDBConnection();
     }
 

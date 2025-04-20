@@ -222,7 +222,7 @@ public class DatabaseManager {
 
     // this function is designed to update a player's information in the db at the end of a game
     public static void updatePlayerData(PlayerUpgrades upgrades, boolean victoryStatus, int maxRetries){
-        if (upgrades == null) {
+        if (upgrades.getPlayer() == null) {
             return;
         }
 
