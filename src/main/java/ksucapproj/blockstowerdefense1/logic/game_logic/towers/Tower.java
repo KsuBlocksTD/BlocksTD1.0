@@ -36,7 +36,8 @@ public abstract class Tower {
     protected double scanRadius; // radius the tower can attack in - pulled from config
     protected double attackInterval; // how often the tower attacks - pulled from config
     protected double attackLevel = 0; // current level of the tower's attack interval
-    protected double rangeLevel = 0; // current level of the tower's scanRadius
+    protected double rangeLevel = 0;// current level of the tower's scanRadius
+    protected double coinsSpent = 0;
 
     public UUID getTowerOwner(UUID towerUUID) {
         for (Map.Entry<UUID, UUID> entry : towerOwners.entrySet()) {
@@ -56,6 +57,8 @@ public abstract class Tower {
         this.mapId = mapId;
         this.scanRadius = scanRadius;
         this.attackInterval = attackInterval;
+        this.coinsSpent = 0;
+
 
 
 
@@ -121,6 +124,8 @@ public abstract class Tower {
 
         // Deduct cost
         Economy.spendMoney(player, RANGE_UPGRADE_COST);
+        this.coinsSpent = coinsSpent + RANGE_UPGRADE_COST;
+
 
         // Confirm upgrade
         player.sendMessage("§aTower range upgraded successfully!");
@@ -152,6 +157,7 @@ public abstract class Tower {
 
         // Deduct cost
         Economy.spendMoney(player, ATTACK_UPGRADE_COST);
+        this.coinsSpent = coinsSpent + ATTACK_UPGRADE_COST;
 
         // Confirm upgrade
         player.sendMessage("§aTower attack speed upgraded successfully!");
@@ -362,6 +368,6 @@ public abstract class Tower {
     // Eventually calculate sell value from the total value put into the tower
     public int getSellValue() {
         //return baseSellValue + (rangeLevel - 1) * 75 + (speedLevel - 1) * 100;
-        return 500; //temp
+        return (int) (this.coinsSpent + 450); //temp
     }
 }
