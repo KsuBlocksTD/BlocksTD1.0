@@ -65,7 +65,7 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * [Flash-UC-027.mp4](https://youtu.be/HNO0LYXZMiw)
 
 ## Architectural Drawings
-> Preview (2/6, Logic is provided as a full PNG and broken into 4 PNGs)
+> Preview (2/6 Images: Logic is provided as a full PNG and broken into 4 PNGs)
 
 ![MapDrawPreview](https://github.com/user-attachments/assets/59f1ee7a-b32c-4245-a4c6-b67715ddd1a8)
 ![MtdCommandPreview](https://github.com/user-attachments/assets/2bec32c9-1a2d-4330-8d09-f8213354688f)
