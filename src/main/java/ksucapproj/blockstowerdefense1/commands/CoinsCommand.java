@@ -14,6 +14,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
+import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
@@ -66,6 +67,11 @@ public class CoinsCommand {
     // Command logic for /addcoins <target> <cointamt> (admin only command)
     private static int executeAddCoinsLogic(final CommandContext<CommandSourceStack> ctx) {
         if (!(ctx.getSource().getExecutor() instanceof Player sender)) {
+            return Command.SINGLE_SUCCESS;
+        }
+
+        if (PlayerUpgrades.getPlayerUpgradesMap().get(sender) == null){
+            sender.sendRichMessage("<red>You must be in a game to use this command!");
             return Command.SINGLE_SUCCESS;
         }
 

@@ -11,6 +11,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.logic.GUI.StartGameGUI;
 import ksucapproj.blockstowerdefense1.logic.TeleportationLogic;
+import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -53,8 +54,14 @@ public class HubCommand {
         }
 
 
+        if (PlayerUpgrades.getPlayerUpgradesMap().get(player) != null){
+            player.sendRichMessage("<red>Use /quitgame to end your game and return to the hub.");
+            return Command.SINGLE_SUCCESS;
+        }
+
+
         //sends player confirmation msg
-        player.sendMessage("Teleporting to the hub...");
+        player.sendRichMessage("<gold>Teleporting to the hub...");
         if(!StartGameGUI.hasCompass(player)) {
             StartGameGUI.giveMapSelectorCompass(player);
         }

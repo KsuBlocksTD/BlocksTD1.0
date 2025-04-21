@@ -24,10 +24,10 @@ public class TeleportationLogic {
 
         player.teleportAsync(location).thenAccept(success -> {
             if (success){ // if teleport is successful, confirmation msg
-                player.sendMessage("Teleport Successful!");
+                player.sendRichMessage("<green><bold>Teleport Successful!");
             }
             else{
-                player.sendMessage("Teleport failed, retrying."); // confirmation msg upon failed attempt
+                player.sendRichMessage("<red><italic>Teleport failed, retrying."); // confirmation msg upon failed attempt
                 Bukkit.getScheduler().runTaskLater(plugin,
                         () -> teleportWithRetry(player, location, maxRetries - 1), // tp attempt
                         20L // 1-second delay before retrying
@@ -38,7 +38,7 @@ public class TeleportationLogic {
 
         ).exceptionally(ex -> {
             ex.printStackTrace();
-            player.sendMessage("An error occurred during teleportation.");
+            player.sendMessage("<red><bold>An error occurred during teleportation.");
             return null;
         }
         );

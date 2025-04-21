@@ -34,6 +34,19 @@ public class PartyCommand {
         return Commands.literal("party")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
 
+                // "mtd party" command
+                .executes(PartyCommand::helpCommandLogic)
+
+                // "/mtd party help <page-number>" command
+                // this command is separate from the other subcommands because its command logic
+                // is small enough to include inside the PartyCommand file
+                .then(Commands.literal("help")
+                        .executes(PartyCommand::helpCommandLogic)
+                        .then(Commands.argument("page-number", IntegerArgumentType.integer())
+                                .executes(PartyCommand::helpCommandLogic)
+                        )
+                )
+
                 //register subcommands here
                 // these are all commands that follow the structure: "/mtd party <subcommand>"
                 // this action does not execute the commands here, but simply 'build' them under /mtd party so that
@@ -44,16 +57,6 @@ public class PartyCommand {
                 .then(ViewPartyCommand.register())
                 .then(LeavePartyCommand.register())
                 .then(KickPartyCommand.register())
-
-                // "/mtd party help" command
-                // this command is separate from the other subcommands because its command logic
-                // is small enough to include inside the PartyCommand file
-                .then(Commands.literal("help")
-                        .executes(PartyCommand::helpCommandLogic)
-                        .then(Commands.argument("page-number", IntegerArgumentType.integer())
-                                .executes(PartyCommand::helpCommandLogic)
-                        )
-                )
 
                 // /mtd party info <party-name> command
                 // this command is separate from the other subcommands because its command logic
@@ -104,8 +107,17 @@ public class PartyCommand {
             return Command.SINGLE_SUCCESS; // if so, return the command with no result to prevent errors
         }
 
+        int pageNumber = 1;
+
+        try {
+            pageNumber = IntegerArgumentType.getInteger(ctx, "page-number");
+        } catch (IllegalArgumentException ignored) {
+            // no argument provided — keep pageNumber = 1
+        }
+
         //  reroutes the command from /mtd party help -> /party help
-        Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> sender.performCommand("party help "));
+        final int finalPageNumber = pageNumber;
+        Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> sender.performCommand("party help " + finalPageNumber));
 
 
         return Command.SINGLE_SUCCESS;

@@ -8,6 +8,8 @@ import io.papermc.paper.command.brigadier.Commands;
 import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import ksucapproj.blockstowerdefense1.LeaderboardManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
@@ -31,18 +33,21 @@ public class ReloadLeaderboardsCommand {
 
         if (!(ctx.getSource().getExecutor() instanceof Player player)) {
 
+            Server server = Bukkit.getServer();
+            ConsoleCommandSender console = server.getConsoleSender();
+
             lb.updateAllLeaderboards();
             Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () ->
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "dh reload")
             );
 
-//            Bukkit.getLogger().info("[BlocksTowerDefense] Leaderboards loaded via console.");
+            console.sendRichMessage("[BlocksTowerDefense] <green>Leaderboards reloaded and holograms updated.");
             return Command.SINGLE_SUCCESS;
         }
 
         lb.updateAllLeaderboards();
         Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> player.performCommand("dh reload"));
-//        player.sendRichMessage("<green>[BlocksTowerDefense] Leaderboards reloaded and holograms updated.");
+        player.sendRichMessage("<green>Leaderboards reloaded and holograms updated.");
 
         return Command.SINGLE_SUCCESS;
     }
