@@ -64,6 +64,19 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 
 * [Flash-UC-027.mp4](https://youtu.be/HNO0LYXZMiw)
 
+## Architectural Drawings
+> Preview
+
+![Logic_FULL](https://github.com/user-attachments/assets/502bfcf9-c16a-410d-9add-9d02a9adcdcd)
+
+![MapDrawPreview](https://github.com/user-attachments/assets/59f1ee7a-b32c-4245-a4c6-b67715ddd1a8)
+![MtdCommandPreview](https://github.com/user-attachments/assets/2bec32c9-1a2d-4330-8d09-f8213354688f)
+
+
+* [Architectural Drawings - Full Quality PNG](https://github.com/KsuBlocksTD/BlocksTD1.0/tree/f0ee32bd2c42d54f4e730289dc98a232994c376e/ReadMeFiles/ArchitecturePNG)
+
+* [Architectural Drawings - PlantUML Text](https://github.com/KsuBlocksTD/BlocksTD1.0/tree/f0ee32bd2c42d54f4e730289dc98a232994c376e/ReadMeFiles/ArchitectureText)
+
 ## Resources
 ### Dependencies
 * __[PartiesAPI Plugin](https://alessiodp.com/parties)__
@@ -79,3 +92,4 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * __[PlaceholderAPI Plugin](https://www.spigotmc.org/resources/placeholderapi.6245)__
 * __[WorldEdit Plugin](https://modrinth.com/plugin/worldedit)__
 * __[SimpleScore Plugin](https://www.spigotmc.org/resources/simplescore-animated-scoreboard.23243)__
+* __[PlantUML](https://plantuml.com/)__
