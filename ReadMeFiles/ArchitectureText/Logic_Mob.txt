@@ -1,0 +1,47 @@
+@startuml
+
+package "Logic" {
+    package "Game Logic" {
+        class MobHandler {
+            -plugin : JavaPlugin
+            -zombieMovementTasks : Map<UUID, BukkitTask> = newConcurrentHashMap<>()
+            -healthBarTasks : Map<UUID, BukkitTask> = new ConcurrentHashMap<>()
+            --
+            +MobHandler(plugin : JavaPlugin)
+            +spawnMob(world : World, mapId : String) : Zombie
+            -followPath(zombie : Zombie, world : World, mapId : String) : BukkitTask
+            -displayHealthBar(zombie : Zombie) : BukkitTask
+            -handleGameEnd(zombie : Zombie, player : Player, mapId : String) : void
+            +removeZombiesForPlayer(player : Player) : void
+            +cancelTasksForPlayer(playerUUID : UUID) : void
+            +onEntityDamage(event : EntityDamageEvent) : void
+            +cleanupAll() : void
+        }
+        
+        
+        
+        class Economy {
+            <<Property>> -player : Player = null
+            <<Property>> -currTotal : int
+            <<Property>> -totalCoinsGained : int
+            <<Property>> -totalCoinsSpent : int
+            <<Property>> -playerEconomies : HashMap<Player, Economy> = new HashMap<>()
+            -mobKillRewards : HashMap<EntityType, Integer> = new HashMap<>()
+            --
+            +Economy(player : Player)
+            +Economy()
+            +earnMoney(killer : Player, mobKilled : EntityType) : void
+            +spendMoney(player : Player, cost : int) : boolean
+            +addPlayerMoney(player : Player, amt : int) : void
+            +shareMoneyWithTeammate(sender : Player, receiver : Player, amt : int) : void
+            +playerJoin(player : Player) : void
+            +playerLeave(leaver : Player) : void
+            +getPlayerMoney(player : Player) : int
+            +playerCountFix() : void
+            +setPlayerMoney(currTotal : int) : void
+            +setPlayerMoney(player : Player, currTotal : int) : void
+        }
+    }
+}
+
+@enduml

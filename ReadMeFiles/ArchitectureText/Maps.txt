@@ -1,0 +1,44 @@
+@startuml
+
+folder "Maps" {
+    class MapData {
+        -maps : Map<String, MapDetails> = new HashMap<>()
+        -defaultMap : String = "map1"
+        -configFile : File
+        -plugin : JavaPlugin
+        -startLocation : Location
+        -waypoints : List<Location>
+        --
+        +MapData(startLocation : Location, waypoints : List<Location>)
+        +mapExists(mapId : String) : boolean
+        +loadMaps(pluginInstance : JavaPlugin) : void
+        +saveMaps() : void
+        +createMap(mapId : String, startLocation : Location) : boolean
+        +deleteMap(mapId : String) : boolean
+        +addWaypoint(mapId : String, waypoint : Location) : boolean
+        +clearWaypoints(mapId : String) : boolean
+        +getAvailableMaps() : List<String>
+        +setDefaultMap(mapId : String) : boolean
+        +getMap(mapId : String) : MapDetails
+        +getDefaultMap() : MapDetails
+        +getWaypointCount(mapId : String) : int
+        +getStartLocation(world : World, mapId : String) : Location
+        +getWaypoints(world : World, mapId : String) : List<Location>
+        +getEndLocation(world : World, mapId : String) : Location
+    }
+
+    class MapDetails {
+        -startLocation : Location = null
+        <<Property>> -waypoints : List<Location>
+        --
+        +MapDetails(startLocation : Location, waypoints : List<Location>)
+        +getStartLocationinternal() : Location
+        +getEndLocation() : Location
+        +addWaypoint(waypoint : Location) : void
+        +clearWaypoints() : void
+    }
+}
+
+MapDetails o--+ MapData
+
+@enduml

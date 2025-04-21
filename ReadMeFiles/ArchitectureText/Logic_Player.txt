@@ -1,0 +1,112 @@
+@startuml
+
+package "Logic" {
+    package "Game Logic" {
+        package "Items" {
+            enum CreateEgg {
+                <<Property>> -displayName : String
+                <<Property>> -color : ChatColor
+                <<Property>> -description : String
+                <<Property>> -price : int
+                --
+                ~CreateEggProperties(displayName : String, color : ChatColor, description : String, price : int)
+                +createTowerEgg(type : CreateEgg) : ItemStack
+                --
+                BASIC
+                FAST
+                SNIPER
+                SPLASH
+                SLOW
+            }
+        }
+
+
+
+        class PlayerUpgrades {
+            -api : PartiesAPI = BlocksTowerDefense1.getApi()
+            <<Property>> -playerUpgradesMap : HashMap<Player, PlayerUpgrades> = new HashMap<>()
+            <<Property>> -swiftnessLevel : int
+            <<Property>> -strengthLevel : int
+            <<Property>> -player : Player
+            <<Property>> -sword : PlayerSword
+            -playerUpgradesBought : int
+            <<Property>> -totalUpgradesBought : int
+            -config : ConfigOptions = BlocksTowerDefense1.getInstance().getBTDConfig()
+            --
+            +PlayerUpgrades(player : Player)
+            +applySwiftnessUpgrade() : void
+            +applyStrengthUpgrade() : void
+            +playerDelete(player : Player) : void
+        }
+        
+        
+        
+        class Economy {
+            <<Property>> -player : Player = null
+            <<Property>> -currTotal : int
+            <<Property>> -totalCoinsGained : int
+            <<Property>> -totalCoinsSpent : int
+            <<Property>> -playerEconomies : HashMap<Player, Economy> = new HashMap<>()
+            -mobKillRewards : HashMap<EntityType, Integer> = new HashMap<>()
+            --
+            +Economy(player : Player)
+            +Economy()
+            +earnMoney(killer : Player, mobKilled : EntityType) : void
+            +spendMoney(player : Player, cost : int) : boolean
+            +addPlayerMoney(player : Player, amt : int) : void
+            +shareMoneyWithTeammate(sender : Player, receiver : Player, amt : int) : void
+            +playerJoin(player : Player) : void
+            +playerLeave(leaver : Player) : void
+            +getPlayerMoney(player : Player) : int
+            +playerCountFix() : void
+            +setPlayerMoney(currTotal : int) : void
+            +setPlayerMoney(player : Player, currTotal : int) : void
+        }
+        
+        
+        
+        class PlayerEventHandler {
+            -plugin : JavaPlugin : JavaPlugin
+            -gameManager : StartGame
+            +api : PartiesAPI = BlocksTowerDefense1.getApi()
+            ~config : ConfigOptions = BlocksTowerDefense1.getInstance().getBTDConfig()
+            --
+            +PlayerEventHandler(plugin : JavaPlugin, gameManager : StartGame)
+            +onPlayerJoin(event : PlayerJoinEvent) : void
+            +onPlayerQuit(event : PlayerQuitEvent) : void
+            +onPlayerUseEgg(event : PlayerInteractEvent) : void
+            +onEntityDeath(event : EntityDeathEvent) : void
+            +onMobKill(event : EntityDeathEvent) : void
+            +onInvClick(event : PlayerDropItemEvent) : void
+            +onPlayerHit(event : EntityDamageByEntityEvent) : void
+            +onPartyCreatePre(event : BukkitPartiesPartyPreCreateEvent) : void
+            +onPartyCreatePost(event : BukkitPartiesPartyPostCreateEvent) : void
+            +onPartyDeletePost(event : BukkitPartiesPartyPostDeleteEvent) : void
+            +onPlayerInvitePre(event : BukkitPartiesPlayerPreInviteEvent) : void
+            +onPlayerInvitePost(event : BukkitPartiesPlayerPostInviteEvent) : void
+        }
+    }
+}
+
+
+
+class ConfigOptions {
+    -config : FileConfiguration
+    --
+    +ConfigOptions(plugin : JavaPlugin)
+    +getSpeedMaxLevel() : int
+    +getSlownessMaxLevel() : int
+    +getSlownessDuration() : int
+    +getSlownessDurationIncreaseOnUpgrade() : boolean
+    +getStrengthMaxLevel() : int
+    +getSweepingEdgeMaxLevel() : int
+    +getSwordMaterialMaxLevel() : int
+    +getMOTDOnPlayerJoin() : String
+}
+
+
+
+PlayerUpgrades --> ConfigOptions : config
+PlayerEventHandler --> ConfigOptions : config
+
+@enduml

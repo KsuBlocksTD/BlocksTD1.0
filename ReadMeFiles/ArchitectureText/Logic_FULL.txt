@@ -1,0 +1,290 @@
+@startuml
+
+package "Logic" {
+    package "Game Logic" {
+        package "Towers" {
+            class Tower {
+                #plugin : JavaPlugin
+                #towerTasks : Map<UUID, BukkitTask> = new ConcurrentHashMap<>()
+                #towerOwners : Map<UUID, UUID>
+                #location : Location
+                #owner : Player
+                #mapId : String
+                #towerEntity : Villager
+                #scanRadius : int
+                #attackInterval : long
+                --
+                +getTowerOwner(towerUUID : UUID) : UUID
+                +Tower(location : Location, owner : Player, mapId : String, scanRadius : int, attackInterval : long, plugin : JavaPlugin)
+                #spawnTowerEntity() : Villager
+                #startTowerBehavior() : BukkitTask
+                #getTowerName() : String
+                #attack() : void
+                #faceTarget(target : Entity) : void
+                +cancelTasksForPlayer(playerUUID : UUID) : void
+                +removeTowersForPlayer(player : Player, mapId : String) : void
+                +removeAllTowers() : void
+            }
+            
+            
+            
+            class BasicTower {
+                +BasicTower(location : Location, owner : Player, mapId : String, plugin : JavaPlugin)
+                #getTowerName() : String
+                #attack() : void
+            }
+
+
+            class FastTower {
+                +FastTower(location : Location, owner : Player, mapId : String, plugin : JavaPlugin)
+                #getTowerName() : String
+                #attack() : void
+            }
+
+
+            class SlowTower {
+                +SlowTower(location : Location, owner : Player, mapId : String, plugin : JavaPlugin)
+                #getTowerName() : String
+                #attack() : void
+            }
+
+
+            class SniperTower {
+                +SniperTower(location : Location, owner : Player, mapId : String, plugin : JavaPlugin)
+                #getTowerName() : String
+                #attack() : void
+            }
+
+
+            class SplashTower {
+                +SplashTower(location : Location, owner : Player, mapId : String, plugin : JavaPlugin)
+                #getTowerName() : String
+                #attack() : void
+            }
+
+
+
+            class TowerFactory {
+                +placeTower(towerType : TowerType, player : Player, placementLocation : Location, mapId : String, plugin : JavaPlugin, item : ItemStack) : void
+            }
+
+
+
+
+            enum TowerType {
+                -cost : int
+                -towerClass : Class<? extends Tower>
+                --
+                ~TowerType(cost : int, towerClass : Class<? extends Tower>)
+                +getCost() : int
+                +getTowerClass() : Class<? extends Tower>
+                --
+                BASIC
+                FAST
+                SNIPER
+                SPLASH
+                SLOW
+            }
+        }
+        
+        
+        
+        package "Items" {
+            enum CreateEgg {
+                <<Property>> -displayName : String
+                <<Property>> -color : ChatColor
+                <<Property>> -description : String
+                <<Property>> -price : int
+                --
+                ~CreateEggProperties(displayName : String, color : ChatColor, description : String, price : int)
+                +createTowerEgg(type : CreateEgg) : ItemStack
+                --
+                BASIC
+                FAST
+                SNIPER
+                SPLASH
+                SLOW
+            }
+        }
+
+
+
+        class PlayerUpgrades {
+            -api : PartiesAPI = BlocksTowerDefense1.getApi()
+            <<Property>> -playerUpgradesMap : HashMap<Player, PlayerUpgrades> = new HashMap<>()
+            <<Property>> -swiftnessLevel : int
+            <<Property>> -strengthLevel : int
+            <<Property>> -player : Player
+            <<Property>> -sword : PlayerSword
+            -playerUpgradesBought : int
+            <<Property>> -totalUpgradesBought : int
+            -config : ConfigOptions = BlocksTowerDefense1.getInstance().getBTDConfig()
+            --
+            +PlayerUpgrades(player : Player)
+            +applySwiftnessUpgrade() : void
+            +applyStrengthUpgrade() : void
+            +playerDelete(player : Player) : void
+        }
+        
+        
+        
+        class MobHandler {
+            -plugin : JavaPlugin
+            -zombieMovementTasks : Map<UUID, BukkitTask> = newConcurrentHashMap<>()
+            -healthBarTasks : Map<UUID, BukkitTask> = new ConcurrentHashMap<>()
+            --
+            +MobHandler(plugin : JavaPlugin)
+            +spawnMob(world : World, mapId : String) : Zombie
+            -followPath(zombie : Zombie, world : World, mapId : String) : BukkitTask
+            -displayHealthBar(zombie : Zombie) : BukkitTask
+            -handleGameEnd(zombie : Zombie, player : Player, mapId : String) : void
+            +removeZombiesForPlayer(player : Player) : void
+            +cancelTasksForPlayer(playerUUID : UUID) : void
+            +onEntityDamage(event : EntityDamageEvent) : void
+            +cleanupAll() : void
+        }
+        
+        
+        
+        class Economy {
+            <<Property>> -player : Player = null
+            <<Property>> -currTotal : int
+            <<Property>> -totalCoinsGained : int
+            <<Property>> -totalCoinsSpent : int
+            <<Property>> -playerEconomies : HashMap<Player, Economy> = new HashMap<>()
+            -mobKillRewards : HashMap<EntityType, Integer> = new HashMap<>()
+            --
+            +Economy(player : Player)
+            +Economy()
+            +earnMoney(killer : Player, mobKilled : EntityType) : void
+            +spendMoney(player : Player, cost : int) : boolean
+            +addPlayerMoney(player : Player, amt : int) : void
+            +shareMoneyWithTeammate(sender : Player, receiver : Player, amt : int) : void
+            +playerJoin(player : Player) : void
+            +playerLeave(leaver : Player) : void
+            +getPlayerMoney(player : Player) : int
+            +playerCountFix() : void
+            +setPlayerMoney(currTotal : int) : void
+            +setPlayerMoney(player : Player, currTotal : int) : void
+        }
+        
+        
+        
+        class PlayerEventHandler {
+            -plugin : JavaPlugin : JavaPlugin
+            -gameManager : StartGame
+            +api : PartiesAPI = BlocksTowerDefense1.getApi()
+            ~config : ConfigOptions = BlocksTowerDefense1.getInstance().getBTDConfig()
+            --
+            +PlayerEventHandler(plugin : JavaPlugin, gameManager : StartGame)
+            +onPlayerJoin(event : PlayerJoinEvent) : void
+            +onPlayerQuit(event : PlayerQuitEvent) : void
+            +onPlayerUseEgg(event : PlayerInteractEvent) : void
+            +onEntityDeath(event : EntityDeathEvent) : void
+            +onMobKill(event : EntityDeathEvent) : void
+            +onInvClick(event : PlayerDropItemEvent) : void
+            +onPlayerHit(event : EntityDamageByEntityEvent) : void
+            +onPartyCreatePre(event : BukkitPartiesPartyPreCreateEvent) : void
+            +onPartyCreatePost(event : BukkitPartiesPartyPostCreateEvent) : void
+            +onPartyDeletePost(event : BukkitPartiesPartyPostDeleteEvent) : void
+            +onPlayerInvitePre(event : BukkitPartiesPlayerPreInviteEvent) : void
+            +onPlayerInvitePost(event : BukkitPartiesPlayerPostInviteEvent) : void
+        }
+    }
+
+
+
+    class TeleportationLogic {
+        -plugin : JavaPlugin
+        --
+        +TeleportationLogic(plugin : JavaPlugin)
+        +teleportWithRetry(player : Player, location : Location, maxRetries : int) : void
+    }
+
+
+
+    class AsyncTest {
+        -plugin : BlocksTowerDefense1
+        --
+        +AsyncTest(plugin : BlocksTowerDefense1)
+        +run() : void
+    }
+
+
+
+    class DatabaseManager {
+        -URL : String = BlocksTowerDefense1.getInstance().getConfig().getString("server.database.url")
+        --
+        +connect() : Connection
+        -insertPlayer(conn : Connection, uuidAsString : String, name : String) : void
+        -userExists(conn : Connection, uuidAsString : String) : boolean
+        +checkPlayerInDB(player : Player) : void
+        +updatePlayerData(upgrades : PlayerUpgrades) : void
+        -insertPlayerTotalsOnGameEnd(conn : Connection, upgrades : PlayerUpgrades) : void
+    }
+}
+
+
+
+class PlaceHolderAPIExpansion {
+    -plugin : JavaPlugin
+    -api : PartiesAPI = BlocksTowerDefense1.getApi()
+    -config : ConfigOptions = BlocksTowerDefense1.getInstance().getBTDConfig()
+    --
+    +PlaceholderAPIExpansion(plugin : JavaPlugin)
+    +getIdentifier() : String
+    +getAuthor() : String
+    +getVersion() : String
+    +persist() : boolean
+    +canRegister() : boolean
+    +onPlaceHolderRequest(player : Player, identifier : String) : String
+}
+
+
+
+class ConfigOptions {
+    -config : FileConfiguration
+    --
+    +ConfigOptions(plugin : JavaPlugin)
+    +getSpeedMaxLevel() : int
+    +getSlownessMaxLevel() : int
+    +getSlownessDuration() : int
+    +getSlownessDurationIncreaseOnUpgrade() : boolean
+    +getStrengthMaxLevel() : int
+    +getSweepingEdgeMaxLevel() : int
+    +getSwordMaterialMaxLevel() : int
+    +getMOTDOnPlayerJoin() : String
+}
+
+
+
+class BlocksTowerDefense1 {
+    <<Property>> -api : PartiesAPI
+    <<Property>> -gameManager : StartGame
+    <<Property>> -instance : BlocksTowerDefense1
+    -config : ConfigOptions
+    --
+    +onEnable() : void
+    +onDisable() : void
+    +getBTDConfig() : ConfigOptions
+}
+
+
+
+TowerType o--+ TowerFactory
+
+BasicTower --|> Tower #white
+FastTower --|> Tower #white
+SlowTower --|> Tower #white
+SniperTower --|> Tower #white
+SplashTower --|> Tower #white
+
+PlayerUpgrades --> ConfigOptions : config
+PlayerEventHandler --> ConfigOptions : config
+BlocksTowerDefense1 --> ConfigOptions : config
+PlaceHolderAPIExpansion --> ConfigOptions : config
+
+BlocksTowerDefense1 --> BlocksTowerDefense1 : instance
+AsyncTest --> BlocksTowerDefense1 : plugin
+
+@enduml

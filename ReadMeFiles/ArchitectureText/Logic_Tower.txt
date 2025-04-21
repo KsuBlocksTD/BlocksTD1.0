@@ -1,0 +1,102 @@
+@startuml
+
+package "Logic" {
+    package "Game Logic" {
+        package "Towers" {
+            class Tower {
+                #plugin : JavaPlugin
+                #towerTasks : Map<UUID, BukkitTask> = new ConcurrentHashMap<>()
+                #towerOwners : Map<UUID, UUID>
+                #location : Location
+                #owner : Player
+                #mapId : String
+                #towerEntity : Villager
+                #scanRadius : int
+                #attackInterval : long
+                --
+                +getTowerOwner(towerUUID : UUID) : UUID
+                +Tower(location : Location, owner : Player, mapId : String, scanRadius : int, attackInterval : long, plugin : JavaPlugin)
+                #spawnTowerEntity() : Villager
+                #startTowerBehavior() : BukkitTask
+                #getTowerName() : String
+                #attack() : void
+                #faceTarget(target : Entity) : void
+                +cancelTasksForPlayer(playerUUID : UUID) : void
+                +removeTowersForPlayer(player : Player, mapId : String) : void
+                +removeAllTowers() : void
+            }
+            
+            
+            
+            class BasicTower {
+                +BasicTower(location : Location, owner : Player, mapId : String, plugin : JavaPlugin)
+                #getTowerName() : String
+                #attack() : void
+            }
+
+
+            class FastTower {
+                +FastTower(location : Location, owner : Player, mapId : String, plugin : JavaPlugin)
+                #getTowerName() : String
+                #attack() : void
+            }
+
+
+            class SlowTower {
+                +SlowTower(location : Location, owner : Player, mapId : String, plugin : JavaPlugin)
+                #getTowerName() : String
+                #attack() : void
+            }
+
+
+            class SniperTower {
+                +SniperTower(location : Location, owner : Player, mapId : String, plugin : JavaPlugin)
+                #getTowerName() : String
+                #attack() : void
+            }
+
+
+            class SplashTower {
+                +SplashTower(location : Location, owner : Player, mapId : String, plugin : JavaPlugin)
+                #getTowerName() : String
+                #attack() : void
+            }
+
+
+
+            class TowerFactory {
+                +placeTower(towerType : TowerType, player : Player, placementLocation : Location, mapId : String, plugin : JavaPlugin, item : ItemStack) : void
+            }
+
+
+
+
+            enum TowerType {
+                -cost : int
+                -towerClass : Class<? extends Tower>
+                --
+                ~TowerType(cost : int, towerClass : Class<? extends Tower>)
+                +getCost() : int
+                +getTowerClass() : Class<? extends Tower>
+                --
+                BASIC
+                FAST
+                SNIPER
+                SPLASH
+                SLOW
+            }
+        }
+    }
+}
+
+
+
+TowerType o--+ TowerFactory
+
+BasicTower --|> Tower #white
+FastTower --|> Tower #white
+SlowTower --|> Tower #white
+SniperTower --|> Tower #white
+SplashTower --|> Tower #white
+
+@enduml

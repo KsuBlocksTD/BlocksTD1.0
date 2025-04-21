@@ -1,0 +1,85 @@
+@startuml
+
+package "Logic" {
+    class TeleportationLogic {
+        -plugin : JavaPlugin
+        --
+        +TeleportationLogic(plugin : JavaPlugin)
+        +teleportWithRetry(player : Player, location : Location, maxRetries : int) : void
+    }
+
+
+
+    class AsyncTest {
+        -plugin : BlocksTowerDefense1
+        --
+        +AsyncTest(plugin : BlocksTowerDefense1)
+        +run() : void
+    }
+
+
+
+    class DatabaseManager {
+        -URL : String = BlocksTowerDefense1.getInstance().getConfig().getString("server.database.url")
+        --
+        +connect() : Connection
+        -insertPlayer(conn : Connection, uuidAsString : String, name : String) : void
+        -userExists(conn : Connection, uuidAsString : String) : boolean
+        +checkPlayerInDB(player : Player) : void
+        +updatePlayerData(upgrades : PlayerUpgrades) : void
+        -insertPlayerTotalsOnGameEnd(conn : Connection, upgrades : PlayerUpgrades) : void
+    }
+}
+
+class PlaceHolderAPIExpansion {
+    -plugin : JavaPlugin
+    -api : PartiesAPI = BlocksTowerDefense1.getApi()
+    -config : ConfigOptions = BlocksTowerDefense1.getInstance().getBTDConfig()
+    --
+    +PlaceholderAPIExpansion(plugin : JavaPlugin)
+    +getIdentifier() : String
+    +getAuthor() : String
+    +getVersion() : String
+    +persist() : boolean
+    +canRegister() : boolean
+    +onPlaceHolderRequest(player : Player, identifier : String) : String
+}
+
+
+
+class ConfigOptions {
+    -config : FileConfiguration
+    --
+    +ConfigOptions(plugin : JavaPlugin)
+    +getSpeedMaxLevel() : int
+    +getSlownessMaxLevel() : int
+    +getSlownessDuration() : int
+    +getSlownessDurationIncreaseOnUpgrade() : boolean
+    +getStrengthMaxLevel() : int
+    +getSweepingEdgeMaxLevel() : int
+    +getSwordMaterialMaxLevel() : int
+    +getMOTDOnPlayerJoin() : String
+}
+
+
+
+class BlocksTowerDefense1 {
+    <<Property>> -api : PartiesAPI
+    <<Property>> -gameManager : StartGame
+    <<Property>> -instance : BlocksTowerDefense1
+    -config : ConfigOptions
+    --
+    +onEnable() : void
+    +onDisable() : void
+    +getBTDConfig() : ConfigOptions
+}
+
+
+
+BlocksTowerDefense1 --> ConfigOptions : config
+PlaceHolderAPIExpansion --> ConfigOptions : config
+
+BlocksTowerDefense1 --> BlocksTowerDefense1 : instance
+AsyncTest --> BlocksTowerDefense1 : plugin
+
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+
+folder "Commands" {
+    class MtdCommand {
+        -subcommands : List<String> = List.of("hub", "party")
+        --
+        +register() : LiteralCommandNode<CommandSourceStack>
+        -getMtdSuggestions(ctx : CommandContext<CommandSourceStack>, builder : SuggestionsBuilder) : CompletableFuture<Suggestions>
+    }
+}
+
+@enduml
