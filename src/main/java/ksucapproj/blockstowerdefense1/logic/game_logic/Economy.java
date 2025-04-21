@@ -200,15 +200,15 @@ public class Economy {
     // removes the player from the hashmap, takes their money,
     // and splits evenly it among all remaining players in the game
     public static void playerLeave(Player leaver){
-        leaver.sendRichMessage(leaver.getName() + " has left the game! Reallocating coins..");
+//        leaver.sendRichMessage(leaver.getName() + " has left the game! Reallocating coins..");
 
 
 
         // if no other players are detected, leaver's coins are simply deleted
-        if (playerEconomies.isEmpty()){
-            Bukkit.broadcastMessage("No online players found, deleting all coins.");
-            return;
-        }
+//        if (playerEconomies.isEmpty()){
+//            Bukkit.broadcastMessage("No online players found, deleting all coins.");
+//            return;
+//        }
 
         final int leaverMoney = getPlayerEconomies().get(leaver).currTotal;
 

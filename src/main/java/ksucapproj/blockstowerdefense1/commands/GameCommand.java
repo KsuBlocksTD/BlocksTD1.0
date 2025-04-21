@@ -19,7 +19,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -83,14 +82,24 @@ public class GameCommand {
         if (!(ctx.getSource().getExecutor() instanceof Player sender)) {
             return Command.SINGLE_SUCCESS;
         }
+
         List<UUID> partyUUIDs = gameManager.getListOfPlayersInGame(sender.getUniqueId());
+
+        if (partyUUIDs == null){
+            sender.sendRichMessage("<red>You must be in a game to use this command!");
+            return Command.SINGLE_SUCCESS;
+        }
+
         UUID uuid1 = partyUUIDs.getFirst();
+
         for (UUID uuid : partyUUIDs) {
             // Clean game session
-            this.gameManager.gameEndStatus(uuid, false);
+            this.gameManager.playerGameEnd(uuid, false);
             PlayerUpgrades.playerDelete(Bukkit.getPlayer(uuid));
             Bukkit.getPlayer(uuid).sendRichMessage("<red>You have quit the game.");
-        }gameManager.removePlayerSession(uuid1);
+        }
+        gameManager.removePlayerSession(uuid1);
+
         return Command.SINGLE_SUCCESS;
     }
 

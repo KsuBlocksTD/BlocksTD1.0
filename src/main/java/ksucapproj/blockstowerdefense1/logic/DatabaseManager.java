@@ -5,7 +5,6 @@ import ksucapproj.blockstowerdefense1.logic.game_logic.Economy;
 import ksucapproj.blockstowerdefense1.logic.game_logic.PlayerUpgrades;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.*;
@@ -34,7 +33,6 @@ import java.sql.*;
 
 public class DatabaseManager {
 
-    private static final JavaPlugin plugin = BlocksTowerDefense1.getInstance();
     private static Connection conn;
     private static boolean tableCreated;
 
@@ -42,21 +40,6 @@ public class DatabaseManager {
         conn = BlocksTowerDefense1.getInstance().getDBConnection();
         tableCreated = false;
     }
-
-    /*
-        -- TO-DO LIST FOR DATABASE
-    * Create database connection upon server loading (in onEnable() )
-        - Hopefully get to creating an async thread, create database connection on it, and move it back to main thread
-        - Save this creation to a getter (like the getInstance() functions below onDisable() ) to be grabbed later
-    * Create a createTable function that would create the table in case it doesn't exist
-        - all functions try, and then catch the error code of the table not existing, then create the table in the catch
-        - once created, retry the function that generated the error (potentially)
-        - also might have to create a .db file to store this created table in
-
-    * scheduler.runTaskAsynchronously() might be the way to make the db connection asynchronously, and then come back
-    to main thread in the function itself?
-
-     */
 
     // getDataFolder() = btd's plugins folder, getPath() = gets the path to wherever the btd folder/file is
 
@@ -182,7 +165,7 @@ public class DatabaseManager {
     public static void checkPlayerInDB(Player player, int maxRetries){
 
         if (maxRetries <= 0){
-            Bukkit.getLogger().warning("[BlocksTowerDefense] Check if " + player.getName() + " is in database failed.");
+            Bukkit.getLogger().warning("[BlocksTowerDefense] Check if player '" + player.getName() + "' is in database failed.");
             return;
         }
 
@@ -195,7 +178,7 @@ public class DatabaseManager {
 
                 // helper method
                 if (DatabaseManager.userExists(conn, uuidString)){ // if player exists, finish
-                    Bukkit.getLogger().info("[BlocksTowerDefense] Player exists in database, returning.");// confirmation msg
+                    Bukkit.getLogger().info("[BlocksTowerDefense] Player '" + player.getName() + "' exists in database, addition not required.");// confirmation msg
                 }
 
                 // helper method
@@ -221,7 +204,7 @@ public class DatabaseManager {
 
 
     // this function is designed to update a player's information in the db at the end of a game
-    public static void updatePlayerData(PlayerUpgrades upgrades, boolean victoryStatus, int maxRetries){
+    public static void updatePlayerData(PlayerUpgrades upgrades, Economy playerEconomy, boolean victoryStatus, long gameLength, int maxRetries){
         if (upgrades.getPlayer() == null) {
             return;
         }
@@ -242,12 +225,13 @@ public class DatabaseManager {
                 checkPlayerInDB(upgrades.getPlayer(), maxRetries);
 
                 // calls the method to total player values on game end
-                insertPlayerTotalsOnGameEnd(conn, upgrades, victoryStatus);
+                insertPlayerTotalsOnGameEnd(conn, upgrades, playerEconomy, victoryStatus, gameLength);
+                BlocksTowerDefense1.getInstance().getLeaderboardManager().checkAndUpdateRelevantLeaderboards(upgrades.getPlayer().getUniqueId());
             }
 
             else { // if conn is null, attempt 3 tries to establish and retry database call
                 conn = connect();
-                updatePlayerData(upgrades, victoryStatus,maxRetries - 1);
+                updatePlayerData(upgrades, playerEconomy, victoryStatus, gameLength, maxRetries - 1);
             }
         }
 
@@ -261,22 +245,28 @@ public class DatabaseManager {
 
     // NEEDS
     // this takes the player's totals from the game they played and updates their current db values
-    private static void insertPlayerTotalsOnGameEnd(Connection conn, PlayerUpgrades upgrades, boolean victory) throws SQLException{
+    private static void insertPlayerTotalsOnGameEnd(Connection conn, PlayerUpgrades upgrades, Economy playerEconomy, boolean victory, long gameLength) throws SQLException{
         String sql = """
-            UPDATE players
-            SET
-            total_games_played = total_games_played + ?,
-            total_coins_gained = total_coins_gained + ?,
-            total_coins_spent = total_coins_spent + ?,
-            total_towers_bought = total_towers_bought + ?,
-            total_wins = total_wins + ?,
-            total_upgrades_bought = total_upgrades_bought + ?
-            WHERE uuid = ?;
-            """;
+        UPDATE players
+        SET
+        total_games_played = total_games_played + ?,
+        total_coins_gained = total_coins_gained + ?,
+        total_coins_spent = total_coins_spent + ?,
+        total_towers_bought = total_towers_bought + ?,
+        total_wins = total_wins + ?,
+        fastest_win_in_seconds = CASE
+            WHEN fastest_win_in_seconds IS NULL THEN ?
+            WHEN ? < fastest_win_in_seconds THEN ?
+            ELSE fastest_win_in_seconds
+        END,
+        total_upgrades_bought = total_upgrades_bought + ?
+        WHERE uuid = ?;
+        """;
+
 
         String uuidString = upgrades.getPlayer().getUniqueId().toString();
         Player player = upgrades.getPlayer();
-        Economy playerEcon = Economy.getPlayerEconomies().get(player);
+//        Economy playerEcon = Economy.getPlayerEconomies().get(player);
 
         PreparedStatement pstmt = conn.prepareStatement(sql);
 
@@ -284,37 +274,47 @@ public class DatabaseManager {
 
         /*
 
-        /*-- ALREADY ADDED --
+        -- ALREADY ADDED --
         * 1, total games played // leaderboard
         * 2, total coins gained // leaderboard
         * 3, total coins spent // leaderboard
-        * 6, total upgrades bought // leaderboard
-        * 7, uuid // needed for leaderboard
+        * 5, total victories // leaderboard
+        * 6/7/8, fastest game time // leaderboard
+        * 9, total upgrades bought // leaderboard
+        * 10, uuid // needed for leaderboard
 
         -- NEEDS --
-        * 4, total towers bought // not a leaderboard yet
-        * 5, total wins*/ // leaderboard
+        * 4, total towers bought // not a leaderboard yet (potential future addition)
+
+        */
+
 
 
 
 
         pstmt.setInt(1, 1);
-        pstmt.setInt(2, playerEcon.getTotalCoinsGained());
-        pstmt.setInt(3, playerEcon.getTotalCoinsSpent());
+        pstmt.setInt(2, playerEconomy.getTotalCoinsGained());
+        pstmt.setInt(3, playerEconomy.getTotalCoinsSpent());
         pstmt.setInt(4, 0); // zero as temp value
 
         // zero if the player loses, one if they win
         pstmt.setInt(5, victory ? 1 : 0);
 
-        pstmt.setInt(6, upgrades.getTotalUpgradesBought());
-        pstmt.setString(7, uuidString);
+        // only if the player wins set their game's length
+        if (victory){
+            int time = (int) gameLength;
+
+            pstmt.setInt(6, time); // for IS NULL
+            pstmt.setInt(7, time); // for < condition
+            pstmt.setInt(8, time); // value to set if better or null
+        }
+
+        pstmt.setInt(9, upgrades.getTotalUpgradesBought());
+        pstmt.setString(10, uuidString);
         pstmt.executeUpdate();
 
-
-
-
-
-
+        // confirmation message
+        Bukkit.getLogger().info("[BlocksTowerDefense] Updated saved leaderboard data for player '" + player.getName() + "'."); // confirmation msg
     }
 
 

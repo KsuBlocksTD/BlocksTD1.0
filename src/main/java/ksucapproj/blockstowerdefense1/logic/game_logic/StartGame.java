@@ -18,6 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -99,9 +101,10 @@ public class StartGame {
         // this will eventually be the default greeting on player join
 //        event.getPlayer().sendMessage("Welcome to the server, " + event.getPlayer().getName() + ".");
 
-        // this checks if a player is in the db already, if not, adds them to it
-        DatabaseManager.checkPlayerInDB(player, 2);
-
+        // this checks if a player is in the db already, if not, adds them to it (async)
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            DatabaseManager.checkPlayerInDB(player, 2);
+        });
     }
 
     public void startGames(Player player, String mapId) {
@@ -128,7 +131,8 @@ public class StartGame {
         PartyPlayer partyPlayer = api.getPartyPlayer(player.getUniqueId());
 
         if (api.getPartyOfPlayer(player.getUniqueId()) == null) {
-            player.sendRichMessage("<red>User is not in a party, making one for game creation.");
+//            player.sendRichMessage("<red>User is not in a party, making one for game creation.");
+            Bukkit.getLogger().warning("User: " + player.getName() + " is not in a party, making one for game creation.");
             api.createParty(player.getName(), partyPlayer);
         }
 
@@ -264,7 +268,8 @@ public class StartGame {
         Set<UUID> activeZombies = new HashSet<>();
         List<UUID> players = new ArrayList<>();
         Set<UUID> readyPlayers = new HashSet<>();
-
+        Instant gameStartTime = Instant.now();
+        Instant gameEndTime = null;
         GameSession(String mapId) {
             this.currentMapId = mapId;
             healingDisabledMaps.put("default", true);
@@ -385,26 +390,37 @@ public class StartGame {
         econ.addMoneyOnRoundEnd(session.currentRound);
     }
 
-    public void gameEndStatus(UUID playerUUID, boolean victory){
+    public void playerGameEnd(UUID playerUUID, boolean victory){
         Player player = Bukkit.getPlayer(playerUUID);
         if(player == null) {
             return;
         }
+        long timeElapsed;
 
-
-        String msg;
         if (victory) {
             player.sendRichMessage("<light_purple>Congratulations! You won!");
             spawnFirework(player);
 
+            GameSession session = playerSessions.get(getSetFromPlayer(playerUUID));
+
+            session.gameEndTime = Instant.now();
+            timeElapsed = Duration.between(session.gameStartTime, session.gameEndTime).getSeconds();
         }
+
         else {
+            timeElapsed = 0;
             player.sendRichMessage("<light_purple>You lost! Game over..");
         }
-        if (PlayerUpgrades.getPlayerUpgradesMap().get(player) == null) {
-            return;
-        }
-        DatabaseManager.updatePlayerData(PlayerUpgrades.getPlayerUpgradesMap().get(player), victory, 3);
+
+
+        PlayerUpgrades upgrades = PlayerUpgrades.getPlayerUpgradesMap().get(player);
+        Economy playerEcon = Economy.getPlayerEconomies().get(player);
+
+        if (upgrades == null || playerEcon == null) return;
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            DatabaseManager.updatePlayerData(upgrades, playerEcon, victory, timeElapsed, 3);
+        });
 
         cleanupPlayer(playerUUID);
     }
@@ -432,6 +448,11 @@ public class StartGame {
 
     public List<UUID> getListOfPlayersInGame(UUID playerUUID) {
         GameSession session = playerSessions.get(getSetFromPlayer(playerUUID));
+
+        if (session == null){
+            return null;
+        }
+
         return session.players;
     }
 

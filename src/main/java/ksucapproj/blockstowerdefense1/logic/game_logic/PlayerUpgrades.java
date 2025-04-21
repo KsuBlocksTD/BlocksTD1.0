@@ -67,7 +67,7 @@ public class PlayerUpgrades{
                 // changes the current speed effect applied and applies the new level on top
                 setSwiftnessLevel(++swiftnessLevel);
                 playerUpgradesBought += 1;
-                player.sendMessage("Your speed level is now level " + swiftnessLevel);
+                player.sendRichMessage("<green>Your speed level is now level " + swiftnessLevel + "!");
                 return;
             }
             sendMaxLevelMsg(); // if player is already max level, notify and return
@@ -89,7 +89,7 @@ public class PlayerUpgrades{
                 Economy.spendMoney(player, cost);
                 // changes the current strength effect applied and applies the new level on top
                 setStrengthLevel(++strengthLevel);
-                player.sendMessage("Your strength level is now level " + strengthLevel);
+                player.sendRichMessage("<green>Your strength level is now level " + strengthLevel + "!");
                 return;
             }
             sendMaxLevelMsg(); // if player is already max level, notify and return

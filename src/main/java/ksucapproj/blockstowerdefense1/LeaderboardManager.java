@@ -118,4 +118,28 @@ public class LeaderboardManager {
             default -> value > 0; // For everything else, 0 is meaningless
         };
     }
+
+
+    public void checkAndUpdateRelevantLeaderboards(UUID playerUUID) {
+        List<String> leaderboardStats = getTrackedStats();
+
+        for (String stat : leaderboardStats) {
+            getStatForPlayer(playerUUID, stat).ifPresent(newValue -> {
+                List<LeaderboardEntry> topEntries = getLeaderboard(stat);
+
+                if (topEntries.size() < 5) {
+                    updateLeaderboard(stat);
+                    return;
+                }
+
+                boolean isTimeStat = stat.equals("fastest_win_in_seconds");
+                int threshold = topEntries.get(4).value();
+                boolean qualifies = isTimeStat ? newValue < threshold : newValue > threshold;
+
+                if (qualifies) {
+                    updateLeaderboard(stat);
+                }
+            });
+        }
+    }
 }

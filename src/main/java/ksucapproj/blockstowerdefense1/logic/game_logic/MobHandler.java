@@ -326,7 +326,7 @@ public class MobHandler {
                         if (gameManager.getZombiesPassed(playerUUID) > 9) {
                             // If there have been more than 9 zombies that have passed the player
                             handleGameEnd(currentPlayer, mapId);
-                            gameManager.gameEndStatus(currentPlayer.getUniqueId(), false);
+                            gameManager.playerGameEnd(currentPlayer.getUniqueId(), false);
                             zombieMovementTasks.remove(zombie.getUniqueId());
                             zombie.remove();
                             cancel();

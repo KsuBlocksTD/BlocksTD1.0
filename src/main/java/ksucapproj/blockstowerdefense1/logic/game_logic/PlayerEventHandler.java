@@ -552,7 +552,7 @@ public class PlayerEventHandler implements Listener {
                     GlowingTotem.reduceRoundsLeft(currentPlayer);
                     gameManager.roundEndMoney(currentPlayer.getUniqueId());
                     if(currentRound == 51) {
-                        gameManager.gameEndStatus(currentPlayer.getUniqueId(), true);
+                        gameManager.playerGameEnd(currentPlayer.getUniqueId(), true);
                     }
                     currentPlayer.sendRichMessage("<gold>Round " + (currentRound - 1) + " completed!");
                     currentPlayer.sendRichMessage("<green>Type /readyup for Round " + currentRound);

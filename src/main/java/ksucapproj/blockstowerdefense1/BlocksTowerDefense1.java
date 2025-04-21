@@ -201,7 +201,7 @@ public class BlocksTowerDefense1 extends JavaPlugin {
                         getLeaderboardManager().updateAllLeaderboards();
                     },
                     0L,
-                    20L * 300 // Update every 5 minutes
+                    20L * 180 // Update every 3 minutes
             );
         } else {
             getLogger().severe("[BlocksTowerDefense] DB connection is null. Leaderboard update will not run.");

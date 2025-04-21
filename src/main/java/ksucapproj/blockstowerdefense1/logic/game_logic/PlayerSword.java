@@ -95,7 +95,7 @@ public class PlayerSword {
                 Economy.spendMoney(player, cost);
                 setSwordLevel(++swordLevel); // takes in the new material level and makes the new sword with it
                 swordUpgradesBought += 1; // increments bought upgrades counter
-                player.sendMessage("Your sword level is now level " + swordLevel);
+                player.sendRichMessage("<green>Your sword level is now level " + swordLevel + "!");
                 return;
             }
             sendMaxLevelMsg(); // if player is already max level, notify and return
@@ -119,7 +119,7 @@ public class PlayerSword {
                 Economy.spendMoney(player, cost);
                 ++slownessLevel; // increase the level
                 swordUpgradesBought += 1; // increments bought upgrades counter
-                player.sendMessage("Your slowness level is now level " + slownessLevel);
+                player.sendRichMessage("<green>Your slowness level is now level " + slownessLevel + "!");
                 return;
             }
             sendMaxLevelMsg(); // if player is already max level, notify and return
@@ -156,7 +156,7 @@ public class PlayerSword {
                 Economy.spendMoney(player, cost);
                 setSweepingEdgeLevel(++sweepingEdgeLevel); // takes in new material level and replaces sword with it
                 swordUpgradesBought += 1; // increments bought upgrades counter
-                player.sendMessage("Your sweeping edge level is now level " + sweepingEdgeLevel);
+                player.sendRichMessage("<green>Your sweeping edge level is now level " + sweepingEdgeLevel + "!");
                 return;
             }
             sendMaxLevelMsg(); // if player is already max level, notify and return
