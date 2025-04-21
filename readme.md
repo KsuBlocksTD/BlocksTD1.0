@@ -80,6 +80,9 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * __[PartiesAPI Plugin](https://alessiodp.com/parties)__
 * __[PlaceholderAPI Plugin](https://www.spigotmc.org/resources/placeholderapi.6245)__
 * __[SimpleScore Plugin](https://www.spigotmc.org/resources/simplescore-animated-scoreboard.23243)__ __- (Only required if not using a custom scoreboard)__
+#### Leaderboard
+* __[ajLeaderboards Plugin](https://www.spigotmc.org/resources/ajleaderboards.85548)__ 
+* __[DecentHolograms Plugin](https://www.spigotmc.org/resources/decentholograms-1-8-1-21-5-papi-support-no-dependencies.96927)__
 ### All Resources
 * __[IntelliJ Community Edition](https://www.jetbrains.com/idea/download/?section=windows)__
 * __[IntelliJ Minecraft Development Plugin](https://plugins.jetbrains.com/plugin/8327-minecraft-development)__
@@ -90,4 +93,4 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * __[PlaceholderAPI Plugin](https://www.spigotmc.org/resources/placeholderapi.6245)__
 * __[WorldEdit Plugin](https://modrinth.com/plugin/worldedit)__
 * __[SimpleScore Plugin](https://www.spigotmc.org/resources/simplescore-animated-scoreboard.23243)__
-* __[PlantUML](https://plantuml.com/)__
+* __[PlantUML](https://plantuml.com)__
