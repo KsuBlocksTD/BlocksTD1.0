@@ -48,12 +48,14 @@ public class HubCommand {
             return Command.SINGLE_SUCCESS;
         }
 
+        // if the hub spawn location is the default (0,0,0)
         if ((hubSpawn.getX() == 0) && (hubSpawn.getY() == 0) && (hubSpawn.getZ() == 0)){
             player.sendRichMessage("<red>The hub location has not been set up yet!");
             return Command.SINGLE_SUCCESS;
         }
 
 
+        // if player is in the playerUpgrades map, they are still in the game
         if (PlayerUpgrades.getPlayerUpgradesMap().get(player) != null){
             player.sendRichMessage("<red>Use /quitgame to end your game and return to the hub.");
             return Command.SINGLE_SUCCESS;

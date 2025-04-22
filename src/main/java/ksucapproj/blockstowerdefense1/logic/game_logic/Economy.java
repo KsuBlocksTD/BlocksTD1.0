@@ -1,5 +1,9 @@
 package ksucapproj.blockstowerdefense1.logic.game_logic;
 
+import com.alessiodp.parties.api.interfaces.PartiesAPI;
+import com.alessiodp.parties.api.interfaces.Party;
+import com.alessiodp.parties.api.interfaces.PartyPlayer;
+import ksucapproj.blockstowerdefense1.BlocksTowerDefense1;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
@@ -45,6 +49,7 @@ public class Economy {
 
     private static final HashMap<Player, Economy> playerEconomies = new HashMap<>();
     private static final HashMap<EntityType, Integer> mobKillRewards = new HashMap<>();
+    private static final PartiesAPI api = BlocksTowerDefense1.getApi();
 
 
         /*
@@ -220,9 +225,15 @@ public class Economy {
 
 
         // if a player in the server is not the leaver, it gives them a portion of the coins
-        for (Economy onlinePlayer : playerEconomies.values()){
-            if (onlinePlayer.player != leaver){
-                onlinePlayer.currTotal += (leaverMoney / numPlayersOnline);
+        Party party = api.getPartyOfPlayer(leaver.getUniqueId());
+        if (party.getMembers().size() == 2){
+
+            for (PartyPlayer player : party.getOnlineMembers()){
+                if (player.getPlayerUUID() != leaver.getUniqueId()){
+
+                    Economy teammate = playerEconomies.get(Bukkit.getPlayer(player.getPlayerUUID()));
+                    teammate.setPlayerMoney(teammate.currTotal + leaverMoney);
+                }
             }
         }
     }

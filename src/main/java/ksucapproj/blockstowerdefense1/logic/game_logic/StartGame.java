@@ -332,9 +332,14 @@ public class StartGame {
     // cleans up player data
     public void cleanupPlayer(UUID playerUUID) {
         Player player = Bukkit.getPlayer(playerUUID);
+
         if (player == null || !playerSessions.containsKey(getSetFromPlayer(playerUUID))) {
+
+//            Bukkit.getLogger().warning("second if player null check cleanupPlayer");
             return; // No cleanup needed
         }
+
+//        Bukkit.getLogger().warning("inside cleanupPlayer");
 
         GameSession session = playerSessions.get(getSetFromPlayer(playerUUID));
         String mapId = getPlayerMapId(playerUUID);
@@ -392,9 +397,11 @@ public class StartGame {
 
     public void playerGameEnd(UUID playerUUID, boolean victory){
         Player player = Bukkit.getPlayer(playerUUID);
-        if(player == null) {
-            return;
+
+        if (player == null || !playerSessions.containsKey(getSetFromPlayer(playerUUID))) {
+            return; // No cleanup needed
         }
+
         long timeElapsed;
 
         if (victory) {

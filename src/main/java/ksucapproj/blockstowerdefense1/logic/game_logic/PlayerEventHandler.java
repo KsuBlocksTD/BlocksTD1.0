@@ -99,8 +99,14 @@ public class PlayerEventHandler implements Listener {
         UUID playerUUID = player.getUniqueId();
 
         if(!gameManager.isInplayerSessions(playerUUID)) {
+//            Bukkit.getLogger().warning("inside in player sessions if statement");
             return;
         }
+
+        // Clean up game data if player was in a game
+        player.getInventory().clear();
+//            gameManager.cleanupPlayer(playerUUID);
+        gameManager.playerGameEnd(playerUUID, false);
 
 
         // Handle party system
@@ -114,12 +120,6 @@ public class PlayerEventHandler implements Listener {
                     party.removeMember(partyPlayer);
                 }
             }
-        }
-
-        // Clean up game data if player was in a game
-        if (gameManager.isPlayerInGame(playerUUID)) {
-            player.getInventory().clear();
-            gameManager.cleanupPlayer(playerUUID);
         }
     }
 
