@@ -27,6 +27,8 @@ This is a Paper-based Minecraft plugin that implements a Bloons-Tower-Defense-li
 * Norman Reid (KSU Minecraft Server)
 
 ## Final Report
+Lines of Code: 9375 | Total Hours : 326 | Status: 98% Complete
+
 * [(WIP) Final Report - 2025 April 27th]()
 * [(WIP) Final Presentation Video - 2025 April 27th]()
 
