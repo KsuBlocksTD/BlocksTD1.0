@@ -44,6 +44,7 @@ public class CoinsCommand {
     public static LiteralCommandNode<CommandSourceStack> addCoinsCommand() {
         return Commands.literal("addcoins")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
+                .requires(ctx -> ctx.getExecutor().hasPermission("blockstd.admin.game.addcoins"))
 
                 .then(Commands.argument("target", StringArgumentType.word())
                         .suggests(CoinsCommand::getOnlinePlayersSuggestions)
@@ -118,6 +119,8 @@ public class CoinsCommand {
     public static LiteralCommandNode<CommandSourceStack> giveCoinsCommand() {
         return Commands.literal("givecoins")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
+                .requires(ctx -> ctx.getExecutor().hasPermission("blockstd.game.givecoins"))
+
 
                 .then(Commands.argument("coinamt", IntegerArgumentType.integer())
                         .executes(CoinsCommand::executeGiveCoinsLogic)

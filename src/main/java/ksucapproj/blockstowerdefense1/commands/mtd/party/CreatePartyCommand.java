@@ -36,12 +36,10 @@ public class CreatePartyCommand {
             return Command.SINGLE_SUCCESS; // if so, return the command with no result to prevent errors
         }
 
-        String creatorName = sender.getName(); // takes the command sender's name for use in the later cmd called
-
         // this calls a command that is added by the PartiesAPI: "/party create <party_name>"
         // instead of filling a party name, the party's name will always be that of the one creating it
         //  reroutes the command from /mtd party create -> /party create <party_name>
-        Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> sender.performCommand("party create " + creatorName));
+        Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> sender.performCommand("party create "));
 
 
         return Command.SINGLE_SUCCESS;

@@ -20,6 +20,8 @@ public class ReloadLeaderboardsCommand {
         return Commands.literal("lb-reload")
 //                .requires(ctx -> ctx.getExecutor() instanceof Player)
                 .executes(ReloadLeaderboardsCommand::executeReloadLogic)
+                .requires(ctx -> ctx.getExecutor().hasPermission("blockstd.admin.lbreload"))
+
 
                 .build();
 

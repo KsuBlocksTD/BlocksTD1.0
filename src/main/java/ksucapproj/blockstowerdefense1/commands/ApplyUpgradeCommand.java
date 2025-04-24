@@ -36,6 +36,7 @@ public class ApplyUpgradeCommand {
     public static LiteralCommandNode<CommandSourceStack> register() {
         return Commands.literal("apply-upgrade")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
+                .requires(ctx -> ctx.getExecutor().hasPermission("blockstd.admin.game.applyupgrade"))
 
                 .then(Commands.argument("upgrade-type", StringArgumentType.word())
                         .suggests(ApplyUpgradeCommand::getUpgradeTypeSuggestions)

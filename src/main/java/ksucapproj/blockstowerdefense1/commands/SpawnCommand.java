@@ -32,6 +32,8 @@ public class SpawnCommand {
     public static LiteralCommandNode<CommandSourceStack> register() {
         return Commands.literal("setspawn")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
+                .requires(ctx -> ctx.getExecutor().hasPermission("blockstd.admin.setspawn"))
+
                 .executes(SpawnCommand::executeSpawnLogic)
 
                 .build();

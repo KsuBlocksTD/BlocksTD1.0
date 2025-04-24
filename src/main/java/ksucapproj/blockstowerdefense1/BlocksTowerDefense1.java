@@ -20,6 +20,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -130,6 +132,11 @@ public class BlocksTowerDefense1 extends JavaPlugin {
             world.setTime(1000);
             getLogger().info("[BlocksTowerDefense] Weather and daylight cycle auto-disabled.");
         }
+
+//        Permission mtdPerm = new Permission("blockstd.mtd", PermissionDefault.OP);
+        Bukkit.getPluginManager().addPermission(new Permission("blockstd.mtd", PermissionDefault.OP));
+        Bukkit.getPluginManager().addPermission(new Permission("blockstd.game", PermissionDefault.OP));
+        Bukkit.getPluginManager().addPermission(new Permission("blockstd.admin", PermissionDefault.OP));
 
         getLogger().warning("[BlocksTowerDefense] Plugin injected");
     }

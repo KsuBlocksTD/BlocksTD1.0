@@ -24,7 +24,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class PartyCommand {
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
-    private static final List<String> subcommands = List.of("invite", "create", "view-all", "leave", "kick", "delete");
+    private static final List<String> subcommands =
+            List.of("invite", "create", "list", "leave", "kick"/*,"delete"*/
+    );
 
     // this .register() function is registered under the base command "/mtd <subcommand>" as a subcommand
     // all subcommands of PartyCommand are granddaughter commands of MtdCommand
@@ -53,7 +55,7 @@ public class PartyCommand {
                 // they're accessible and ready for use when needed
                 .then(InvitePartyCommand.register())
                 .then(CreatePartyCommand.register())
-                .then(DeletePartyCommand.register())
+//                .then(DeletePartyCommand.register())
                 .then(ViewPartyCommand.register())
                 .then(LeavePartyCommand.register())
                 .then(KickPartyCommand.register())
@@ -138,7 +140,7 @@ public class PartyCommand {
         }
 
         //  reroutes the command from /mtd party info -> /party info
-        Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> sender.performCommand("party info "));
+        Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> sender.performCommand("party info"));
 
         return Command.SINGLE_SUCCESS;
     }

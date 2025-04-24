@@ -41,7 +41,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class MtdCommand {
 
-    private static final List<String> subcommands = List.of("hub", "party", "reload");
+    private static final List<String> subcommands = List.of("hub", "party");
 
     // this function is what connects the execution of the command and its potential suggestions
     // this .register() function registers the base command of "/mtd" for all subcommands
@@ -54,7 +54,7 @@ public class MtdCommand {
                 // .requires(): in order for the command to be built and executed, this property must first be met
                 // in this case, in context (ctx), the one executing the command must be a player, rather than the server
 
-
+                .requires(ctx -> ctx.getExecutor().hasPermission("blockstd.mtd"))
                 .executes(MtdCommand::executeHelpCommand)
                 .then(Commands.literal("help")
                         .executes(MtdCommand::executeHelpCommand)

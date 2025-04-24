@@ -17,7 +17,7 @@ public class ViewPartyCommand {
     private static final PartiesAPI api = BlocksTowerDefense1.getApi();
 
     public static LiteralCommandNode<CommandSourceStack> register() {
-        return Commands.literal("view-all")
+        return Commands.literal("list")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
                 .executes(ViewPartyCommand::viewCommandLogic)
                 .build();
@@ -37,7 +37,7 @@ public class ViewPartyCommand {
 
         // this calls a command that is added by the PartiesAPI: "/party list"
         // this displays all parties active in the game
-        // reroutes the command from /mtd party view-all -> /party list>
+        // reroutes the command from /mtd party list -> /party list>
         Bukkit.getScheduler().runTask(BlocksTowerDefense1.getInstance(), () -> sender.performCommand("party list"));
 
 

@@ -48,6 +48,7 @@ public class GameCommand {
     public LiteralCommandNode<CommandSourceStack> setRoundCommand() {
         return Commands.literal("setround")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
+                .requires(ctx -> ctx.getExecutor().hasPermission("blockstd.admin.game.setround"))
                 .then(Commands.argument("newround", IntegerArgumentType.integer())
                         .executes(ctx -> this.executeSetRoundLogic(ctx)) // Use instance method call
                 )
@@ -74,6 +75,7 @@ public class GameCommand {
     public LiteralCommandNode<CommandSourceStack> quitGameCommand() {
         return Commands.literal("quitgame")
                 .requires(ctx -> ctx.getSender() instanceof Player)
+                .requires(ctx -> ctx.getExecutor().hasPermission("blockstd.game.quitgame"))
                 .executes(this::executeQuitGame)
                 .build();
     }
@@ -109,18 +111,19 @@ public class GameCommand {
     // "/startgame <map_name>"
     public LiteralCommandNode<CommandSourceStack> startGameCommand() {
         return Commands.literal("startgame")
+                .requires(ctx -> ctx.getExecutor().hasPermission("blockstd.game.startgame"))
                 .then(Commands.argument("map", StringArgumentType.word())
                         .executes(this::executeStartGameCommand))
                 .build();
     }
 
-    private int executeStartGameCommand(CommandContext<CommandSourceStack> context) {
-        CommandSourceStack source = context.getSource();
+    private int executeStartGameCommand(CommandContext<CommandSourceStack> ctx) {
+        CommandSourceStack source = ctx.getSource();
         if (!(source.getExecutor() instanceof Player player)) {
             return Command.SINGLE_SUCCESS;
         }
 
-        String mapId = StringArgumentType.getString(context, "map");
+        String mapId = StringArgumentType.getString(ctx, "map");
 
         // Verify map exists asynchronously
         CompletableFuture.supplyAsync(() -> MapData.mapExists(mapId))
@@ -146,6 +149,7 @@ public class GameCommand {
     // "/readyup"
     public LiteralCommandNode<CommandSourceStack> readyUpCommand() {
         return Commands.literal("readyup")
+                .requires(ctx -> ctx.getExecutor().hasPermission("blockstd.game.readyup"))
                 .executes(this::executeReadyUpCommand)
                 .build();
     }

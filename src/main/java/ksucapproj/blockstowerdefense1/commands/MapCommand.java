@@ -27,6 +27,8 @@ public class MapCommand {
     public static LiteralCommandNode<CommandSourceStack> mapCommand() {
         return Commands.literal("tdmap")
                 .requires(ctx -> ctx.getExecutor() instanceof Player)
+                .requires(ctx -> ctx.getExecutor().hasPermission("blockstd.tdmap"))
+
 
                 // List maps
                 .then(Commands.literal("list")
