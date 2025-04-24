@@ -82,6 +82,7 @@ Lines of Code: 9375 | Total Hours : 326 | Status: 98% Complete
 * __[PartiesAPI Plugin](https://alessiodp.com/parties)__
 * __[PlaceholderAPI Plugin](https://www.spigotmc.org/resources/placeholderapi.6245)__
 * __[SimpleScore Plugin](https://www.spigotmc.org/resources/simplescore-animated-scoreboard.23243)__ __- (Only required if not using a custom scoreboard)__
+* __[LuckPerms Plugin](https://www.spigotmc.org/resources/luckperms.28140)__
 #### Leaderboard
 * __[ajLeaderboards Plugin](https://www.spigotmc.org/resources/ajleaderboards.85548)__ 
 * __[DecentHolograms Plugin](https://www.spigotmc.org/resources/decentholograms-1-8-1-21-5-papi-support-no-dependencies.96927)__
@@ -95,4 +96,7 @@ Lines of Code: 9375 | Total Hours : 326 | Status: 98% Complete
 * __[PlaceholderAPI Plugin](https://www.spigotmc.org/resources/placeholderapi.6245)__
 * __[WorldEdit Plugin](https://modrinth.com/plugin/worldedit)__
 * __[SimpleScore Plugin](https://www.spigotmc.org/resources/simplescore-animated-scoreboard.23243)__
+* __[LuckPerms Plugin](https://www.spigotmc.org/resources/luckperms.28140)__
+* __[ajLeaderboards Plugin](https://www.spigotmc.org/resources/ajleaderboards.85548)__ 
+* __[DecentHolograms Plugin](https://www.spigotmc.org/resources/decentholograms-1-8-1-21-5-papi-support-no-dependencies.96927)__
 * __[PlantUML](https://plantuml.com)__
