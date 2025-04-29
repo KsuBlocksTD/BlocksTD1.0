@@ -31,6 +31,7 @@ Lines of Code: 9375 | Total Hours : 326 | Status: 100% Complete
 
 * [Final Report - 2025 April 28th](ReadMeFiles/01-T2-Minecraft-FinalReport.pdf)
 * [Final Presentation Video (Youtube) - 2025 April 28th](https://youtu.be/k1Mmq6quthQ)
+  * [Final Presentation Powerpoint (No Video) - 2025 April 28th](ReadMeFiles/01-T2-Minecraft-Final_Presentation_No_Video.pdf)
 
 ## Artifacts
 * [Project Selection - 2025 January 15th](ReadMeFiles/01-T2-Minecraft-Selection.pdf)
